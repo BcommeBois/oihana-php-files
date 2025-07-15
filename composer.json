@@ -58,7 +58,8 @@
         "php": ">=8.4",
         "ext-fileinfo": "*",
         "ext-openssl": "*",
-        "oihana/php-core": "dev-main"
+        "oihana/php-core": "dev-main",
+        "oihana/php-system": "dev-main"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"
