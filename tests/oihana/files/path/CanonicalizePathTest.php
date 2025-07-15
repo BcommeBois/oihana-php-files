@@ -2,10 +2,12 @@
 
 namespace oihana\files\path ;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function oihana\files\getHomeDirectory;
 
+#[CoversFunction('oihana\files\path\canonicalizePath')]
 final class CanonicalizePathTest extends TestCase
 {
     /** @return iterable<string, array{input:string, expected:string}> */

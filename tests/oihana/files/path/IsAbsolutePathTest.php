@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversFunction('oihana\files\paths\isAbsolutePath')]
+#[CoversFunction('oihana\files\path\isAbsolutePath')]
 final class IsAbsolutePathTest extends TestCase
 {
     #[DataProvider('pathProvider')]

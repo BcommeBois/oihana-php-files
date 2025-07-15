@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversFunction('oihana\files\paths\isRelativePath')]
+#[CoversFunction('oihana\files\path\isRelativePath')]
 final class IsRelativePathTest extends TestCase
 {
     #[DataProvider('pathProvider')]

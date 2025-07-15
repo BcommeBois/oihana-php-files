@@ -2,8 +2,10 @@
 
 namespace oihana\files\path ;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 
+#[CoversFunction('oihana\files\path\splitPath')]
 final class SplitPathTest extends TestCase
 {
     public function testEmptyPathReturnsEmptyRootAndRemainder(): void

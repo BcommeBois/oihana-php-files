@@ -46,6 +46,7 @@
             "src/oihana/files/getFileExtension.php" ,
             "src/oihana/files/getHomeDirectory.php" ,
             "src/oihana/files/getRoot.php" ,
+            "src/oihana/files/getSchemeAndHierarchy.php" ,
             "src/oihana/files/getTemporaryDirectory.php" ,
             "src/oihana/files/getTimestampedDirectory.php" ,
             "src/oihana/files/getTimestampedFile.php" ,

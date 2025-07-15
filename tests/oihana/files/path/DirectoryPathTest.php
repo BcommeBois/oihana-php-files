@@ -5,7 +5,7 @@ namespace oihana\files\path ;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 
-#[CoversFunction('oihana\files\paths\directoryPath')]
+#[CoversFunction('oihana\files\path\directoryPath')]
 final class DirectoryPathTest extends TestCase
 {
     public function testUnixStylePaths()

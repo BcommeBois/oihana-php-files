@@ -2,9 +2,11 @@
 
 namespace oihana\files\path ;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversFunction('oihana\files\path\extractCanonicalParts')]
 final class ExtractCanonicalPartsTest extends TestCase
 {
     /** @return iterable<string, array{root:string, input:string, expected:array}] */

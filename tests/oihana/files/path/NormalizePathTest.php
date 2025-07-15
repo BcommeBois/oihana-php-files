@@ -2,9 +2,11 @@
 
 namespace oihana\files\path ;
 
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversFunction('oihana\files\path\normalizePath')]
 final class NormalizePathTest extends TestCase
 {
     /** @return iterable<string, array{input:string, expected:string}> */
