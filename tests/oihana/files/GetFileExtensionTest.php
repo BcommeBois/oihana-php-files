@@ -33,4 +33,37 @@ final class GetFileExtensionTest extends TestCase
     {
         $this->assertSame('.txt', getFileExtension('C:\\path\\to\\file.txt'));
     }
+
+    public function testLowercaseExtensions()
+    {
+        $this->assertSame('.txt', getFileExtension('/path/to/file.TXT'));
+        $this->assertSame('.pdf', getFileExtension('/another/path/document.PDF'));
+
+        // Test avec $lowercase = false
+        $this->assertSame('.TXT', getFileExtension('/path/to/file.TXT', null, false));
+        $this->assertSame('.PDF', getFileExtension('/another/path/document.PDF', null, false));
+    }
+
+
+    public function testMultiPartExtensionsCaseSensitivity()
+    {
+        $multiPart = ['.tar.gz', '.blade.php'];
+
+        // Test avec $lowercase = true (par défaut)
+        $this->assertSame('.tar.gz', getFileExtension('/archive.TAR.GZ', $multiPart));
+        $this->assertSame('.blade.php', getFileExtension('/view.BLADE.PHP', $multiPart));
+
+        // Test avec $lowercase = false
+        $this->assertSame('.TAR.GZ', getFileExtension('/archive.TAR.GZ', $multiPart, false));
+        $this->assertSame('.BLADE.PHP', getFileExtension('/view.BLADE.PHP', $multiPart, false));
+    }
+
+    public function testWindowsPathCaseSensitivity()
+    {
+        // Test avec $lowercase = true (par défaut)
+        $this->assertSame('.txt', getFileExtension('C:\\path\\to\\file.TXT'));
+
+        // Test avec $lowercase = false
+        $this->assertSame('.TXT', getFileExtension('C:\\path\\to\\file.TXT', null, false));
+    }
 }

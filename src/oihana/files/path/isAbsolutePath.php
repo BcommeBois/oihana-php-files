@@ -69,10 +69,12 @@ function isAbsolutePath( string $path ) :bool
 
     // 4. A path is also absolute if it's a Windows path with a drive letter.
 
-    if ( strlen( $path ) > 1 && ctype_alpha( $firstCharacter ) && $path[1] === Char::COLON )
+    $length = strlen( $path ) ;
+
+    if ( $length > 1 && ctype_alpha( $firstCharacter ) && $path[1] === Char::COLON )
     {
         // Case: "C:" is considered absolute.
-        if ( strlen( $path ) === 2 )
+        if ( $length === 2 )
         {
             return true ;
         }

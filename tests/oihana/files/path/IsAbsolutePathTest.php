@@ -2,11 +2,11 @@
 
 namespace oihana\files\path ;
 
-use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(isAbsolutePath::class)]
+#[CoversFunction('oihana\files\paths\isAbsolutePath')]
 final class IsAbsolutePathTest extends TestCase
 {
     #[DataProvider('pathProvider')]

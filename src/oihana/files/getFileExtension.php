@@ -3,6 +3,7 @@
 namespace oihana\files ;
 
 use oihana\enums\Char;
+use function oihana\core\strings\lower;
 
 /**
  * Retrieves the file extension (including multipart extensions) from a given file path.
@@ -17,14 +18,21 @@ use oihana\enums\Char;
  * @param string $file The full path or filename from which to extract the extension.
  * @param array|null $multiplePartExtensions Optional array of multipart extensions to consider.
  *                                          If null, the default set from `FileExtension::getMultiplePartExtensions()` is used.
+ * @param bool $lowercase Enforce the extension to be lowercase (default true).
  *
  * @return string|null The file extension including the leading dot (e.g. `.tar.gz`),
  *                     or null if the file has no extension.
  */
-function getFileExtension( string $file , ?array $multiplePartExtensions = null ): ?string
+function getFileExtension( string $file , ?array $multiplePartExtensions = null , bool $lowercase = true ): ?string
 {
     $base = getBaseFileName( $file , $multiplePartExtensions );
     $file = basename( str_replace('\\' , '/' , $file ) ); // normaliser chemin Windows
     $ext  = substr( $file, strlen($base ) ) ;
-    return $ext !== Char::EMPTY ? strtolower( $ext ) : null ;
+
+    if( $ext !== Char::EMPTY )
+    {
+        return $lowercase ? lower( $ext ) : $ext ;
+    }
+
+    return null ;
 }
