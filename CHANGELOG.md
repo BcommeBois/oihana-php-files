@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Adds oihana\files\path\canonicalizePath
 - Adds oihana\files\path\extractCanonicalParts
+- Adds oihana\files\path\isAbsolute
 - Adds oihana\files\path\isBasePath
 - Adds oihana\files\path\isLocalPath
 - Adds oihana\files\path\joinPaths
