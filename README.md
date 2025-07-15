@@ -1,5 +1,6 @@
-# oihana-php-core
-Oihana PHP - Files library
+# oihana-php-files
+
+## Oihana PHP - Files library
 
 Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.
 
