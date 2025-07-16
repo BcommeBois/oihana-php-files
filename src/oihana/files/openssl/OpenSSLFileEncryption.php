@@ -86,7 +86,7 @@ class OpenSSLFileEncryption
      * @throws DirectoryException
      * @throws FileException
      */
-    public function encrypt( string $inputFile , ?string $outputFile ):bool
+    public function encrypt( string $inputFile , ?string $outputFile = null ):bool
     {
         assertFile( $inputFile ) ;
 
