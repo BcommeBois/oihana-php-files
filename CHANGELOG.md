@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - Adds oihana\files\assertDirectory
 - Adds oihana\files\assertFile
+- Adds oihana\files\assertPhar
 - Adds oihana\files\assertWritableDirectory
 - Adds oihana\files\deleteDirectory
 - Adds oihana\files\deleteTemporaryDirectory
