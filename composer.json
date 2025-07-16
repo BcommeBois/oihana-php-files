@@ -57,7 +57,8 @@
             "src/oihana/files/makeTimestampedFile.php" ,
             "src/oihana/files/requireAndMergeArrays.php" ,
             "src/oihana/files/recursiveFilePaths.php",
-            "src/oihana/files/sortFiles.php"
+            "src/oihana/files/sortFiles.php",
+            "src/oihana/files/validateMimeType.php"
         ]
     },
     "require": {

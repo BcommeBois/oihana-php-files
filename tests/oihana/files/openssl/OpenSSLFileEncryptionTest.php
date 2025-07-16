@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files;
+namespace oihana\files\openssl;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;

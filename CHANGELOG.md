@@ -33,8 +33,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\requireAndMergeArrays
 - Adds oihana\files\sortFiles
 
-- Adds oihana\files\OpenSSLFileEncryption
-- Adds oihana\files\TarFile
+- Adds oihana\files\openssl\OpenSSLFileEncryption
+- Adds oihana\files\archive\TarFile
 
 - Adds oihana\files\enums\FileExtension
 - Adds oihana\files\enums\FileMimeType

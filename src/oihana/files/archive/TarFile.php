@@ -1,17 +1,19 @@
 <?php
 
-namespace oihana\files;
+namespace oihana\files\archive;
 
 use Exception;
-use Phar;
-use PharData;
-use RuntimeException;
-
 use oihana\enums\Char;
 use oihana\files\enums\CompressionType;
 use oihana\files\enums\FileExtension;
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
+use Phar;
+use PharData;
+use RuntimeException;
+use function oihana\files\assertDirectory;
+use function oihana\files\assertFile;
+use function oihana\files\makeDirectory;
 
 /**
  * Manages creating and extracting Unix tar (optionally gz‑compressed) archives.
@@ -127,21 +129,6 @@ final class TarFile
         {
             throw new RuntimeException( sprintf( 'Failed to create tar archive from directory %s. Error: %s' , $directory , $e->getMessage() ) ) ;
         }
-
-
-        // $tarFile     = $directory . $extension;
-        // $command     = "tar -czf $tarFile -C " . dirname( $directory ) . Char::SPACE . $archiveName ;
-        //
-        // system( $command , $status ) ;
-        //
-        // if ( $status == 0 )
-        // {
-        //     return $tarFile;
-        // }
-        // else
-        // {
-        //     throw new RuntimeException( sprintf( 'Creates a tar file failed, impossible to creates the tar file from the directory %s.' , json_encode( $directory , JSON_UNESCAPED_SLASHES ) ) , $status ) ;
-        // }
     }
 
     /**
