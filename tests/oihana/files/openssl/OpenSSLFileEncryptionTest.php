@@ -2,6 +2,9 @@
 
 namespace oihana\files\openssl;
 
+use oihana\files\enums\FileExtension;
+use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -64,10 +67,14 @@ class OpenSSLFileEncryptionTest extends TestCase
 
     public function testConstruct()
     {
-        $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
+        new OpenSSLFileEncryption($this->passphrase, $this->cipher);
         $this->assertTrue(true ) ; // Placeholder assertion
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testEncryptAndDecrypt()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -88,17 +95,25 @@ class OpenSSLFileEncryptionTest extends TestCase
         $this->assertEquals($originalContent, $decryptedContent);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testEncryptWithNonExistentInputFile()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
         $nonExistentFile = $this->testDir . '/nonexistent.txt';
 
-        $this->expectException( RuntimeException::class ) ;
-        $this->expectExceptionMessage("Encryption failed, the input file not exist.");
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage( sprintf('The file path "%s" is not a valid file.' , $nonExistentFile ) );
 
         $encryption->encrypt($nonExistentFile, $this->encryptedFile);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testEncryptWithUnwritableOutputFile()
     {
        $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -113,6 +128,7 @@ class OpenSSLFileEncryptionTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches( "/Encryption failed/" );
+
         $encryption->encrypt($this->inputFile, $outputFile);
 
         // Nettoyer
@@ -123,6 +139,10 @@ class OpenSSLFileEncryptionTest extends TestCase
         }
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testEncryptWithNonExistentOutputDirectory()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -130,11 +150,15 @@ class OpenSSLFileEncryptionTest extends TestCase
         $nonExistentDir = $this->testDir . '/nonexistent_directory';
         $nonExistentFile = $nonExistentDir . '/encrypted.txt';
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage("Encryption failed, output directory does not exist.");
+        $this->expectException(DirectoryException::class);
+        $this->expectExceptionMessageMatches('/is not a valid directory/');
         $encryption->encrypt($this->inputFile, $nonExistentFile);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testDecryptWithIncorrectPassphrase()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -148,6 +172,10 @@ class OpenSSLFileEncryptionTest extends TestCase
         $encryptionWithWrongPassphrase->decrypt($this->encryptedFile, $this->decryptedFile);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testDecryptWithUnwritableOutputFile()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -161,6 +189,10 @@ class OpenSSLFileEncryptionTest extends TestCase
         $encryption->decrypt($this->encryptedFile, $unwritableFile);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testHasEncryptedFileSize()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
@@ -198,6 +230,10 @@ class OpenSSLFileEncryptionTest extends TestCase
         }
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testIsEncryptedFile()
     {
         $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);

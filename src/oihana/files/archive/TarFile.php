@@ -170,15 +170,6 @@ final class TarFile
     }
 
     /**
-     * Vérifie si PharData est disponible.
-     * @return bool True si PharData est disponible, false sinon.
-     */
-    public static function isPharAvailable(): bool
-    {
-        return class_exists('PharData' ) && extension_loaded('phar' ) ;
-    }
-
-    /**
      * Gets the appropriate file extension for a compression type.
      * @param string $compression The compression type.
      * @return string The file extension.

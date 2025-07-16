@@ -123,22 +123,24 @@ class AssertDirectoryTest extends TestCase
 
     public function testNonWritableDirectory()
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
             $this->markTestSkipped('Permission tests are not reliable on Windows.');
         }
 
         $tempDir = sys_get_temp_dir() . '/test_nonwritable_dir_' . uniqid();
-        mkdir($tempDir, 0755);
-        chmod($tempDir, 0555); // Lecture/exécution sans écriture
+
+        mkdir( $tempDir , 0755 ) ;
+        chmod( $tempDir , 0555 ) ; // Lecture/exécution sans écriture
 
         $this->expectException(DirectoryException::class);
         $this->expectExceptionMessageMatches('/is not writable/');
 
         try {
-            assertDirectory($tempDir, true, true);
+            assertDirectory( $tempDir, true , true );
         } finally {
-            @chmod($tempDir, 0777);
-            @rmdir($tempDir);
+            @chmod( $tempDir , 0777);
+            @rmdir( $tempDir );
         }
     }
 

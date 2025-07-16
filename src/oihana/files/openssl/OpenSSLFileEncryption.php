@@ -6,6 +6,13 @@ use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 
+use oihana\files\enums\FileExtension;
+use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
+
+use function oihana\files\assertDirectory;
+use function oihana\files\assertFile;
+
 /**
  * Class OpenSSLFileEncryption
  * This class provides methods to encrypt and decrypt files using OpenSSL.
@@ -72,15 +79,20 @@ class OpenSSLFileEncryption
      * The encrypted data includes the initialization vector (IV) prepended to the encrypted data.
      *
      * @param string $inputFile The path to the file to be encrypted.
-     * @param string $outputFile The path where the encrypted file will be written.
+     * @param ?string $outputFile Optional custom output file path. If null, uses file name with appropriate extension.
+     *
      * @return true Returns true on successful encryption.
      * @throws RuntimeException If the input file cannot be read, encryption fails, or the output file cannot be written.
+     * @throws DirectoryException
+     * @throws FileException
      */
-    public function encrypt( string $inputFile , string $outputFile ):bool
+    public function encrypt( string $inputFile , ?string $outputFile ):bool
     {
-        if( !file_exists( $inputFile ) )
+        assertFile( $inputFile ) ;
+
+        if ( $outputFile === null )
         {
-            throw new RuntimeException( 'Encryption failed, the input file not exist.' ) ;
+            $outputFile = $inputFile . FileExtension::ENCRYPTED ;
         }
 
         $data = file_get_contents( $inputFile ) ;
@@ -91,7 +103,7 @@ class OpenSSLFileEncryption
 
         // Generate secure IV
         $iv = openssl_random_pseudo_bytes( $this->ivLength ,  $cryptoStrong ) ;
-        if ( $iv === false || !$cryptoStrong )
+        if ( !$cryptoStrong )
         {
             throw new RuntimeException("Encryption failed: could not generate secure IV");
         }
@@ -103,23 +115,12 @@ class OpenSSLFileEncryption
             throw new RuntimeException("Failed to encrypt the file'." ) ;
         }
 
-        // Prepare output
         $outputDir = dirname( $outputFile ) ;
 
-        // Check/create output directory
-        if ( !is_dir( $outputDir ) )
-        {
-            throw new RuntimeException("Encryption failed, output directory does not exist." ) ;
-        }
-
-        if ( !is_writable( $outputDir ) )
-        {
-            throw new RuntimeException("Encryption failed, output directory is not writable." ) ;
-        }
-
+        assertDirectory ( $outputDir  , isWritable : true ) ;
         if ( file_exists( $outputFile ) && !is_writable( $outputFile ) )
         {
-            throw new RuntimeException("Encryption failed, output file is not writable.") ;
+            throw new RuntimeException("Encryption failed, output file is not writable.");
         }
 
         // Write encrypted data
