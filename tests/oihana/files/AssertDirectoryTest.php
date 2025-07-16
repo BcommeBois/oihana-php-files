@@ -77,21 +77,26 @@ class AssertDirectoryTest extends TestCase
         }
 
         $tempDir = sys_get_temp_dir() . '/test_unreadable_dir_' . uniqid();
-        mkdir($tempDir);
-        chmod($tempDir, 0000); // Aucun droit
+        mkdir( $tempDir ) ;
+        chmod( $tempDir , 0000); // Aucun droit
 
         $this->expectException(DirectoryException::class);
         $this->expectExceptionMessageMatches('/is not readable/');
 
-        try {
+        try
+        {
             assertDirectory($tempDir);
-        } finally {
-            // Restaurer les permissions et nettoyer
-            @chmod($tempDir, 0777);
-            @rmdir($tempDir);
+        }
+        finally
+        {
+            @chmod( $tempDir, 0777);
+            @rmdir( $tempDir );
         }
     }
 
+    /**
+     * @throws DirectoryException
+     */
     public function testNestedDirectory()
     {
         $directoryPath = vfsStream::url('testDir/nested/anotherDir');
@@ -107,5 +112,61 @@ class AssertDirectoryTest extends TestCase
         $this->expectExceptionMessage('The directory path must not be empty.');
 
         assertDirectory('   ');
+    }
+
+    public function testWritableDirectory()
+    {
+        $directoryPath = vfsStream::url('testDir/validDir');
+        $this->expectNotToPerformAssertions();
+        assertDirectory($directoryPath, true, true); // doit être lisible + écrivable
+    }
+
+    public function testNonWritableDirectory()
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        $tempDir = sys_get_temp_dir() . '/test_nonwritable_dir_' . uniqid();
+        mkdir($tempDir, 0755);
+        chmod($tempDir, 0555); // Lecture/exécution sans écriture
+
+        $this->expectException(DirectoryException::class);
+        $this->expectExceptionMessageMatches('/is not writable/');
+
+        try {
+            assertDirectory($tempDir, true, true);
+        } finally {
+            @chmod($tempDir, 0777);
+            @rmdir($tempDir);
+        }
+    }
+
+    public function testDirectoryWithExpectedPermissions()
+    {
+        $directoryPath = vfsStream::url('testDir/validDir');
+
+        // vfsStream ne garantit pas les permissions, on ne teste que si la fonction ne jette pas
+        $this->expectNotToPerformAssertions();
+        assertDirectory($directoryPath, true, false, 0o777); // vfsStream par défaut donne 777
+    }
+
+    public function testDirectoryWithWrongPermissions()
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        $tempDir = sys_get_temp_dir() . '/test_perm_dir_' . uniqid();
+        mkdir($tempDir, 0755);
+
+        $this->expectException(DirectoryException::class);
+        $this->expectExceptionMessageMatches('/has permissions/');
+
+        try {
+            assertDirectory($tempDir, true, false, 0o777);
+        } finally {
+            @rmdir($tempDir);
+        }
     }
 }

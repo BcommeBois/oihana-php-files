@@ -165,4 +165,72 @@ class AssertFileTest extends TestCase
         $this->expectNotToPerformAssertions();
         assertFile($filePath);
     }
+
+    public function testUnwritableFile(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_unwritable_file_');
+        file_put_contents($tempFile, 'test content');
+        chmod($tempFile, 0444); // Lecture seule
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessageMatches('/is not readable/');
+
+        try
+        {
+            assertFile( $tempFile, null, true, true ) ;
+        }
+        finally
+        {
+            @chmod($tempFile, 0666);
+            @unlink($tempFile);
+        }
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testFileWithValidMimeType(): void
+    {
+        $filePath = vfsStream::url('testDir/validFile.txt');
+
+        $this->expectNotToPerformAssertions();
+        assertFile( $filePath, [ 'text/plain' ] );
+    }
+
+    public function testFileWithInvalidMimeType(): void
+    {
+        $filePath = vfsStream::url('testDir/validFile.txt');
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessageMatches('/Invalid MIME type for file/');
+
+        assertFile($filePath, ['image/jpeg']);
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testFileWithArrayMimeTypes(): void
+    {
+        $filePath = vfsStream::url('testDir/validFile.txt');
+
+        $this->expectNotToPerformAssertions();
+        assertFile($filePath, [['text/plain', 'application/pdf']]);
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testReadableWritableExplicit(): void
+    {
+        $filePath = vfsStream::url('testDir/validFile.txt');
+
+        $this->expectNotToPerformAssertions();
+        assertFile($filePath, isReadable : true, isWritable: false);
+    }
 }

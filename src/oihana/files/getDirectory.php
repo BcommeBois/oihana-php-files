@@ -14,10 +14,12 @@ use oihana\files\exceptions\DirectoryException;
  *
  * @param string|array|null $path Directory or segments to normalise. <br>
  * Examples: <code>'/tmp'</code> or <code>['tmp','logs']</code>.
- * @param bool $assertable Whether to validate the resulting path. Defaults to true.
- * @param bool $isReadable Check if the directory is readable (Default true).
- * @param bool $isWritable Check if the directory is writable (Default false).
+ * @param bool $assertable Whether to validate the resulting path. Default: true.
+ * @param bool $isReadable Whether to assert that the directory is readable. Default: true.
+ * @param bool $isWritable Whether to assert that the directory is writable. Default: false.
+ *
  * @return string Normalised directory path.
+ *
  * @throws DirectoryException If validation is enabled and the directory is invalid.
  */
 function getDirectory( string|array|null $path , bool $assertable = true , bool $isReadable = true , bool $isWritable = false ): string
@@ -36,7 +38,7 @@ function getDirectory( string|array|null $path , bool $assertable = true , bool 
 
     if( $assertable )
     {
-        assertDirectory( $path , $isReadable , $isWritable ) ;
+        assertDirectory( $path , isReadable : $isReadable , isWritable : $isWritable ) ;
     }
 
     return rtrim( $path , DIRECTORY_SEPARATOR ) ;
