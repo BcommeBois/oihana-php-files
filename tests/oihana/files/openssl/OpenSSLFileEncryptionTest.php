@@ -2,7 +2,6 @@
 
 namespace oihana\files\openssl;
 
-use oihana\files\enums\FileExtension;
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +26,7 @@ class OpenSSLFileEncryptionTest extends TestCase
         }
 
         $this->inputFile     = $this->testDir . '/input.txt';
-        $this->encryptedFile = $this->testDir . '/encrypted.txt';
+        $this->encryptedFile = $this->testDir . '/encrypted.txt.enc';
         $this->decryptedFile = $this->testDir . '/decrypted.txt';
         $this->passphrase    = 'secret';
         $this->cipher        = 'aes-256-cbc';
@@ -81,12 +80,12 @@ class OpenSSLFileEncryptionTest extends TestCase
 
         // Test encryption
         $result = $encryption->encrypt($this->inputFile, $this->encryptedFile);
-        $this->assertTrue($result);
+        $this->assertEquals( $this->encryptedFile , $result );
         $this->assertFileExists($this->encryptedFile);
 
         // Test decryption
         $result = $encryption->decrypt($this->encryptedFile, $this->decryptedFile);
-        $this->assertTrue($result);
+        $this->assertEquals( $this->decryptedFile , $result);
         $this->assertFileExists($this->decryptedFile);
 
         // Verify that the decrypted file matches the original
@@ -274,6 +273,26 @@ class OpenSSLFileEncryptionTest extends TestCase
                 unlink($file);
             }
         }
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptWithNullOutputFile(): void
+    {
+        $encryption = new OpenSSLFileEncryption($this->passphrase, $this->cipher);
+
+        $encryptedFile = $encryption->encrypt( $this->inputFile );
+
+        // Output file set to null: expect to create outputFile by removing FileExtension::ENCRYPTED from input
+        $result = $encryption->decrypt( $encryptedFile );
+
+        $this->assertEquals( $this->inputFile , $result ) ;
+        $this->assertFileExists( $result );
+
+        // Cleanup
+        @unlink( $result );
     }
 
 }

@@ -4,6 +4,7 @@ namespace oihana\files\openssl;
 
 use Exception;
 use InvalidArgumentException;
+use oihana\enums\Char;
 use RuntimeException;
 
 use oihana\files\enums\FileExtension;
@@ -81,12 +82,12 @@ class OpenSSLFileEncryption
      * @param string $inputFile The path to the file to be encrypted.
      * @param ?string $outputFile Optional custom output file path. If null, uses file name with appropriate extension.
      *
-     * @return true Returns true on successful encryption.
+     * @return string Returns on successful encryption the path of the encrypted file.
      * @throws RuntimeException If the input file cannot be read, encryption fails, or the output file cannot be written.
      * @throws DirectoryException
      * @throws FileException
      */
-    public function encrypt( string $inputFile , ?string $outputFile = null ):bool
+    public function encrypt( string $inputFile , ?string $outputFile = null ) :string
     {
         assertFile( $inputFile ) ;
 
@@ -131,7 +132,7 @@ class OpenSSLFileEncryption
             throw new RuntimeException( "Encryption failed, file write failed: " . ( $error ? $error['message'] : 'unknown error' ) );
         }
 
-        return true;
+        return $outputFile;
     }
 
     /**
@@ -141,16 +142,20 @@ class OpenSSLFileEncryption
      * decrypts the remaining data using OpenSSL, and writes the decrypted data to the output file.
      *
      * @param string $inputFile The path to the file to be decrypted.
-     * @param string $outputFile The path where the decrypted file will be written.
-     * @return true Returns true on successful decryption.
+     * @param ?string $outputFile The path where the decrypted file will be written.
+     *
+     * @return string Returns the path of the decrypted file.
+     *
+     * @throws FileException If the input file not exist or is invalid.
      * @throws RuntimeException If the input file cannot be read, decryption fails (due to incorrect passphrase or corrupted data), or the output file cannot be written.
      */
-    public function decrypt( string $inputFile , string $outputFile ) :true
+    public function decrypt( string $inputFile , ?string $outputFile = null ) :string
     {
-        // Validate input file
-        if ( !file_exists( $inputFile ) )
+        assertFile( $inputFile ) ;
+
+        if ( $outputFile === null )
         {
-            throw new RuntimeException("Failed to decrypt, the input file does not exist." ) ;
+            $outputFile = str_replace( FileExtension::ENCRYPTED , Char::EMPTY , $inputFile ) ;
         }
 
         $data = file_get_contents( $inputFile ) ;
@@ -205,7 +210,7 @@ class OpenSSLFileEncryption
             );
         }
 
-        return true;
+        return $outputFile;
     }
 
     /**
@@ -282,7 +287,8 @@ class OpenSSLFileEncryption
 
             // If more than 80%% of the bytes are printable characters,
             // it may look like text rather than an IV
-            if ($printable > $this->ivLength * 0.8) {
+            if ( $printable > $this->ivLength * 0.8 )
+            {
                 return false;
             }
 
