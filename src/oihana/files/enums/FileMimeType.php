@@ -4,6 +4,15 @@ namespace oihana\files\enums;
 
 use oihana\reflections\traits\ConstantsTrait;
 
+/**
+ * FileExtension
+ *
+ * Enumeration class that defines various file mime-types supported by the application.
+ *
+ * @package oihana\files\enums
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
+ */
 class FileMimeType
 {
     use ConstantsTrait
@@ -67,16 +76,18 @@ class FileMimeType
 
     // --- Archives ---
 
-    public const string ENCRYPTED        = 'application/octet-stream' ;
-    public const string GZ               = 'application/gzip' ;
-    public const string RAR              = 'application/vnd.rar' ;
-    public const string SEVEN_Z          = 'application/x-7z-compressed' ;
+    public const string ENCRYPTED = 'application/octet-stream' ;
+    public const string GZ        = 'application/gzip' ;
+    public const string RAR       = 'application/vnd.rar' ;
+    public const string SEVEN_Z   = 'application/x-7z-compressed' ;
+    public const string ZIP       = 'application/zip' ;
+
     public const string TAR              = 'application/x-tar' ;
     public const string TAR_BZ2          = 'application/x-bzip2' ;
     public const string TAR_GZ           = 'application/gzip' ;
     public const string TAR_GZ_ENCRYPTED = 'application/octet-stream' ;
     public const string TGZ              = 'application/gzip' ;
-    public const string ZIP              = 'application/zip' ;
+
 
     // --- Text and Code
 

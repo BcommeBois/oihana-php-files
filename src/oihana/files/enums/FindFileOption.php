@@ -4,6 +4,15 @@ namespace oihana\files\enums;
 
 use oihana\reflections\traits\ConstantsTrait;
 
+/**
+ * FileExtension
+ *
+ * Enumeration class that defines various options to use in the findFiles function.
+ *
+ * @package oihana\files\enums
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
+ */
 class FindFileOption
 {
     use ConstantsTrait ;

@@ -2,15 +2,19 @@
 
 namespace oihana\files;
 
+use Exception;
+use Phar;
+use PharData;
 use RuntimeException;
 
 use oihana\enums\Char;
+use oihana\files\enums\CompressionType;
 use oihana\files\enums\FileExtension;
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 
 /**
- * Manage creating and extracting Unix tar (optionally gz‑compressed) archives.
+ * Manages creating and extracting Unix tar (optionally gz‑compressed) archives.
  * If that component is not available you can switch to the fallback methods that
  */
 final class TarFile
@@ -29,7 +33,7 @@ final class TarFile
      * @throws FileException If the archive does not exist or is not a tar file.
      * @throws RuntimeException When extraction fails or directory cannot be created.
      */
-    public function assertFile( string $file , array $mimeTypes = [ 'x-tar' , 'gzip' , 'bzip2'] ): true
+    public function assertFile( string $file , array $mimeTypes = [ 'x-tar' , 'gzip' , 'bzip2' ] ): true
     {
         assertFile( $file );
 
@@ -46,7 +50,7 @@ final class TarFile
         finfo_close( $info ) ;
 
         $mimeTypeMatches = false;
-        foreach ($mimeTypes as $type)
+        foreach ( $mimeTypes as $type )
         {
             if ( str_contains( $mimeType , $type ) )
             {
@@ -64,31 +68,80 @@ final class TarFile
     }
 
     /**
-     * Creates a tar file from a directory.
+     * Creates a tar archive from a directory with specified compression.
      * @param string $directory The directory to archive.
-     * @param string $extension The extension of the new file
-     * @return string The tar file.
-     * @throws DirectoryException
-     * @throws RuntimeException
+     * @param ?string $compression The compression type to use.
+     * @param string|null $outputPath Optional custom output path. If null, uses directory name with appropriate extension.
+     * @return string The path to the created archive.
+     * @throws DirectoryException If the directory does not exist.
+     * @throws RuntimeException If the archive creation fails.
      */
-    public function create( string $directory , string $extension = FileExtension::TAR_GZ ): string
+    public function createFromDirectory( string $directory , ?string $compression = CompressionType::GZIP , ?string $outputPath = null ): string
     {
         assertDirectory( $directory ) ;
 
         $archiveName = basename( $directory ) ;
-        $tarFile     = $directory . $extension;
-        $command     = "tar -czf $tarFile -C " . dirname( $directory ) . Char::SPACE . $archiveName ;
 
-        system( $command , $status ) ;
+        if ( $outputPath === null )
+        {
+            $extension  = $this->getExtensionForCompression( $compression ) ;
+            $outputPath = $directory . $extension ;
+        }
 
-        if ( $status == 0 )
+        try
         {
-            return $tarFile;
+            $baseTarPath = $compression === CompressionType::NONE
+                         ? $outputPath
+                         : sys_get_temp_dir() . DIRECTORY_SEPARATOR . $archiveName . FileExtension::TAR ;
+
+            $phar = new PharData( $baseTarPath ) ;
+            $phar->buildFromDirectory( $directory ) ;
+
+            // Apply compression if requested
+            if ( $compression !== CompressionType::NONE )
+            {
+                $compressedPhar = $phar->compress( $this->getPharCompressionType( $compression ) ) ;
+
+                unset( $phar ) ;
+
+                $compressedPath = $baseTarPath . $this->getCompressionExtension( $compression ) ;
+                if ( $compressedPath !== $outputPath )
+                {
+                    rename( $compressedPath , $outputPath ) ;
+                }
+
+                if ( file_exists( $baseTarPath ) )
+                {
+                    unlink( $baseTarPath ) ;
+                }
+            }
+            else
+            {
+                unset( $phar ) ;
+            }
+
+            return $outputPath;
+
         }
-        else
+        catch ( Exception $e )
         {
-            throw new RuntimeException( sprintf( 'Creates a tar file failed, impossible to creates the tar file from the directory %s.' , json_encode( $directory , JSON_UNESCAPED_SLASHES ) ) , $status ) ;
+            throw new RuntimeException( sprintf( 'Failed to create tar archive from directory %s. Error: %s' , $directory , $e->getMessage() ) ) ;
         }
+
+
+        // $tarFile     = $directory . $extension;
+        // $command     = "tar -czf $tarFile -C " . dirname( $directory ) . Char::SPACE . $archiveName ;
+        //
+        // system( $command , $status ) ;
+        //
+        // if ( $status == 0 )
+        // {
+        //     return $tarFile;
+        // }
+        // else
+        // {
+        //     throw new RuntimeException( sprintf( 'Creates a tar file failed, impossible to creates the tar file from the directory %s.' , json_encode( $directory , JSON_UNESCAPED_SLASHES ) ) , $status ) ;
+        // }
     }
 
     /**
@@ -127,5 +180,59 @@ final class TarFile
                 , $status
             ) ;
         }
+    }
+
+    /**
+     * Vérifie si PharData est disponible.
+     * @return bool True si PharData est disponible, false sinon.
+     */
+    public static function isPharAvailable(): bool
+    {
+        return class_exists('PharData' ) && extension_loaded('phar' ) ;
+    }
+
+    /**
+     * Gets the appropriate file extension for a compression type.
+     * @param string $compression The compression type.
+     * @return string The file extension.
+     */
+    private function getExtensionForCompression( string $compression ): string
+    {
+        return match ( $compression )
+        {
+            CompressionType::GZIP  => FileExtension::TAR_GZ   ,
+            CompressionType::BZIP2 => FileExtension::TAR_BZ2  ,
+            default                => FileExtension::TAR      , // NONE
+        } ;
+    }
+
+    /**
+     * Gets the Phar compression constant for a compression type.
+     * @param string $compression The compression type.
+     * @return int The Phar compression constant.
+     */
+    private function getPharCompressionType( string $compression ): int
+    {
+        return match ( $compression )
+        {
+            CompressionType::GZIP  => Phar::GZ ,
+            CompressionType::BZIP2 => Phar::BZ2 ,
+            CompressionType::NONE  => throw new RuntimeException('No compression type specified' ) ,
+        } ;
+    }
+
+    /**
+     * Gets the file extension added by Phar compression.
+     * @param string $compression The compression type.
+     * @return string The extension added by compression.
+     */
+    private function getCompressionExtension( string $compression ): string
+    {
+        return match ( $compression )
+        {
+            CompressionType::GZIP  => FileExtension::GZ  ,
+            CompressionType::BZIP2 => FileExtension::BZ2 ,
+            CompressionType::NONE  => Char::EMPTY ,
+        } ;
     }
 }

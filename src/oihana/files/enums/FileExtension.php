@@ -5,6 +5,15 @@ namespace oihana\files\enums;
 use oihana\enums\Char;
 use oihana\reflections\traits\ConstantsTrait;
 
+/**
+ * FileExtension
+ *
+ * Enumeration class that defines various file extension supported by the application.
+ *
+ * @package oihana\files\enums
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
+ */
 class FileExtension
 {
     use ConstantsTrait
@@ -69,6 +78,7 @@ class FileExtension
     // --- Archives ---
 
     public const string ENCRYPTED        = '.enc';
+    public const string BZ2              = '.bz2';
     public const string GZ               = '.gz';
     public const string RAR              = '.rar';
     public const string SEVEN_Z          = '.7z';
