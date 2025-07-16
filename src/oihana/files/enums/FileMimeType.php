@@ -82,7 +82,7 @@ class FileMimeType
     public const string SEVEN_Z   = 'application/x-7z-compressed' ;
     public const string ZIP       = 'application/zip' ;
 
-    public const string TAR              = 'application/x-tar' ;
+    public const array  TAR              = [ 'application/tar' , 'application/x-tar' ] ;
     public const string TAR_BZ2          = 'application/x-bzip2' ;
     public const string TAR_GZ           = 'application/gzip' ;
     public const string TAR_GZ_ENCRYPTED = 'application/octet-stream' ;
