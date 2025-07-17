@@ -25,7 +25,6 @@
         },
         "files":
         [
-            "src/oihana/reflections/getFunctionReflectionInfo.php" ,
             "src/oihana/files/archive/tar/assertTar.php" ,
             "src/oihana/files/archive/tar/hasTarExtension.php" ,
             "src/oihana/files/archive/tar/hasTarMimeType.php" ,

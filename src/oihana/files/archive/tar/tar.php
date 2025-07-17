@@ -18,6 +18,7 @@ use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use oihana\files\exceptions\UnsupportedCompressionException;
 
+use function oihana\core\reflections\getFunctionInfo;
 use function oihana\files\getPharCompressionType;
 use function oihana\files\makeDirectory;
 
@@ -92,7 +93,7 @@ function tar
         }
     }
 
-    $tmpPath = getFunctionReflectionInfo('oihana\files\archive\tar\tar' )[ 'name' ] ;
+    $tmpPath = getFunctionInfo('oihana\files\archive\tar\tar' )[ 'name' ] ;
 
     $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( "\\", DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
 

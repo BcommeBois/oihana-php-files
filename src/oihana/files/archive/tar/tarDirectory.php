@@ -12,6 +12,7 @@ use oihana\files\exceptions\UnsupportedCompressionException;
 
 use RuntimeException;
 
+use function oihana\core\reflections\getFunctionInfo;
 use function oihana\files\assertDirectory;
 use function oihana\files\copyFilteredFiles;
 use function oihana\files\deleteDirectory;
@@ -61,7 +62,7 @@ function tarDirectory
         return tar( $directory , $outputPath , $compression , $directory ) ;
     }
 
-    $tmpPath = getFunctionReflectionInfo('oihana\files\archive\tar\tarDirectory' )[ 'name' ] ;
+    $tmpPath = getFunctionInfo('oihana\files\archive\tar\tarDirectory' )[ 'name' ] ;
     $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( "\\", DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
     $tempDir = $tmpPath . uniqid() ;
 
