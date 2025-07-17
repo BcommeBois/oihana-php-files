@@ -33,6 +33,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\requireAndMergeArrays
 - Adds oihana\files\sortFiles
 
+- Adds oihana\files\archive\tar\assertTar
+- Adds oihana\files\archive\tar\hasTarExtension
+- Adds oihana\files\archive\tar\hasTarMimeType
+- Adds oihana\files\archive\tar\tar
+- Adds oihana\files\archive\tar\tarDirectory
+- Adds oihana\files\archive\tar\tarFileInfo
+- Adds oihana\files\archive\tar\tarIsCompressed
+- Adds oihana\files\archive\tar\untar
+- Adds oihana\files\archive\tar\validateTarStructure
+
 - Adds oihana\files\openssl\OpenSSLFileEncryption
 - Adds oihana\files\archive\TarFile
 
@@ -43,6 +53,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Adds oihana\files\exceptions\DirectoryException
 - Adds oihana\files\exceptions\FileException
+- Adds oihana\files\exceptions\UnsupportedCompressionException
  
 - Adds oihana\files\helpers\CanonicalizeBuffer
 
@@ -54,4 +65,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\path\isRelativePath
 - Adds oihana\files\path\joinPaths
 - Adds oihana\files\path\normalizePath
+- Adds oihana\files\path\relativePath
 - Adds oihana\files\path\splitPath
+
+- Adds oihana\files\phar\assertPhar
+- Adds oihana\files\phar\getPharBasePath
+- Adds oihana\files\phar\getPharCompressionType
+- Adds oihana\files\phar\preservePharFilePermission

@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
 /**
  * Checks if a file has a tar-related extension.

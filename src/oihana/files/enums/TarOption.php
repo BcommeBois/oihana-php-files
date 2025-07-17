@@ -18,9 +18,14 @@ class TarOption
     use ConstantsTrait ;
 
     /**
+     * Return the files in the archive.
+     */
+    public const string DRY_RUN = 'dryRun' ;
+
+    /**
      * List of glob patterns or file names to exclude.
      */
-    public const string EXCLUDE  = 'exclude' ;
+    public const string EXCLUDE = 'exclude' ;
 
     /**
      * Filter the files or directories to archive with a function (string $filepath): bool
@@ -33,7 +38,7 @@ class TarOption
     public const string KEEP_PERMISSIONS = 'keepPermissions' ;
 
     /**
-     *
+     * Overwrite the archive.
      */
     public const string OVERWRITE = 'overwrite' ;
 

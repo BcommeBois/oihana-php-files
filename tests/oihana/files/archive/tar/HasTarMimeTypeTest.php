@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
 use oihana\files\exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;

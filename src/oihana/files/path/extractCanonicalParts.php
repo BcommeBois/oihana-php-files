@@ -56,7 +56,7 @@ function extractCanonicalParts( string $root , string $pathWithoutRoot ): array
         }
 
         // Keep segment if (a) not ".." OR (b) root is empty (relative path)
-        if ($part !== Char::DOUBLE_DOT || $root === Char::EMPTY)
+        if ( $part !== Char::DOUBLE_DOT || $root === Char::EMPTY )
         {
             $canonical[] = $part ;
         }

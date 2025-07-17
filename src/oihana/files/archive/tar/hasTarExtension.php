@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
 use oihana\enums\Char;
 use oihana\files\enums\FileExtension;

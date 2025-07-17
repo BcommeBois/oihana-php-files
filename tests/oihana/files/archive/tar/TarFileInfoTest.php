@@ -1,14 +1,14 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
 use oihana\files\enums\CompressionType;
 use oihana\files\enums\TarInfo;
 use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
 use Phar;
 use PharData;
 use PHPUnit\Framework\TestCase;
-use oihana\files\exceptions\FileException;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 
@@ -80,7 +80,7 @@ class TarFileInfoTest extends TestCase
      */
     public function testHandlesCompressedTarGz(): void
     {
-        $file = $this->tempDir . '/archive.tar';
+        $file   = $this->tempDir . '/archive.tar';
         $gzFile = $this->tempDir . '/archive.tar.gz';
 
         file_put_contents($this->tempDir . '/file.txt', 'hello');
@@ -90,13 +90,13 @@ class TarFileInfoTest extends TestCase
         $tar->compress( Phar::GZ ) ;
 
         // Remove uncompressed to keep only .gz
-        unlink($file);
+        unlink( $file ) ;
 
         $info = tarFileInfo( $gzFile , true );
 
-        $this->assertFalse( $info[ TarInfo::IS_VALID ] ); // PharData can't read .gz
+        $this->assertTrue( $info[ TarInfo::IS_VALID ] ); // PharData can't read .gz
         $this->assertSame('gz', $info[TarInfo::EXTENSION]);
         $this->assertSame(CompressionType::GZIP, $info[TarInfo::COMPRESSION]);
-        $this->assertNull($info[TarInfo::FILE_COUNT]);
+        $this->assertEquals( 1 , $info[TarInfo::FILE_COUNT]);
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
+use oihana\files\enums\FileExtension;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use oihana\files\enums\FileExtension;
 
 class HasTarExtensionTest extends TestCase
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace oihana\files\archive;
+namespace oihana\files\archive\tar;
 
-use PHPUnit\Framework\TestCase;
 use oihana\files\exceptions\FileException;
+use PHPUnit\Framework\TestCase;
 
 class AssertTarTest extends TestCase
 {
@@ -17,7 +17,8 @@ class AssertTarTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (is_dir($this->tempDir)) {
+        if (is_dir($this->tempDir))
+        {
             $this->deleteDir($this->tempDir);
         }
     }
