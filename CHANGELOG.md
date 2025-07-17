@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\assertFile
 - Adds oihana\files\assertPhar
 - Adds oihana\files\assertWritableDirectory
+- Adds oihana\files\copyFilteredFiles
 - Adds oihana\files\deleteDirectory
 - Adds oihana\files\deleteTemporaryDirectory
 - Adds oihana\files\directoryPath
@@ -31,6 +32,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\makeTimestampedFile
 - Adds oihana\files\recursiveFilePaths
 - Adds oihana\files\requireAndMergeArrays
+- Adds oihana\files\shouldExcludeFile
 - Adds oihana\files\sortFiles
 
 - Adds oihana\files\archive\tar\assertTar

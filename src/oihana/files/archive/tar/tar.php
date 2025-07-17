@@ -4,13 +4,7 @@ namespace oihana\files\archive\tar;
 
 use Exception;
 use FilesystemIterator;
-use oihana\enums\Char;
-use oihana\files\enums\CompressionType;
-use oihana\files\enums\FileExtension;
-use oihana\files\enums\TarExtension;
-use oihana\files\exceptions\FileException;
 
-use oihana\files\exceptions\UnsupportedCompressionException;
 use Phar;
 use PharData;
 
@@ -18,31 +12,67 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
+use oihana\files\enums\CompressionType;
+use oihana\files\enums\TarExtension;
+use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
+use oihana\files\exceptions\UnsupportedCompressionException;
+
 use function oihana\files\getPharCompressionType;
+use function oihana\files\makeDirectory;
 
 /**
  * Creates a tar archive from one or more files and/or directories.
  *
- * @param string|string[] $paths Absolute paths to files or directories to include in the archive.
- * @param string|null $outputPath Optional final output path of the archive. If null, an automatic name is generated.
- * @param string|null $compression Compression type to use (Default : CompressionType::GZIP).
- * @param string|null $preserveRoot If set, all paths in the archive will be stored relative to this directory.
- *                                  Useful to preserve directory structure.
+ * This function supports adding multiple paths (files or directories) to a tar archive,
+ * with optional compression (gzip, bzip2, or none).
+ * It can preserve the root directory structure inside the archive,
+ * and generates a unique temporary archive if no output path is specified.
  *
- * @return string The path to the generated archive.
+ * Empty directories are preserved in the archive.
  *
- * @throws FileException If a path does not exist or is invalid.
+ * @param string|string[] $paths
+ *   Absolute path(s) to file(s) or directory(ies) to include in the archive.
+ *
+ * @param string|null $outputPath
+ *   Optional full path to the final archive file to create.
+ *   If null, an automatic unique filename with timestamp is generated in the system temp directory.
+ *
+ * @param string|null $compression
+ *   Compression type to use on the tar archive.
+ *   Supported values are defined in {@see CompressionType}, defaults to {@see CompressionType::GZIP}.
+ *
+ * @param string|null $preserveRoot
+ *   If set, paths inside the archive will be stored relative to this directory,
+ *   allowing to preserve directory structure when extracting.
+ *   Must be an absolute path.
+ *
+ * @return string
+ *   Returns the full path to the created tar archive file.
+ *
+ * @throws FileException
+ *   If any of the provided paths does not exist or is invalid.
+ *
  * @throws UnsupportedCompressionException
+ *   If the requested compression type is not supported by the system.
+ *
+ * @throws DirectoryException
+ *   If the temporary directory cannot be created or accessed.
+ *
+ * @throws RuntimeException
+ *   If no files are added to the archive or if an error occurs during creation,
+ *   including inability to rename temporary files.
+ *
  * @see CompressionType
  */
 function tar
 (
     string|array $paths ,
-    ?string      $outputPath   = null ,
-    ?string      $compression  = CompressionType::GZIP ,
-    ?string      $preserveRoot = null
+    ?string $outputPath = null ,
+    ?string $compression = CompressionType::GZIP ,
+    ?string $preserveRoot = null
 )
-:string
+: string
 {
     if ( is_string( $paths ) )
     {
@@ -58,85 +88,115 @@ function tar
     {
         if ( !file_exists( $path ) )
         {
-            throw new FileException( sprintf( "The path does not exist: %s" , $path ) ) ;
+            throw new FileException( sprintf("The path does not exist: %s",  $path ) ) ;
         }
     }
 
-    $preserveRootPath = $preserveRoot !== null ? realpath( $preserveRoot ) : null;
+    $tmpPath = getFunctionReflectionInfo('oihana\files\archive\tar\tar' )[ 'name' ] ;
 
-    $archiveName = $outputPath !== null
-        ? pathinfo( $outputPath , PATHINFO_FILENAME )
-        : 'archive_' . date('Ymd_His') . uniqid() ;
+    $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( "\\", DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
 
-    $baseTarPath = $compression === CompressionType::NONE
-        ? ( $outputPath ?? ( sys_get_temp_dir() . DIRECTORY_SEPARATOR . $archiveName . FileExtension::TAR ) )
-        : sys_get_temp_dir() . DIRECTORY_SEPARATOR . $archiveName . FileExtension::TAR ;
+    if( !is_dir( $tmpPath ) )
+    {
+        makeDirectory( $tmpPath ) ;
+    }
 
-    $pharCompression = getPharCompressionType( $compression ) ;
+    $preserveRootPath = $preserveRoot !== null ? realpath($preserveRoot) : null ;
+
+    if ( $outputPath === null )
+    {
+        $archiveName    = 'archive_' . date('Ymd_His' ) . uniqid() ;
+        $finalExtension = TarExtension::getExtensionForCompression( $compression ) ;
+        $finalPath      = $tmpPath . $archiveName . $finalExtension ;
+    }
+    else
+    {
+        $finalPath = $outputPath;
+    }
+
+    $tempTarPath        = $tmpPath . 'temp_archive_' . uniqid() . TarExtension::TAR ;
+    $compressedTempPath = $tempTarPath . TarExtension::getCompressionExtension( $compression ) ;
 
     try
     {
-        if( $compression !== CompressionType::NONE && !Phar::canCompress( $pharCompression ) )
-        {
-            throw new UnsupportedCompressionException("Compression type '$compression' is not supported by this PHP build.") ;
-        }
-
-        $phar       = new PharData( $baseTarPath ) ;
+        $phar       = new PharData( $tempTarPath );
         $hasContent = false;
 
-        foreach ( $paths  as $path )
+        foreach ( $paths as $path )
         {
-            $realPath = realpath( $path );
+            $realPath = realpath( $path ) ;
+
             if ( $realPath === false )
             {
-                throw new FileException( sprintf("The path is invalid: %s" , $path ) );
+                continue;
             }
-
-            $archivePath = $preserveRootPath !== null
-                ? ltrim( str_replace( $preserveRootPath , Char::EMPTY, $realPath ), DIRECTORY_SEPARATOR )
-                : basename($realPath);
 
             if ( is_dir( $realPath ) )
             {
-                $files = new RecursiveIteratorIterator
-                (
-                    new RecursiveDirectoryIterator( $realPath , FilesystemIterator::SKIP_DOTS ) ,
-                    RecursiveIteratorIterator::SELF_FIRST
-                ) ;
+                $directoryIterator = new RecursiveDirectoryIterator ( $realPath, FilesystemIterator::SKIP_DOTS);
+                $iterator          = new RecursiveIteratorIterator  ( $directoryIterator , RecursiveIteratorIterator::SELF_FIRST  ) ;
+                $emptyDirs         = new RecursiveIteratorIterator  ( $directoryIterator , RecursiveIteratorIterator::CHILD_FIRST ) ;
 
-                foreach ( $files as $file )
+                foreach ( $emptyDirs as $fileInfo )
                 {
-                    $filePath = $file->getRealPath() ;
-                    if ( $filePath === false )
+                    if ( $fileInfo->isDir() )
                     {
-                        continue;
+                        $files = scandir( $fileInfo->getPathname() ) ;
+                        if (count( $files ) === 2 ) // only "." and ".."
+                        {
+                            $relativePath = ($preserveRootPath === $realPath)
+                                ? $emptyDirs->getSubPathName()
+                                : basename( $realPath ) . DIRECTORY_SEPARATOR . $emptyDirs->getSubPathName() ;
+                            $phar->addEmptyDir($relativePath);
+                        }
                     }
-
-                    $relativePath = $preserveRoot !== null
-                        ? ltrim( str_replace( realpath($preserveRoot) , Char::EMPTY , $filePath ) , DIRECTORY_SEPARATOR )
-                        : ltrim( str_replace( $realPath , $archivePath , $filePath ) , DIRECTORY_SEPARATOR ) ;
-
-                    if ( $relativePath === Char::EMPTY )
-                    {
-                        continue;
-                    }
-
-                    if ( $file->isDir() )
-                    {
-                        $phar->addEmptyDir( $relativePath ) ;
-                    }
-                    else
-                    {
-                        $phar->addFile( $filePath , $relativePath ) ;
-                    }
-
-                    $hasContent = true;
                 }
+
+                if ( $preserveRootPath === $realPath )
+                {
+                    foreach ( $iterator as $item )
+                    {
+                        $relativePath = $iterator->getSubPathName() ;
+                        if ( $item->isDir() )
+                        {
+                            $phar->addEmptyDir( $relativePath );
+                        }
+                        else
+                        {
+                            $phar->addFile( $item->getRealPath(), $relativePath );
+                        }
+                    }
+                }
+                else
+                {
+                    $phar->addEmptyDir( basename( $realPath ) );
+                    foreach ( $iterator as $item )
+                    {
+                        $relativePath = basename( $realPath ) . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+                        if ( $item->isDir() )
+                        {
+                            $phar->addEmptyDir( $relativePath );
+                        }
+                        else
+                        {
+                            $phar->addFile( $item->getRealPath(), $relativePath );
+                        }
+                    }
+                }
+
+                $hasContent = true ;
             }
             else
             {
-                $phar->addFile( $realPath , $archivePath ) ;
-                $hasContent = true;
+                $archivePath = ( $preserveRootPath !== null )
+                    ? ltrim( str_replace( $preserveRootPath , '' , $realPath ), DIRECTORY_SEPARATOR )
+                    : basename( $realPath ) ;
+
+                if ( !empty( $archivePath ) )
+                {
+                    $phar->addFile( $realPath , $archivePath ) ;
+                    $hasContent = true;
+                }
             }
         }
 
@@ -145,38 +205,64 @@ function tar
             throw new RuntimeException("No files were added to the archive." ) ;
         }
 
-        if ( $compression !== CompressionType::NONE )
+        unset( $phar );
+
+        if ( $compression == CompressionType::NONE )
         {
-            $phar->compress( $pharCompression ) ;
+            rename( $tempTarPath , $finalPath ) ;
+        }
+        else
+        {
+            $pharCompression = getPharCompressionType( $compression );
 
-            unset( $phar ) ;
-
-            $compressedPath = $baseTarPath . TarExtension::getCompressionExtension( $compression );
-
-            if ( $outputPath !== null && $compressedPath !== $outputPath )
+            if ( !Phar::canCompress( $pharCompression ) )
             {
-                rename( $compressedPath , $outputPath ) ;
+                throw new UnsupportedCompressionException("Compression type '$compression' is not supported.");
             }
 
-            if ( file_exists( $baseTarPath ) )
-            {
-                unlink( $baseTarPath );
-            }
+            $pharToCompress = new PharData($tempTarPath);
 
-            return $outputPath ?? $compressedPath;
+            $pharToCompress->compress($pharCompression);
+
+            unset( $pharToCompress ) ;
+
+            if ( $compressedTempPath !== $finalPath )
+            {
+                if ( !file_exists( $compressedTempPath ) )
+                {
+                    throw new RuntimeException("Compressed temporary file was not found at: {$compressedTempPath}");
+                }
+                rename( $compressedTempPath , $finalPath ) ;
+            }
         }
 
-        unset( $phar ) ;
-
-        return $baseTarPath ;
+        return $finalPath;
     }
     catch ( Exception $exception )
     {
+        if ( $exception instanceof FileException || $exception instanceof UnsupportedCompressionException)
+        {
+            throw $exception ;
+        }
+
         throw new RuntimeException
         (
-            "Failed to create archive from paths. Error: " . $exception->getMessage() ,
-            0 ,
+            "Failed to create archive from paths. Error: " . $exception->getMessage(),
+            0,
             $exception
         );
     }
+    finally
+    {
+        if ( file_exists( $tempTarPath ) )
+        {
+            unlink( $tempTarPath );
+        }
+
+        if ( file_exists( $compressedTempPath ) )
+        {
+            unlink( $compressedTempPath );
+        }
+    }
+
 }

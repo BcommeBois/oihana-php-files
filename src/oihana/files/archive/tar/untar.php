@@ -17,20 +17,34 @@ use function oihana\files\phar\getPharBasePath;
 use function oihana\files\phar\preservePharFilePermissions;
 
 /**
- * Extracts a tar file into a directory path.
+ * Extracts a tar archive file into a specified output directory.
  *
- * @param string $tarFile The tar file to extract.
- * @param string $outputPath The path of the output directory to extract to.
- * @param array{ dryRun?: bool , keepPermissions?:bool , overwrite?:bool } $options Additional options:
- * <ul>
- * <li>**overwrite** => Whether to overwrite existing files - Default: true</li>
- * <li>**keepPermissions** => Whether to preserve file permissions - Default: false</li>
- *</ul>
+ * This function supports regular and compressed tar files (.tar, .tar.gz, .tar.bz2).
+ * It can perform a dry run to preview extracted files, optionally preserve file permissions,
+ * and control overwriting of existing files.
  *
- * @return true|array true|string[] Returns true on extraction, or list of files in dryRun mode.
- * @throws FileException
- * @throws RuntimeException
- * @throws DirectoryException
+ * @param string $tarFile Path to the tar archive file to extract.
+ * @param string $outputPath Path to the directory where files will be extracted.
+ *                           The directory will be created if it does not exist.
+ * @param array{dryRun?: bool, keepPermissions?: bool, overwrite?: bool} $options Optional flags:
+ *   - **dryRun**: If true, the function does not extract files but returns the list of files
+ *     that would be extracted. Default: false.
+ *   - **keepPermissions**: If true, preserves the original file permissions from the archive.
+ *     Default: false.
+ *   - **overwrite**: If false, prevents overwriting existing files during extraction.
+ *     Extraction will fail if a file already exists. Default: true.
+ *
+ * @return true|string[] Returns true on successful extraction,
+ *                       or an array of file paths (relative to archive root) if dryRun is enabled.
+ *
+ * @throws FileException If the provided tar file is invalid or inaccessible.
+ * @throws DirectoryException If the output directory cannot be created or is not writable.
+ * @throws RuntimeException For extraction errors such as:
+ *         - Path traversal attempts detected inside archive entries.
+ *         - Attempt to overwrite existing files when overwrite is disabled.
+ *         - Other errors during decompression or extraction.
+ *
+ * @throws Exception Propagates unexpected exceptions during extraction wrapped as RuntimeException.
  */
 function untar( string $tarFile , string $outputPath , array $options = [] ): true|array
 {

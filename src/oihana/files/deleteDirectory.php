@@ -34,7 +34,7 @@ function deleteDirectory( string|array|null $path , bool $assertable = true , bo
 
         foreach ($iterator as $file)
         {
-            if ($file->isDir())
+            if ( $file->isDir() )
             {
                 if (!@rmdir($file->getPathname()))
                 {

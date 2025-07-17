@@ -2,53 +2,50 @@
 
 namespace oihana\files\archive\tar;
 
+use PharData;
+use RuntimeException;
+
+use PHPUnit\Framework\TestCase;
+
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
-use PHPUnit\Framework\TestCase;
-use RuntimeException;
+use function oihana\files\deleteDirectory;
+use function oihana\files\makeDirectory;
 
 class UntarTest extends TestCase
 {
     private string $tarFile;
     private string $outputDir;
 
+    /**
+     * @throws DirectoryException
+     */
     protected function setUp(): void
     {
-        $this->outputDir = sys_get_temp_dir() . '/untar_test_' . uniqid();
-        mkdir($this->outputDir, 0777, true);
+        $this->outputDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'oihana-php-files/tests/files/archive/untar-tests-' . uniqid() . DIRECTORY_SEPARATOR ;
+
+        makeDirectory( $this->outputDir ) ;
 
         // Create a tar file for testing
-        $tmpFile = tempnam(sys_get_temp_dir(), 'untar_');
-        $sampleFile = $this->outputDir . '/hello.txt';
-        file_put_contents($sampleFile, 'Hello world');
 
-        $tarFile = $tmpFile . '.tar';
-        $phar = new \PharData($tarFile);
-        $phar->addFile($sampleFile, 'hello.txt');
+        $tmpFile= $this->outputDir . 'untar_' . uniqid() ;
 
-        $this->tarFile = $tarFile;
+        $this->tarFile = $tmpFile . '.tar';
+
+        $phar = new PharData( $this->tarFile );
+
+        $sampleFile = $this->outputDir . 'hello.txt';
+        file_put_contents( $sampleFile , 'Hello world') ;
+        $phar->addFile( $sampleFile , 'hello.txt');
+        @unlink($sampleFile )  ;
     }
 
+    /**
+     * @throws DirectoryException
+     */
     protected function tearDown(): void
     {
-        @unlink($this->tarFile);
-        $this->deleteDir($this->outputDir);
-    }
-
-    private function deleteDir(string $dir): void
-    {
-        if (!is_dir($dir)) return;
-
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $file) {
-            $file->isDir() ? rmdir($file) : unlink($file);
-        }
-
-        rmdir($dir);
+        deleteDirectory( $this->outputDir );
     }
 
     /**
@@ -59,7 +56,7 @@ class UntarTest extends TestCase
     {
         $extractDir = $this->outputDir . '/extracted';
 
-        $result = untar($this->tarFile, $extractDir);
+        $result = untar( $this->tarFile , $extractDir );
 
         $this->assertTrue($result);
         $this->assertFileExists($extractDir . '/hello.txt' ) ;
@@ -80,8 +77,8 @@ class UntarTest extends TestCase
         mkdir( $extractDir, 0777, true);
         file_put_contents($extractDir . '/hello.txt', 'Existing content' ) ;
 
-        // Doit échouer car overwrite = false et fichier déjà présent
-        untar($this->tarFile, $extractDir, ['overwrite' => false]);
+        // Failed with overwrite = false and a file already exist
+        untar($this->tarFile, $extractDir, [ 'overwrite' => false ] ) ;
     }
 
     /**
@@ -111,26 +108,26 @@ class UntarTest extends TestCase
 
         $extractDir = $this->outputDir . '/extract_permissions';
 
-        // Création d’un fichier avec des permissions personnalisées
+        // Create a file with custom permissions
         $originalFile = $this->outputDir . '/secret.sh';
         file_put_contents($originalFile, '#!/bin/bash\necho "secret"');
         chmod($originalFile, 0755); // Exécutable
 
-        // Création de l'archive .tar
+        // Create the .tar archive
         $tarFile = $this->outputDir . '/custom_perm.tar';
         $phar = new \PharData($tarFile);
         $phar->addFile($originalFile, 'secret.sh');
 
-        // On remet les permissions dans l'archive
+        // Change the archive permissions
         $phar['secret.sh']->chmod(0755);
 
-        // Extraction avec l’option keepPermissions => true
+        // Extraction with keepPermissions => true
         untar($tarFile, $extractDir, ['keepPermissions' => true]);
 
         $extractedFile = $extractDir . '/secret.sh';
         $this->assertFileExists($extractedFile);
 
-        // On vérifie les permissions extraites
+        // Check extracted permissions
         $perms = fileperms($extractedFile) & 0777;
         $this->assertSame(0755, $perms, 'Permissions should be preserved (0755)');
     }

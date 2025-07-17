@@ -7,22 +7,43 @@ use oihana\files\enums\CompressionType;
 use oihana\files\enums\TarInfo;
 use oihana\files\exceptions\FileException;
 use PharData;
+
 use function oihana\files\assertFile;
 
 /**
- * Gets detailed information about a tar file.
+ * Retrieves detailed information about a tar archive file.
  *
- * @param string $filePath Path to the tar file.
- * @param bool $strictMode Indicates if the validation of the tar file is strict or not.
+ * This function inspects the given tar file to determine its validity,
+ * compression type, MIME type, number of contained files, and total size of the contents.
  *
- * @return array Information about the tar file including:
- *               - 'is_valid' => bool
- *               - 'extension' => string
- *               - 'mime_type' => string
- *               - 'compression' => string|null
- *               - 'file_count' => int|null (only if valid)
- *               - 'total_size' => int|null (only if valid)
- * @throws FileException If the file does not exist.
+ * It uses the {@see PharData} class to count files and calculate total size when the tar is valid.
+ *
+ * @param string $filePath
+ *   Absolute path to the tar archive file to inspect.
+ *
+ * @param bool $strictMode
+ *   When true, enables strict validation of the tar file structure via {@see assertTar()}.
+ *   Default is false for a more lenient check.
+ *
+ * @return array{
+ *   is_valid: bool,
+ *   extension: string,
+ *   mime_type: string|null,
+ *   compression: string|null,
+ *   file_count: int|null,
+ *   total_size: int|null
+ * }
+ *   Returns an associative array with:
+ *   - **is_valid**: Whether the tar file is valid according to {@see assertTar()}.
+ *   - **extension**: File extension (lowercase) extracted from the path.
+ *   - **mime_type**: MIME type detected via `finfo`.
+ *   - **compression**: Compression type detected (gzip, bzip2, or none).
+ *   - **file_count**: Number of files inside the tar (if valid), otherwise null.
+ *   - **total_size**: Sum of sizes (in bytes) of all files inside (if valid), otherwise null.
+ *
+ * @throws FileException
+ *   If the provided file does not exist or is not accessible.
+ *
  * @see assertTar()
  */
 function tarFileInfo( string $filePath , bool $strictMode = false ): array

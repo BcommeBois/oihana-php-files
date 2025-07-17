@@ -25,6 +25,7 @@
         },
         "files":
         [
+            "src/oihana/reflections/getFunctionReflectionInfo.php" ,
             "src/oihana/files/archive/tar/assertTar.php" ,
             "src/oihana/files/archive/tar/hasTarExtension.php" ,
             "src/oihana/files/archive/tar/hasTarMimeType.php" ,
@@ -53,6 +54,7 @@
             "src/oihana/files/assertDirectory.php" ,
             "src/oihana/files/assertWritableDirectory.php" ,
             "src/oihana/files/assertFile.php" ,
+            "src/oihana/files/copyFilteredFiles.php" ,
             "src/oihana/files/deleteDirectory.php" ,
             "src/oihana/files/deleteTemporaryDirectory.php" ,
             "src/oihana/files/findFiles.php" ,
@@ -71,6 +73,7 @@
             "src/oihana/files/makeTimestampedFile.php" ,
             "src/oihana/files/requireAndMergeArrays.php" ,
             "src/oihana/files/recursiveFilePaths.php",
+            "src/oihana/files/shouldExcludeFile.php",
             "src/oihana/files/sortFiles.php",
             "src/oihana/files/validateMimeType.php"
         ]

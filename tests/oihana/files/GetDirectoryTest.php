@@ -10,19 +10,25 @@ final class GetDirectoryTest extends TestCase
 {
     private string $tmpDir;
 
+    /**
+     * @throws DirectoryException
+     */
     protected function setUp(): void
     {
 
-        $this->tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'oihana_files_' . uniqid();
-        mkdir($this->tmpDir, 0o777, true);
+        $this->tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'oihana-php-files/tests/files/get-directory-tests-' . uniqid() ;
+        makeDirectory( $this->tmpDir ) ;
     }
 
+    /**
+     * @throws DirectoryException
+     */
     protected function tearDown(): void
     {
         if ( is_dir($this->tmpDir ) )
         {
             @chmod($this->tmpDir, 0o777);
-            @rmdir($this->tmpDir);
+           deleteDirectory($this->tmpDir) ;
         }
     }
 

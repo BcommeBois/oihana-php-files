@@ -3,6 +3,7 @@
 namespace oihana\files\enums;
 
 use oihana\enums\Char;
+use oihana\files\exceptions\UnsupportedCompressionException;
 use oihana\reflections\traits\ConstantsTrait;
 
 /**
@@ -35,6 +36,7 @@ class TarExtension
      * Gets the appropriate file extension for a compression type.
      * @param string $compression The compression type.
      * @return string The file extension.
+     * @throws UnsupportedCompressionException
      */
     public static function getExtensionForCompression( string $compression ): string
     {
@@ -42,7 +44,8 @@ class TarExtension
         {
             CompressionType::GZIP  => FileExtension::TAR_GZ   ,
             CompressionType::BZIP2 => FileExtension::TAR_BZ2  ,
-            default                => FileExtension::TAR      , // NONE
+            CompressionType::NONE  => FileExtension::TAR      ,
+            default                => throw new UnsupportedCompressionException( sprintf( "Compression type '%s' is not supported", $compression ) )
         } ;
     }
 
@@ -50,6 +53,7 @@ class TarExtension
      * Gets the file extension added by Phar compression.
      * @param string $compression The compression type.
      * @return string The extension added by compression.
+     * @throws UnsupportedCompressionException
      */
     public static function getCompressionExtension( string $compression ): string
     {
@@ -58,6 +62,7 @@ class TarExtension
             CompressionType::GZIP  => FileExtension::GZ  ,
             CompressionType::BZIP2 => FileExtension::BZ2 ,
             CompressionType::NONE  => Char::EMPTY ,
+            default                => throw new UnsupportedCompressionException( sprintf( "Compression type '%s' is not supported", $compression ) )
         } ;
     }
 }
