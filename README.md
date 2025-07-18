@@ -36,10 +36,13 @@ composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
 
 ## Documentation
 
-Use PhpDocumentor to generates the documentation of the library in the ./docs directory.
+Read the full documentation of the project on : https://bcommebois.github.io/oihana-php-files/
+
+### Generates and update the documentation
+
+We use PhpDocumentor to generates the documentation of the library in the ./docs directory.
 
 ### Usage
-
 Run the command : 
 ```bash
 composer doc
