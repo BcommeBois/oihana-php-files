@@ -40,36 +40,7 @@ Use PhpDocumentor to generates the documentation of the library in the ./docs di
 
 ### Usage
 
+Run the command : 
 ```bash
 composer doc
 ```
-or
-```bash
-./tools/phpDocumentor
-```
-
-### Installation
-
-#### phive
-
-The PHAR Installation and Verification Environment (PHIVE) - https://phar.io/
-
-**1 - Install phive**
-```bash
-wget -O phive.phar https://phar.io/releases/phive.phar
-wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc
-gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79
-gpg --verify phive.phar.asc phive.phar
-chmod +x phive.phar
-sudo mv phive.phar /usr/local/bin/phive
-```
-
-**2 - Install PHP Documentor**
-```bash
-composer doc-install
-```
-or
-```bash
-phive install phpDocumentor --trust-gpg-keys 6DA3ACC4991FFAE5
-```
-
