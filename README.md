@@ -4,6 +4,11 @@
 
 Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.
 
+## Documentation
+
+Read the full documentation of the project on : 
+- https://bcommebois.github.io/oihana-php-files/
+
 ## Installation and Usage
 
 > **Requires [PHP 8.4+](https://php.net/releases/)**
@@ -34,9 +39,6 @@ composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
  * Mail : marc@ooop.fr
  * Link : http://www.ooop.fr
 
-## Documentation
-
-Read the full documentation of the project on : https://bcommebois.github.io/oihana-php-files/
 
 ### Generates and update the documentation
 
