@@ -35,7 +35,7 @@
             <default-package-name>phpDocumentor</default-package-name>
         </api>
     </version>
-    <setting name="guides.enabled" value="true"/>
-    <setting name="graphs.enabled" value="true"/>
+    <setting name="guides.enabled" value="false"/>
+    <setting name="graphs.enabled" value="false"/>
     <template name=".phpdoc/template" />
 </phpdocumentor>
