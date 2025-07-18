@@ -12,34 +12,48 @@ use oihana\enums\Char;
  * It also handles paths with URI schemes like "file://" by stripping the
  * scheme before analysis.
  *
- * @package oihana\files\path
- *
  * @param string $path The path to check.
  *
  * @return bool True if the path is absolute, false otherwise.
  *
- * @example
- * // Unix-style paths
- * isAbsolutePath('/var/www'); // true
+ * @package oihana\files\path
  *
- * // Windows-style paths
+ * @example
+ * Unix-style paths
+ * ```php
+ * isAbsolutePath('/var/www'); // true
+ * ```
+ *
+ * Windows-style paths
+ * ```php
  * isAbsolutePath('C:\\Users\\Test'); // true
  * isAbsolutePath('D:/folder/file.txt'); // true
  * isAbsolutePath('C:'); // true
  * isAbsolutePath('\\network-share\folder'); // true
+ * ```
  *
- * // Paths with schemes
+ * Paths with schemes
+ * ```php
  * isAbsolutePath('file:///c/Users/'); // true
+ * ```
  *
- * // Relative paths
+ * Relative paths
+ * ```php
  * isAbsolutePath('documents/report.pdf'); // false
  * isAbsolutePath('../images/pic.jpg'); // false
  * isAbsolutePath('file.txt'); // false
+ * ```
  *
- * // Edge cases
+ * Edge cases
+ * ```php
  * isAbsolutePath(''); // false
  * isAbsolutePath('/'); // true
  * isAbsolutePath('C:/'); // true
+ * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function isAbsolutePath( string $path ) :bool
 {

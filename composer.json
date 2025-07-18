@@ -1,76 +1,80 @@
 {
-    "name" : "oihana/php-files" ,
-    "version" : "1.0.0" ,
-    "type" : "library" ,
-    "description" : "The Oihana PHP Files library" ,
-    "keywords" : [ "php" , "file" , "directory" , "path" ] ,
-    "homepage" : "https://github.com/BcommeBois/oihana-php-files" ,
-    "license" : [ "MPL-2.0" ] ,
-    "authors" : [
+    "name": "oihana/php-files",
+    "version": "1.0.0",
+    "type": "library",
+    "description": "The Oihana PHP Files library",
+    "keywords": [
+        "php",
+        "file",
+        "directory",
+        "path"
+    ],
+    "homepage": "https://github.com/BcommeBois/oihana-php-files",
+    "license": [
+        "MPL-2.0"
+    ],
+    "authors": [
         {
-            "name" : "Marc Alcaraz" ,
-            "email" : "marc@ooop.fr" ,
-            "homepage" : "https://www.ooop.fr" ,
-            "role" : "Project Founder, Lead Developer."
+            "name": "Marc Alcaraz",
+            "email": "marc@ooop.fr",
+            "homepage": "https://www.ooop.fr",
+            "role": "Project Founder, Lead Developer."
         }
     ],
     "support": {
         "email": "marc@ooop.fr"
     },
-    "autoload" :
-    {
-        "psr-4" :
-        {
-            "" : "src/"
+    "autoload": {
+        "psr-4": {
+            "": "src/"
         },
-        "files":
-        [
-            "src/oihana/files/archive/tar/assertTar.php" ,
-            "src/oihana/files/archive/tar/hasTarExtension.php" ,
-            "src/oihana/files/archive/tar/hasTarMimeType.php" ,
-            "src/oihana/files/archive/tar/tar.php" ,
-            "src/oihana/files/archive/tar/tarDirectory.php" ,
-            "src/oihana/files/archive/tar/tarFileInfo.php" ,
-            "src/oihana/files/archive/tar/tarIsCompressed.php" ,
-            "src/oihana/files/archive/tar/untar.php" ,
-            "src/oihana/files/archive/tar/validateTarStructure.php" ,
-            "src/oihana/files/path/canonicalizePath.php" ,
-            "src/oihana/files/path/computeRelativePath.php" ,
-            "src/oihana/files/path/extractCanonicalParts.php" ,
-            "src/oihana/files/path/directoryPath.php" ,
-            "src/oihana/files/path/isAbsolutePath.php" ,
-            "src/oihana/files/path/isBasePath.php" ,
-            "src/oihana/files/path/isLocalPath.php" ,
-            "src/oihana/files/path/isRelativePath.php" ,
-            "src/oihana/files/path/joinPaths.php" ,
-            "src/oihana/files/path/normalizePath.php" ,
-            "src/oihana/files/path/relativePath.php" ,
-            "src/oihana/files/path/splitPath.php" ,
-            "src/oihana/files/phar/assertPhar.php" ,
-            "src/oihana/files/phar/getPharBasePath.php" ,
-            "src/oihana/files/phar/getPharCompressionType.php" ,
-            "src/oihana/files/phar/preservePharFilePermissions.php" ,
-            "src/oihana/files/assertDirectory.php" ,
-            "src/oihana/files/assertWritableDirectory.php" ,
-            "src/oihana/files/assertFile.php" ,
-            "src/oihana/files/copyFilteredFiles.php" ,
-            "src/oihana/files/deleteDirectory.php" ,
-            "src/oihana/files/deleteTemporaryDirectory.php" ,
-            "src/oihana/files/findFiles.php" ,
-            "src/oihana/files/getBaseFileName.php" ,
-            "src/oihana/files/getDirectory.php" ,
-            "src/oihana/files/getFileExtension.php" ,
-            "src/oihana/files/getHomeDirectory.php" ,
-            "src/oihana/files/getRoot.php" ,
-            "src/oihana/files/getSchemeAndHierarchy.php" ,
-            "src/oihana/files/getTemporaryDirectory.php" ,
-            "src/oihana/files/getTimestampedDirectory.php" ,
-            "src/oihana/files/getTimestampedFile.php" ,
-            "src/oihana/files/makeDirectory.php" ,
-            "src/oihana/files/makeTemporaryDirectory.php" ,
-            "src/oihana/files/makeTimestampedDirectory.php" ,
-            "src/oihana/files/makeTimestampedFile.php" ,
-            "src/oihana/files/requireAndMergeArrays.php" ,
+        "files": [
+            "src/oihana/files/archive/tar/assertTar.php",
+            "src/oihana/files/archive/tar/hasTarExtension.php",
+            "src/oihana/files/archive/tar/hasTarMimeType.php",
+            "src/oihana/files/archive/tar/tar.php",
+            "src/oihana/files/archive/tar/tarDirectory.php",
+            "src/oihana/files/archive/tar/tarFileInfo.php",
+            "src/oihana/files/archive/tar/tarIsCompressed.php",
+            "src/oihana/files/archive/tar/untar.php",
+            "src/oihana/files/archive/tar/validateTarStructure.php",
+            "src/oihana/files/path/canonicalizePath.php",
+            "src/oihana/files/path/computeRelativePath.php",
+            "src/oihana/files/path/extractCanonicalParts.php",
+            "src/oihana/files/path/directoryPath.php",
+            "src/oihana/files/path/isAbsolutePath.php",
+            "src/oihana/files/path/isBasePath.php",
+            "src/oihana/files/path/isLocalPath.php",
+            "src/oihana/files/path/isRelativePath.php",
+            "src/oihana/files/path/joinPaths.php",
+            "src/oihana/files/path/normalizePath.php",
+            "src/oihana/files/path/relativePath.php",
+            "src/oihana/files/path/splitPath.php",
+            "src/oihana/files/phar/assertPhar.php",
+            "src/oihana/files/phar/getPharBasePath.php",
+            "src/oihana/files/phar/getPharCompressionType.php",
+            "src/oihana/files/phar/preservePharFilePermissions.php",
+            "src/oihana/files/assertDirectory.php",
+            "src/oihana/files/assertWritableDirectory.php",
+            "src/oihana/files/assertFile.php",
+            "src/oihana/files/copyFilteredFiles.php",
+            "src/oihana/files/deleteDirectory.php",
+            "src/oihana/files/deleteTemporaryDirectory.php",
+            "src/oihana/files/findFiles.php",
+            "src/oihana/files/getBaseFileName.php",
+            "src/oihana/files/getDirectory.php",
+            "src/oihana/files/getFileExtension.php",
+            "src/oihana/files/getHomeDirectory.php",
+            "src/oihana/files/getRoot.php",
+            "src/oihana/files/getSchemeAndHierarchy.php",
+            "src/oihana/files/getTemporaryDirectory.php",
+            "src/oihana/files/getTimestampedDirectory.php",
+            "src/oihana/files/getTimestampedFile.php",
+            "src/oihana/files/makeDirectory.php",
+            "src/oihana/files/makeTemporaryDirectory.php",
+            "src/oihana/files/makeTimestampedDirectory.php",
+            "src/oihana/files/makeTimestampedFile.php",
+            "src/oihana/files/requireAndMergeArrays.php",
             "src/oihana/files/recursiveFilePaths.php",
             "src/oihana/files/shouldExcludeFile.php",
             "src/oihana/files/sortFiles.php",
@@ -85,16 +89,23 @@
         "oihana/php-system": "dev-main"
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit"
+        "test": "./vendor/bin/phpunit",
+        "doc": "php -d \"error_reporting=E_ALL & ~E_DEPRECATED\" ./vendor/bin/phpdoc"
     },
     "autoload-dev": {
         "psr-4": {
-            "" : "tests/"
+            "": "tests/"
         }
     },
     "require-dev": {
         "phpunit/phpunit": "^12",
         "nunomaduro/collision": "^8.8",
-        "mikey179/vfsstream": "^1.6"
+        "mikey179/vfsstream": "^1.6",
+        "phpdocumentor/shim": "^3.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpdocumentor/shim": true
+        }
     }
 }

@@ -43,6 +43,10 @@ use function oihana\files\getHomeDirectory;
  * @see normalizePath()
  * @see splitPath()
  * @see extractCanonicalParts()
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function canonicalizePath( string $path ) :string
 {

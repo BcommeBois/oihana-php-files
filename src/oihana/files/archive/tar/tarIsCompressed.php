@@ -13,6 +13,21 @@ namespace oihana\files\archive\tar;
  * @param string $tarFile The path or filename of the tar archive.
  *
  * @return bool True if the file is recognized as a compressed tar archive, false otherwise.
+ *
+ * @example
+ * ```php
+ * var_dump( tarIsCompressed( 'archive.tar.gz'   ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tgz'      ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tar.bz2'  ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tbz2'     ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tar'      ) ); // false
+ * var_dump( tarIsCompressed( 'archive.zip'      ) ); // false
+ * var_dump( tarIsCompressed( 'README.md'        ) ); // false
+ * ```
+ *
+ * @package oihana\files\archive\tar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function tarIsCompressed( string $tarFile ) :bool
 {

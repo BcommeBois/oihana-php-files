@@ -28,6 +28,10 @@ use oihana\enums\Char;
  * ```
  *
  * @see realpath() For actual filesystem canonicalization.
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function normalizePath( string $path ) :string
 {

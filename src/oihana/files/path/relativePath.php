@@ -6,31 +6,36 @@ use InvalidArgumentException;
 use oihana\enums\Char;
 
 /**
- * Returns the relative path of a given path.
+ * Returns the relative path from a base path to a target path.
  *
- * If the base path is not an absolute path, an exception is thrown.
- * The result is a canonical path.
+ * Both paths must be of the same type (both absolute or both relative),
+ * and must share the same root (e.g., same drive letter on Windows).
+ * The result is a canonical relative path.
  *
- * @param string $path The target path.
+ * @param string $path     The target path.
  * @param string $basePath The base path.
  *
  * @return string The relative path.
  *
- * @throws InvalidArgumentException If path types (absolute/relative) are mixed in an unsupported way.
- */
-/**
- * Returns the relative path of a given path.
+ * @throws InvalidArgumentException If the paths are incompatible (e.g., absolute vs relative, or different roots).
  *
- * Both paths must be of the same type (both absolute or both relative).
- * The base path must be absolute in most cases.
- * The result is a canonical path.
+ * @example
+ * ```php
+ * echo relativePath( '/foo/bar/baz' , '/foo'     ) . PHP_EOL; // 'bar/baz'
+ * echo relativePath( '/foo/baz'     , '/foo/bar' ) . PHP_EOL; // '../baz'
+ * echo relativePath( '/foo/bar'     , '/foo/bar' ) . PHP_EOL; // '.'
+ * echo relativePath( '/a/b'         , '/a/b/c/d' ) . PHP_EOL; // '../../'
+ * echo relativePath( '/a/b/c'       , '/a'       ) . PHP_EOL; // 'b/c'
+ * echo relativePath( '/a/x/y'       , '/a/b/c'   ) . PHP_EOL; // '../../x/y'
  *
- * @param string $path The target path.
- * @param string $basePath The base path.
+ * echo relativePath( 'foo/bar/baz'  , 'foo'     ) . PHP_EOL; // 'bar/baz'
+ * echo relativePath( 'foo/baz'      , 'foo/bar' ) . PHP_EOL; // '../baz'
+ * echo relativePath( 'foo/bar'      , 'foo/bar' ) . PHP_EOL; // '.'
+ * ```
  *
- * @return string The relative path.
- *
- * @throws InvalidArgumentException If path types are incompatible or roots differ.
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function relativePath( string $path , string $basePath ) :string
 {

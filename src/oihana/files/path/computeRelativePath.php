@@ -11,6 +11,20 @@ use oihana\enums\Char;
  * @param string $basePath The base relative path.
  *
  * @return string The relative path from base to target.
+ *
+ * @example
+ * ```php
+ * echo computeRelativePath( 'foo/bar/baz' , 'foo'     ) . PHP_EOL; // 'bar/baz'
+ * echo computeRelativePath( 'foo/baz'     , 'foo/bar' ) . PHP_EOL; // '../baz'
+ * echo computeRelativePath( 'foo/bar'     , 'foo/bar' ) . PHP_EOL; // '.'
+ * echo computeRelativePath( 'a/b'         , 'a/b/c/d' ) . PHP_EOL; // '../../'
+ * echo computeRelativePath( 'a/b/c'       , 'a'       ) . PHP_EOL; // 'b/c'
+ * echo computeRelativePath( 'a/x/y'       , 'a/b/c'   ) . PHP_EOL; // '../../x/y'
+ * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function computeRelativePath(string $targetPath, string $basePath): string
 {

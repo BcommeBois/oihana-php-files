@@ -45,6 +45,29 @@ use function oihana\files\phar\preservePharFilePermissions;
  *         - Other errors during decompression or extraction.
  *
  * @throws Exception Propagates unexpected exceptions during extraction wrapped as RuntimeException.
+ *
+ * @example
+ * ```php
+ * // Basic extraction
+ * untar( '/path/to/archive.tar' , '/output/dir' );
+ *
+ * // Extraction with options
+ * untar( '/path/to/archive.tar.gz' , '/output/dir' , [
+ * 'overwrite'        => false,
+ * 'keepPermissions'  => true
+ * ]);
+ *
+ * // Dry-run: preview contents without extracting
+ * $files = untar( '/path/to/archive.tar' , '/output/dir' , [ 'dryRun' => true ] );
+ * print_r( $files );
+ *
+ * // Prevent overwriting, will throw RuntimeException if file exists
+ * untar( '/path/to/archive.tar' , '/output/dir' , [ 'overwrite' => false ] );
+ * ```
+ *
+ * @package oihana\files\archive\tar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function untar( string $tarFile , string $outputPath , array $options = [] ): true|array
 {

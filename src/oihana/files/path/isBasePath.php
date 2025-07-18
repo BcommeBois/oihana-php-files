@@ -10,8 +10,7 @@ use oihana\enums\Char;
  * The comparison is done purely on **canonicalized strings**
  * (see {@see canonicalizePath()}); the filesystem is **not consulted**.
  *
- * Algorithm
- * ---------
+ * **Algorithm**
  * 1. Canonicalize both `$basePath` and `$ofPath`.
  * 2. Right–trim the base (to avoid double slash issues).
  * 3. Append a trailing slash to both and use {@see str_starts_with()} to ensure
@@ -30,6 +29,10 @@ use oihana\enums\Char;
  * isBasePath( '/var/www' , '/var/www-legacy' );         // false
  * isBasePath( 'C:/Users' , 'C:/Users/Bob/file.txt') ;   // true (Windows)
  * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function isBasePath( string $basePath , string $childPath ) :bool
 {

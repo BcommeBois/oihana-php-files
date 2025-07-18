@@ -34,17 +34,36 @@ use function oihana\files\assertFile;
  *   total_size: int|null
  * }
  *   Returns an associative array with:
- *   - **is_valid**: Whether the tar file is valid according to {@see assertTar()}.
+ *   - **isValid**: Whether the tar file is valid according to {@see assertTar()}.
  *   - **extension**: File extension (lowercase) extracted from the path.
- *   - **mime_type**: MIME type detected via `finfo`.
+ *   - **mimeType**: MIME type detected via `finfo`.
  *   - **compression**: Compression type detected (gzip, bzip2, or none).
- *   - **file_count**: Number of files inside the tar (if valid), otherwise null.
- *   - **total_size**: Sum of sizes (in bytes) of all files inside (if valid), otherwise null.
+ *   - **fileCount**: Number of files inside the tar (if valid), otherwise null.
+ *   - **totalSize**: Sum of sizes (in bytes) of all files inside (if valid), otherwise null.
  *
  * @throws FileException
  *   If the provided file does not exist or is not accessible.
  *
  * @see assertTar()
+ *
+ * @example
+ * ```php
+ * $info = tarFileInfo( '/archives/sample.tar' );
+ * print_r( $info );
+ *
+ * $info = tarFileInfo( '/archives/compressed.tar.gz' );
+ * echo $info['compression']; // 'gzip'
+ *
+ * $info = tarFileInfo( '/bad/path.tar' );
+ * var_dump( $info['isValid'] ); // false
+ *
+ * // Strict mode
+ * $info = tarFileInfo( '/archives/sample.tar' , true );
+ * ```
+ *
+ * @package oihana\files\archive\tar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function tarFileInfo( string $filePath , bool $strictMode = false ): array
 {

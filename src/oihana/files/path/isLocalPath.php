@@ -25,6 +25,10 @@ use oihana\enums\Char;
  * isLocalPath('https://example.com');  // false
  * isLocalPath('s3://my-bucket/file');  // false
  * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function isLocalPath( string $path ) :bool
 {

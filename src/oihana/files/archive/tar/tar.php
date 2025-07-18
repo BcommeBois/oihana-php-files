@@ -5,6 +5,7 @@ namespace oihana\files\archive\tar;
 use Exception;
 use FilesystemIterator;
 
+use oihana\enums\Char;
 use Phar;
 use PharData;
 
@@ -65,6 +66,40 @@ use function oihana\files\makeDirectory;
  *   including inability to rename temporary files.
  *
  * @see CompressionType
+ *
+ * @example
+ * Archive a single file, auto-named, gzip compressed (default):
+ * ```php
+ * $tarPath = tar('/var/www/html/index.php');
+ * ```
+ *
+ * Archive a directory with bzip2 compression:
+ * ```php
+ * $tarPath = tar('/var/www/html', '/tmp/site.tar.bz2', CompressionType::BZIP2);
+ * ```
+ *
+ * Archive multiple files with no compression:
+ * ```php
+ * $tarPath = tar(
+ * ['/etc/hosts', '/etc/hostname'],
+ * '/tmp/config.tar',
+ * CompressionType::NONE
+ * );
+ * ```
+ *
+ * Archive directory with root preserved (relative paths):
+ * ```php
+ * $tarPath = tar(
+ * '/var/www/html/project',
+ * '/tmp/project.tar.gz',
+ * CompressionType::GZIP,
+ * '/var/www/html'
+ * );
+ * ```
+ *
+ * @package oihana\files\archive\tar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function tar
 (
@@ -95,7 +130,7 @@ function tar
 
     $tmpPath = getFunctionInfo('oihana\files\archive\tar\tar' )[ 'name' ] ;
 
-    $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( "\\", DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
+    $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( Char::BACK_SLASH , DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
 
     if( !is_dir( $tmpPath ) )
     {

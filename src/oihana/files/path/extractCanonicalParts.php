@@ -30,6 +30,10 @@ use oihana\enums\Char;
  * ```
  *
  * @note This function does **not** validate that the resulting path actually exists.
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function extractCanonicalParts( string $root , string $pathWithoutRoot ): array
 {

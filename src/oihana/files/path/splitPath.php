@@ -9,8 +9,7 @@ use oihana\enums\Char;
  *   1. **Root** : the protocol / drive / leading slash portion
  *   2. **Remainder** : the sub‑path that follows
  *
- * Supported patterns
- * ------------------
+ * **Supported patterns**
  * | Input example                        | Returned **root**     | Returned **remainder** |
  * |--------------------------------------|-----------------------|------------------------|
  * | `/var/www/html`                      | `/`                   | `var/www/html`         |
@@ -32,17 +31,21 @@ use oihana\enums\Char;
  * @example
  * ```php
  * [$root, $rest] = splitPath('/etc/nginx/nginx.conf');
- * // $root = '/'          | $rest = 'etc/nginx/nginx.conf'
+ * // $root = '/' | $rest = 'etc/nginx/nginx.conf'
  *
  * [$root, $rest] = splitPath('C:/Program Files');
- * // $root = 'C:/'        | $rest = 'Program Files'
+ * // $root = 'C:/' | $rest = 'Program Files'
  *
  * [$root, $rest] = splitPath('C:');
- * // $root = 'C:/'        | $rest = ''
+ * // $root = 'C:/' | $rest = ''
  *
  * [$root, $rest] = splitPath('file:///var/log');
- * // $root = 'file:///'   | $rest = 'var/log'
+ * // $root = 'file:///' | $rest = 'var/log'
  * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function splitPath( string $path ) :array
 {

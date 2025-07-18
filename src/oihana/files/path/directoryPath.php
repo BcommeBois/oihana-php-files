@@ -34,19 +34,30 @@ use oihana\enums\Char;
  * @return string The directory part of the path, or an empty string if no directory can be extracted.
  *
  * @example
- * // Unix-style paths
+ * Unix-style paths
+ * ```php
  * directoryPath('/var/www/html/file.txt'); // Returns '/var/www/html'
- *
- * // Windows-style paths
+ * ```
+ * Windows-style paths
+ * ```php
  * directoryPath('C:\Windows\System32\file.txt'); // Returns 'C:\Windows\System32'
  * directoryPath('D:/Program Files/My App/file.txt'); // Returns 'D:/Program Files/My App'
+ * ```
  *
- * // Paths with URI schemes
+ * Paths with URI schemes
+ * ```php
  * directoryPath('file:///home/user/doc.txt'); // Returns '/home/user'
+ * ```
  *
- * // Edge cases
+ * Edge cases
+ * ```php
  * directoryPath('file.txt'); // Returns ''
  * directoryPath(''); // Returns ''
+ * ```
+ *
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function directoryPath( string $path ) :string
 {

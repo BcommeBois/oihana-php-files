@@ -9,29 +9,33 @@ namespace oihana\files\path ;
  * direct inverse of `isAbsolutePath()`. It will return true for paths that
  * do not start with a slash, a backslash, or a Windows drive letter.
  *
- * @package oihana\files\path
- *
  * @param string $path The path to check.
  *
  * @return bool True if the path is relative, false if it is absolute.
  *
+ * @package oihana\files\path
+ *
  * @see isAbsolutePath()
  *
  * @example
- * // Relative paths will return true
- * isRelativePath('documents/report.pdf');    // true
- * isRelativePath('../images/pic.jpg');      // true
- * isRelativePath('file.txt');               // true
+ * ```php
+ * // Relative paths (returns true)
+ * var_dump( isRelativePath( 'documents/report.pdf' ) ) ; // true
+ * var_dump( isRelativePath( '../images/pic.jpg'    ) ) ; // true
+ * var_dump( isRelativePath( 'file.txt'             ) ) ; // true
+ * var_dump( isRelativePath( ''                     ) ) ; // true (empty path)
  *
- * // Absolute paths will return false
- * isRelativePath('/var/www');               // false
- * isRelativePath('C:\\Users\\Test');          // false
- * isRelativePath('D:/folder/');              // false
- * isRelativePath('C:');                       // false
- * isRelativePath('file:///c/Users/');        // false
+ * // Absolute paths (returns false)
+ * var_dump( isRelativePath( '/var/www'             ) ) ; // false
+ * var_dump( isRelativePath( 'C:\\Users\\Test'      ) ) ; // false
+ * var_dump( isRelativePath( 'D:/folder/'           ) ) ; // false
+ * var_dump( isRelativePath( 'C:'                   ) ) ; // false
+ * var_dump( isRelativePath( 'file:///c/Users/'     ) ) ; // false
+ * ```
  *
- * // Edge cases
- * isRelativePath('');                       // true (an empty path is not absolute)
+ * @package oihana\files\path
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function isRelativePath( string $path ) :bool
 {

@@ -15,6 +15,25 @@ use function oihana\files\assertFile;
  *
  * @return bool True if the file is a valid tar archive, false otherwise.
  * @throws FileException If the file does not exist or cannot be read.
+ *
+ * @example
+ * Basic validation using file extension and MIME type:
+ * ```php
+ * $isValid = isTarFile('/path/to/archive.tar');
+ * ```
+ * Strict validation with file content inspection:
+ * ```php
+ * $isValid = isTarFile('/path/to/archive.tar.gz', true);
+ * ```
+ *
+ * Validation failure for non-tar file:
+ * ```php
+ * $isValid = isTarFile('/path/to/image.jpg');
+ * ```
+ *
+ * @package oihana\files\archive\tar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function assertTar( string $filePath , bool $strictMode = false ): bool
 {
