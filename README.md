@@ -43,6 +43,10 @@ Use PhpDocumentor to generates the documentation of the library in the ./docs di
 ```bash
 composer doc
 ```
+or
+```bash
+./tools/phpDocumentor
+```
 
 ### Installation
 
