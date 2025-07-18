@@ -16,22 +16,42 @@ use function oihana\files\assertFile;
 
 /**
  * Class OpenSSLFileEncryption
- * This class provides methods to encrypt and decrypt files using OpenSSL.
- * @package oihana\files
+ *
+ * This class provides functionality to encrypt and decrypt files using OpenSSL.
+ * It prepends the IV (Initialization Vector) to the encrypted data so that decryption is self-contained.
+ *
+ * @example
+ * ```php
+ * use oihana\files\openssl\OpenSSLFileEncryption;
+ *
+ * $crypto = new OpenSSLFileEncryption('my-secret-passphrase');
+ * $encryptedPath = $crypto->encrypt('/path/to/file.txt');
+ * $decryptedPath = $crypto->decrypt($encryptedPath);
+ * ```
+ * @package oihana\files\openssl
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 class OpenSSLFileEncryption
 {
     /**
-     * Creates a new OpenSSLFileEncryption instance.
-     * @param string $passphrase The key to encrypt the file.
-     * @param string $cipher The cipher method. For a list of available cipher methods, use {@see openssl_get_cipher_methods()}.
-     * @throws InvalidArgumentException If the cipher method is not available or passphrase is empty
+     * Constructor.
+     *
+     * @param string $passphrase Secret key for encryption/decryption.
+     * @param string $cipher     OpenSSL cipher algorithm. Default is 'aes-256-cbc'.
+     *
+     * @throws InvalidArgumentException If the passphrase is empty or the cipher is unsupported.
+     *
+     * @example
+     * ```php
+     * $crypto = new OpenSSLFileEncryption('my-passphrase', 'aes-256-cbc');
+     * ```
      */
     public function __construct( string $passphrase, string $cipher = 'aes-256-cbc' )
     {
         if ( !in_array( $cipher , openssl_get_cipher_methods(true ) ) )
         {
-            throw new InvalidArgumentException("Cipher method '{$cipher}' is not available");
+            throw new InvalidArgumentException("Cipher method '$cipher' is not available");
         }
 
         if ( empty( $passphrase ) )
@@ -45,7 +65,7 @@ class OpenSSLFileEncryption
     }
 
     /**
-     * Cleans sensitive data when object is destroyed
+     * Destructor: clears the passphrase from memory.
      */
     public function __destruct()
     {
@@ -74,18 +94,25 @@ class OpenSSLFileEncryption
     }
 
     /**
-     * Encrypt a file with the OpenSSL tool.
+     * Encrypts a file using OpenSSL.
      *
-     * This method reads the input file, encrypts its contents using OpenSSL, and writes the encrypted data to the output file.
-     * The encrypted data includes the initialization vector (IV) prepended to the encrypted data.
+     * Reads the input file, generates a secure IV, encrypts the content using OpenSSL,
+     * prepends the IV to the encrypted data, and writes it to the output file.
      *
-     * @param string $inputFile The path to the file to be encrypted.
-     * @param ?string $outputFile Optional custom output file path. If null, uses file name with appropriate extension.
+     * @param string      $inputFile  Path to the file to encrypt.
+     * @param string|null $outputFile Optional output file path. If null, appends `.enc`.
      *
-     * @return string Returns on successful encryption the path of the encrypted file.
-     * @throws RuntimeException If the input file cannot be read, encryption fails, or the output file cannot be written.
-     * @throws DirectoryException
-     * @throws FileException
+     * @return string Path to the encrypted file.
+     *
+     * @throws RuntimeException     On read/write/encryption failure.
+     * @throws FileException        If input file is not valid.
+     * @throws DirectoryException   If output directory is not writable.
+     *
+     * @example
+     * ```php
+     * $crypto = new OpenSSLFileEncryption('secret');
+     * $encryptedPath = $crypto->encrypt('/path/to/plain.txt');
+     * ```
      */
     public function encrypt( string $inputFile , ?string $outputFile = null ) :string
     {
@@ -136,18 +163,24 @@ class OpenSSLFileEncryption
     }
 
     /**
-     * Decrypt a file with the OpenSSL tool.
+     * Decrypts a previously encrypted file.
      *
-     * This method reads the input file, extracts the initialization vector (IV) from the beginning of the file,
-     * decrypts the remaining data using OpenSSL, and writes the decrypted data to the output file.
+     * Extracts the IV from the start of the file, decrypts the remaining data,
+     * and writes the decrypted content to the output file.
      *
-     * @param string $inputFile The path to the file to be decrypted.
-     * @param ?string $outputFile The path where the decrypted file will be written.
+     * @param string      $inputFile  Path to the encrypted file.
+     * @param string|null $outputFile Optional output path. If null, `.enc` is stripped.
      *
-     * @return string Returns the path of the decrypted file.
+     * @return string Path to the decrypted file.
      *
-     * @throws FileException If the input file not exist or is invalid.
-     * @throws RuntimeException If the input file cannot be read, decryption fails (due to incorrect passphrase or corrupted data), or the output file cannot be written.
+     * @throws RuntimeException  On read/write/decryption failure.
+     * @throws FileException     If the input file is not valid.
+     *
+     * @example
+     * ```php
+     * $crypto = new OpenSSLFileEncryption('secret');
+     * $decryptedPath = $crypto->decrypt('/path/to/file.txt.enc');
+     * ```
      */
     public function decrypt( string $inputFile , ?string $outputFile = null ) :string
     {
@@ -214,14 +247,22 @@ class OpenSSLFileEncryption
     }
 
     /**
-     * Checks if a file has the minimum size to be an encrypted file.
+     * Checks if a file is large enough to be encrypted.
      *
-     * This makes a best-effort check that the file contains at least an IV
-     * of the expected length. Note that this doesn't guarantee that the file
-     * is actually encrypted or can be decrypted, but only that it's the right size.
+     * Verifies that the file has at least enough bytes to contain an IV.
+     * This does not confirm it was encrypted or can be decrypted.
      *
-     * @param string $filePath Path to the file to check
-     * @return bool True if the file has the minimum size to be an encrypted file
+     * @param string $filePath Path to the file to check.
+     *
+     * @return bool True if the file is at least as long as the IV size.
+     *
+     * @example
+     * ```php
+     * if ( $crypto->hasEncryptedFileSize('/file') )
+     * {
+     *     echo "Looks like an encrypted file (size).";
+     * }
+     * ```
      */
     public function hasEncryptedFileSize( string $filePath ): bool
     {
@@ -241,14 +282,28 @@ class OpenSSLFileEncryption
         }
     }
 
+
     /**
-     * Checks if a file appears to be encrypted by this class.
+     * Heuristically checks whether a file appears to be encrypted.
      *
-     * This makes a best-effort check that the file contains at least an IV
-     * of the expected length AND that the IV bytes appear random.
+     * Validates that the file has:
+     * - at least IV length
+     * - an IV not composed only of null bytes
+     * - an IV not dominated by printable characters (indicating possible plaintext)
      *
-     * @param string $filePath Path to the file to check
-     * @return bool True if the file appears to be encrypted
+     * This method gives a best-effort verification that a file was encrypted by this class.
+     *
+     * @param string $filePath Path to the file to check.
+     *
+     * @return bool True if the file likely contains encrypted content.
+     *
+     * @example
+     * ```php
+     * if ($crypto->isEncryptedFile('/file'))
+     * {
+     *     echo "Likely encrypted.";
+     * }
+     * ```
      */
     public function isEncryptedFile( string $filePath ): bool
     {

@@ -20,7 +20,7 @@ use oihana\files\exceptions\FileException;
 use oihana\files\exceptions\UnsupportedCompressionException;
 
 use function oihana\core\reflections\getFunctionInfo;
-use function oihana\files\getPharCompressionType;
+use function oihana\files\phar\getPharCompressionType;
 use function oihana\files\makeDirectory;
 
 /**
@@ -266,7 +266,7 @@ function tar
             {
                 if ( !file_exists( $compressedTempPath ) )
                 {
-                    throw new RuntimeException("Compressed temporary file was not found at: {$compressedTempPath}");
+                    throw new RuntimeException("Compressed temporary file was not found at: $compressedTempPath" ) ;
                 }
                 rename( $compressedTempPath , $finalPath ) ;
             }

@@ -4,6 +4,10 @@ namespace oihana\files\helpers ;
 
 /**
  * The internal canonicalizePath static buffer helper.
+ *
+ * @package oihana\files\helpers
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 class CanonicalizeBuffer
 {

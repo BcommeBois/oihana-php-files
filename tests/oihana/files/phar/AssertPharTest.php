@@ -4,7 +4,6 @@ namespace oihana\files\phar ;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use function oihana\files\assertPhar;
 
 class AssertPharTest extends TestCase
 {
