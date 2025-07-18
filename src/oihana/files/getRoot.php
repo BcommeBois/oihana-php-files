@@ -7,14 +7,15 @@ use oihana\enums\Char;
 /**
  * Extracts the root directory component of a given path.
  *
- * This function identifies the root portion of a file system path,
- * including handling of protocol schemes (e.g., "file://", "s3://"),
- * UNIX root ("/"), and Windows root (e.g., "C:/").
+ * This function identifies the root portion of a file system path, including handling of protocol schemes.
+ * ( e.g., "file://", "s3://" )
+ *
+ * UNIX root ("/"), and Windows root ( e.g., "C:/" ).
  *
  * It returns the canonical root as a string, or an empty string if the path
  * is relative or empty.
  *
- * ### Behavior:
+ * **Behavior:**
  * - `"file:///usr/bin"` → `"file:///"`
  * - `"/usr/bin"` → `"/"`
  * - `"C:\\Windows\\System32"` → `"C:/"`
@@ -33,6 +34,10 @@ use oihana\enums\Char;
  * echo getRoot("D:");                     // "D:/"
  * echo getRoot("some/relative/path");     // ""
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getRoot( string $path ) :string
 {

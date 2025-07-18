@@ -33,6 +33,10 @@ use oihana\files\exceptions\DirectoryException;
  * // 3) Just return /tmp itself
  * $tmp = makeTemporaryDirectory(null);
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function makeTemporaryDirectory( string|array|null $path , int $permission = 0755 ): string
 {

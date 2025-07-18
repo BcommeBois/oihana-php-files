@@ -23,7 +23,47 @@ use function oihana\core\strings\lower;
  * @return string The file name without its extension (e.g. 'archive' for 'archive.tar.gz').
  *
  * @throws InvalidArgumentException If the file path is empty or invalid.
+ *
+ * @example
+ * ```php
+ * use function oihana\files\getBaseFileName;
+ *
+ * // Basic example with simple extension
+ * echo getBaseFileName('/path/to/image.png'); // 'image'
+ *
+ * // With nested path and multi-part extension
+ * echo getBaseFileName('/backups/2025-07-18.tar.gz'); // '2025-07-18'
+ *
+ * // File with multiple dots, using default multi-part extensions
+ * echo getBaseFileName('/views/template.blade.php'); // 'template'
+ *
+ * // File with unknown multi-dot extension, fallback to last dot
+ * echo getBaseFileName('/logs/system.debug.txt'); // 'system.debug'
+ *
+ * // File without extension
+ * echo getBaseFileName('/opt/bin/mybinary'); // 'mybinary'
+ *
+ * // Windows-style path (backslashes will be normalized)
+ * echo getBaseFileName('C:\\Users\\me\\file.tar.gz'); // 'file'
+ *
+ * // Override default multi-part extensions
+ * echo getBaseFileName('/path/to/file.custom.ext', ['.custom.ext']); // 'file'
+ *
+ * // Edge case: dot file (no extension)
+ * echo getBaseFileName('/path/.env'); // '.env'
+ *
+ * // Throws exception: empty string
+ * getBaseFileName('');
+ *
+ * // Throws exception: path is a directory
+ * getBaseFileName('/path/to/folder/');
+ * ```
+ *
  * @see FileExtension
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getBaseFileName( string $file , ?array $multiplePartExtensions = null ): string
 {

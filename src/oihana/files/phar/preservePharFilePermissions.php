@@ -28,12 +28,13 @@ use PharData;
  *
  * @example
  * ```php
+ * use PharData;
  * use oihana\files\phar\assertPhar;
  * use oihana\files\phar\preservePharFilePermissions;
  *
  * assertPhar();
  *
- * $phar = new \PharData('/archives/app.tar');
+ * $phar = new PharData('/archives/app.tar');
  * $phar->extractTo('/var/www/app', true);
  *
  * preservePharFilePermissions($phar, '/var/www/app');

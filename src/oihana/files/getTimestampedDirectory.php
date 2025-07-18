@@ -46,15 +46,20 @@ use function oihana\core\date\formatDateTime;
  * // e.g. "/var/backups/2025-12-01T14:00:00_archive"
  *
  * // Example 3: Add prefix and suffix, custom timezone and format, without assertion
- * $dirPath = getTimestampedDirectory(
- * prefix: 'backup_',
- * suffix: '_final',
- * timezone: 'UTC',
- * format: 'Ymd_His',
- * assertable: false
+ * $dirPath = getTimestampedDirectory
+ * (
+ *     prefix: 'backup_',
+ *     suffix: '_final',
+ *     timezone: 'UTC',
+ *     format: 'Ymd_His',
+ *     assertable: false
  * );
  * // e.g. "./backup_20250715_123200_final"
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getTimestampedDirectory
 (

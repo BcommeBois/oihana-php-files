@@ -53,6 +53,10 @@ use oihana\enums\Char;
  * // Example 4: Require that the generated file already exists (throws if not)
  * $filePath = makeTimestampedFile(mustExist: true);
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function makeTimestampedFile
 (

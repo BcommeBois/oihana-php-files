@@ -20,10 +20,6 @@ use PharData;
  *
  * @throws \RuntimeException If the archive file does not exist or is not readable.
  *
- * @package oihana\files\phar
- * @author  Marc Alcaraz (ekameleon)
- * @since   1.0.0
- *
  * @example
  * ```php
  * use oihana\files\phar\assertPhar;
@@ -39,6 +35,10 @@ use PharData;
  * // Access an internal file:
  * $content = file_get_contents($baseUri . '/docs/readme.txt');
  * ```
+ *
+ * @package oihana\files\phar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getPharBasePath( PharData $phar ):string
 {

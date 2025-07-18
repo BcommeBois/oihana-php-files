@@ -80,20 +80,22 @@ use function oihana\files\makeDirectory;
  *
  * Archive multiple files with no compression:
  * ```php
- * $tarPath = tar(
- * ['/etc/hosts', '/etc/hostname'],
- * '/tmp/config.tar',
- * CompressionType::NONE
+ * $tarPath = tar
+ * (
+ *    ['/etc/hosts', '/etc/hostname'],
+ *    '/tmp/config.tar',
+ *    CompressionType::NONE
  * );
  * ```
  *
  * Archive directory with root preserved (relative paths):
  * ```php
- * $tarPath = tar(
- * '/var/www/html/project',
- * '/tmp/project.tar.gz',
- * CompressionType::GZIP,
- * '/var/www/html'
+ * $tarPath = tar
+ * (
+ *     '/var/www/html/project',
+ *     '/tmp/project.tar.gz',
+ *     CompressionType::GZIP,
+ *     '/var/www/html'
  * );
  * ```
  *

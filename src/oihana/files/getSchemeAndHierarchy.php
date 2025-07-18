@@ -8,21 +8,27 @@ use oihana\enums\Char;
 /**
  * Split a filename or URI into its scheme (if any) and hierarchical part.
  *
- * Logic
- * -----
- * • Detect the first “://” only once – no array allocation if not present.
- * • Accept schemes that match RFC‑3986     `[A‑Za‑z][A‑Za‑z0‑9+\-.]*`.
- * • Return `[$scheme, $hierarchy]`, where `$scheme` is `null` when absent.
+ * **Logic**
+ * - Detect the first “://” only once – no array allocation if not present.
+ * - Accept schemes that match RFC‑3986     `[A‑Za‑z][A‑Za‑z0‑9+\-.]*`.
+ * - Return `[$scheme, $hierarchy]`, where `$scheme` is `null` when absent.
  *
  * @param string $filename A path or URI such as `file:///tmp/app.log` or `/etc/hosts`.
  * @return array{0: ?string, 1: string}
  *
  * @throws InvalidArgumentException if the scheme is malformed (e.g. '1http://')
  *
- * @example getSchemeAndHierarchy('s3://bucket/folder/img');    // ['s3',   'bucket/folder/img']
- * @example getSchemeAndHierarchy('/home/user/report.pdf');     // [null,  '/home/user/report.pdf']
- * @example getSchemeAndHierarchy('C:\\Windows\\notepad.exe');  // [null,  'C:\\Windows\\notepad.exe']
- * @example getSchemeAndHierarchy('file:///tmp/cache.db');      // ['file', '/tmp/cache.db']
+ * @example
+ * ```php
+ * getSchemeAndHierarchy('s3://bucket/folder/img');    // ['s3',   'bucket/folder/img']
+ * getSchemeAndHierarchy('/home/user/report.pdf');     // [null,  '/home/user/report.pdf']
+ * getSchemeAndHierarchy('C:\\Windows\\notepad.exe');  // [null,  'C:\\Windows\\notepad.exe']
+ * getSchemeAndHierarchy('file:///tmp/cache.db');      // ['file', '/tmp/cache.db']
+ * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getSchemeAndHierarchy( string $filename ): array
 {

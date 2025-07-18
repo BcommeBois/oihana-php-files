@@ -16,6 +16,60 @@ use oihana\files\exceptions\FileException;
  * @return void
  *
  * @throws FileException If the file path is null, empty, or if the file does not exist or is not accessible.
+ *
+ * @example
+ *
+ * Basic usage: check if a file exists and is readable.
+ * ```php
+ * $file = 'test.txt';
+ * file_put_contents($file, 'data');
+ * try
+ * {
+ *    assertFile($file);
+ *     // Continue ...
+ * }
+ * catch (FileException $e)
+ * {
+ *     // Handle error...
+ * }
+ * unlink($file);
+ * ```
+ *
+ * Check for specific MIME types.
+ * ```php
+ * $file = 'document.txt';
+ * file_put_contents($file, 'some text');
+ * try
+ * {
+ *      // Will pass because a .txt file is typically 'text/plain'.
+ *      assertFile( $file , ['text/plain', 'application/pdf'] );
+ * }
+ * catch ( FileException $e )
+ * {
+ *     // Throws an exception if MIME type is not in the allowed list.
+ * }
+ * unlink($file);
+ * ```
+ *
+ * Check if a file is writable.
+ * ```php
+ * $file = 'config.ini';
+ * file_put_contents($file, '[settings]');
+ * try
+ * {
+ *     // Asserts the file exists, is readable, and is writable.
+ *     assertFile($file, null, true, true);
+ * }
+ * catch (FileException $e)
+ * {
+ *     // Throws an exception if file is not writable.
+ * }
+ * unlink($file);
+ * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function assertFile( ?string $file , ?array $expectedMimeTypes = null , bool $isReadable = true , bool $isWritable = false ): void
 {

@@ -12,10 +12,6 @@ use RuntimeException;
  *
  * @throws RuntimeException If the `PharData` class does not exist or the `phar` extension is not enabled.
  *
- * @package oihana\files\phar
- * @author  Marc Alcaraz (ekameleon)
- * @since   1.0.0
- *
  * @example
  * ```php
  * use function oihana\files\phar\assertPhar;
@@ -31,6 +27,10 @@ use RuntimeException;
  *     echo "Phar support is not available: " . $e->getMessage();
  * }
  * ```
+ *
+ * @package oihana\files\phar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function assertPhar(): void
 {

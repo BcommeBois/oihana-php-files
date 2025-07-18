@@ -33,16 +33,19 @@ use RecursiveIteratorIterator;
  * @throws DirectoryException If a directory cannot be created in the destination path.
  *
  * @example
- * ```
- * // Source directory structure:
- * // /tmp/source/
- * // ├── .git/
- * // │   └── config
- * // ├── images/
- * // │   └── logo.png  (size: 5KB)
- * // ├── index.php     (size: 1KB)
- * // └── error.log
  *
+ * Source directory structure:
+ * ```
+ * /tmp/source/
+ * ├── .git/
+ * │   └── config
+ * ├── images/
+ * │   └── logo.png  (size: 5KB)
+ * ├── index.php     (size: 1KB)
+ * └── error.log
+ * ```
+ *
+ * ```php
  * $source = '/tmp/source';
  * $destination = '/tmp/destination';
  *
@@ -50,23 +53,29 @@ use RecursiveIteratorIterator;
  * $exclude = ['.git', '*.log'];
  *
  * // Only include files smaller than 2KB (2048 bytes).
- * $filter = function(string $filePath) {
- * return is_dir($filePath) || filesize($filePath) < 2048;
+ * $filter = function(string $filePath)
+ * {
+ *    return is_dir($filePath) || filesize($filePath) < 2048;
  * };
  *
  * copyFilteredFiles($source, $destination, $exclude, $filter);
- *
- * // Resulting destination directory:
- * // /tmp/destination/
- * // ├── images/
- * // └── index.php
- *
- * // Explanation:
- * // - .git/ was skipped by the exclude pattern.
- * // - error.log was skipped by the exclude pattern.
- * // - images/logo.png was skipped by the filter callback (size > 2KB).
- * // - index.php was copied as it passed both filters.
  * ```
+ *
+ * Resulting destination directory:
+ * ```
+ * /tmp/destination/
+ * ├── images/
+ * └── index.php
+ * ```
+ * Explanation:
+ * - .git/ was skipped by the exclude pattern.
+ * - error.log was skipped by the exclude pattern.
+ * - images/logo.png was skipped by the filter callback (size > 2KB).
+ * - index.php was copied as it passed both filters.
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function copyFilteredFiles( string $sourceDir , string $destDir , array $excludePatterns = [] , ?callable $filterCallback = null ): bool
 {

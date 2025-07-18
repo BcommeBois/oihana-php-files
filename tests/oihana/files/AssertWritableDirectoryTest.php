@@ -23,6 +23,10 @@ class AssertWritableDirectoryTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @throws DirectoryException
+     */
     public function testValidWritableDirectory():void
     {
         $directoryPath = vfsStream::url('testDir/validDir');

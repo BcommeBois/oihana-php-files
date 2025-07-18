@@ -14,74 +14,148 @@ use oihana\files\exceptions\DirectoryException;
 use function oihana\core\strings\isRegexp;
 
 /**
- * List files in a directory (non-recursive by default), with rich filtering, sorting, and recursive options.
- * @param ?string $directory The directory path.
+ * Lists files in a directory with advanced filtering, sorting, and recursive options.
+ *
+ * This function provides flexible options for retrieving files and directories from a given path.
+ * It supports recursive search, glob and regex pattern matching, sorting, symbolic link following, and custom filters.
+ *
+ * @param ?string $directory The target directory path. If null or invalid, a DirectoryException is thrown.
  * @param array{
- *     filter      : null|callable ,
- *     followLinks : null|bool ,
- *     includeDots : null|bool ,
- *     mode        : null|string ,
- *     order       : null|string  ,
- *     pattern     : null|array|string ,
- *     recursive   : null|bool ,
- *     sort        : null|callable|string
-*   } $options
- *  <li><b>filter</b> : The optional function to filter all files, ex: <code>fn( $file ) => $file->getFileName()</code></li>
- *  <li><b>followLinks</b> : Indicates whether symbolic links should be followed (default false).</li>
- *  <li><b>includeDots</b> : Indicates if the dot files are included (default false).</li>
- *  <li><b>mode</b> : Filter mode, possible values:
- *      <ul>
- *          <li>'files' (default) : list files only.</li>
- *          <li>'dirs' (default) : list directories only.</li>
- *          <li>'files' (default) : list files and directories.</li>
-  *      </ul>
- *  </li>
- *  <li><b>order</b> : The order of the file sorting : default 'asc' or 'desc'.
- *  <li><b>pattern</b> : A pattern (a regexp, a glob, or a string) or an array of patterns.</li>
- *  <li><b>recursive</b> : Indicates if all sub-directories are browsed (default false).</li>
- *  <li><b>sort</b> : The optional sort option to sort all files, ex: <code>fn( SplFileInfo $a, SplFileInfo $b ) => return strcmp($a->getRealPath(), $b->getRealPath())</code></li>
+ * filter       ?: (callable(SplFileInfo): mixed)|null,
+ * followLinks  ?: bool|null,
+ * includeDots  ?: bool|null,
+ * mode         ?: string|null,
+ * order        ?: string|null,
+ * pattern      ?: string|array|null,
+ * recursive    ?: bool|null,
+ * sort         ?: callable|string|array|null
+ * } $options Optional settings to customize the file listing.
+ * <ul>
+ * <li>filter : A function to map or transform each SplFileInfo result.</li>
+ * <li>followLinks : Whether to follow symbolic links (default: false).</li>
+ * <li>includeDots : Whether to include dot files (default: false).</li>
+ * <li>mode : Filter by type: 'files', 'dirs', or 'both' (default: 'files').</li>
+ * <li>order : Sort order: 'asc' (default) or 'desc'.</li>
+ * <li>pattern : A glob pattern, regex, or list of patterns to match file names.</li>
+ * <li>recursive : Whether to search recursively (default: false).</li>
+ * <li>sort : A sort option, eg: callback, predefined string, or array of keys.</li>
+ * </ul>
+ *
  * @return SplFileInfo[]
+ *
  * @throws DirectoryException
- * @examples
+ *
+ * @example
+ * 1. Basic usage: list files in directory
  * ```php
- *  // 1) Finder‑like->sortByName()
- *  $files = findFiles('/var/www', ['sort' => 'name']);
+ * use function oihana\files\findFiles;
+ * use SplFileInfo;
  *
- *  // 2) Case‑insensitive name, descending
- *  $files = findFiles('/var/www', ['sort' => 'ci_name', 'order' => 'desc']);
+ * $files = findFiles('/var/www');
+ * ```
  *
- *  // 3) Directories first, then alphabetical (type + name)
- *  $files = findFiles('/var/www', ['sort' => ['type', 'name']]);
+ * 2. Recursive search
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'recursive' => true,
+ * ]);
+ * ```
+ * 3. Include dotfiles
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'includeDots' => true,
+ * ]);
+ * ```
  *
- *  // 4) Size descending with custom comparator
- *  $files = findFiles('/var/www', [
- *      'sort'  => fn(SplFileInfo $a, SplFileInfo $b) => $a->getSize() <=> $b->getSize(),
- *      'order' => 'desc',
- *  ]);
+ * 4. Follow symbolic links (only affects recursive mode)
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'recursive'   => true,
+ * 'followLinks' => true,
+ * ]);
+ * ```
  *
- *  // 5) Recursive search for *.log and *.txt, ignore dot‑files, follow symlinks
- *  $files = findFiles('/var/log', [
- *      'pattern'    => ['*.log', '*.txt'],
- *      'recursive'   => true,
- *      'followLinks' => true,
- *  ]);
+ * 5. Filter by file name pattern (glob or regex)
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'pattern' => '*.php',
+ * ]);
+ * ```
  *
- *  // 6) Include dot‑files and map to filenames only
- *  $names = findFiles('/tmp', [
- *      'includeDots' => true,
- *      'filter'    => fn(SplFileInfo $f) => $f->getFilename(),
- *  ]);
+ * 6. Filter by multiple patterns (mixed glob + regex)
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'pattern' => ['*.php', '/^config\..+$/'],
+ * ]);
+ * ```
  *
- *  // 7) Mixed glob + regexp filter
- *  $files = findFiles('/data', [
- *      'pattern' => ['*.csv', '/^report_\d{4}\.xlsx$/i'],
- *  ]);
- *  ```
- * </code>
+ * 7. List directories only
+ * ```php
+ * $dirs = findFiles('/var/www', [ 'mode' => 'dirs', ]);
+ * ```
+ *
+ * 8. List both files and directories
+ * ```php
+ * $all = findFiles('/var/www', [ 'mode' => 'both' ]);
+ * ```
+ *
+ * 9. Custom sort: by real path
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'sort' => fn(SplFileInfo $a, SplFileInfo $b) => strcmp($a->getRealPath(), $b->getRealPath()),
+ * ]);
+ * ```
+ * 10. Predefined sort (e.g., name), descending order
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'sort'  => 'name',
+ * 'order' => 'desc',
+ * ]);
+ * ```
+ *
+ * 11. Combined sort: type then name (directories first)
+ * ```php
+ * $files = findFiles('/var/www', [
+ * 'sort' => ['type', 'name'],
+ * ]);
+ * ```
+ *
+ * 12. Map output to base names only
+ * ```php
+ * $names = findFiles('/var/www', [
+ * 'filter' => fn(SplFileInfo $file) => $file->getBasename(),
+ * ]);
+ *```
+ *
+ * 13. Get only file sizes
+ * ```php
+ * $sizes = findFiles('/var/www', [
+ * 'filter' => fn(SplFileInfo $file) => $file->getSize(),
+ * ]);
+ * ```
+ *
+ * 14. List recursively with all options combined
+ * ```php
+ * $files = findFiles('/var/www',
+ * [
+ *     'recursive'    => true,
+ *     'followLinks'  => true,
+ *     'includeDots'  => true,
+ *     'mode'         => 'files',
+ *     'pattern'      => ['*.log', '*.txt'],
+ *     'sort'         => 'ci_name',
+ *     'order'        => 'asc',
+ *     'filter'       => fn(SplFileInfo $file) => $file->getFilename(),
+ * ]);
+ * ```
  * @see sortFiles()
  * @see FindFindOption
  * @see FindMode
  * @see Order::asc
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function findFiles( ?string $directory, array $options = [] ): array
 {

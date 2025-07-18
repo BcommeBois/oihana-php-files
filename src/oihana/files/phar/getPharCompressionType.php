@@ -22,10 +22,6 @@ use oihana\files\exceptions\UnsupportedCompressionException;
  *
  * @throws UnsupportedCompressionException If the given compression type is not supported.
  *
- * @package oihana\files\phar
- * @author  Marc Alcaraz (ekameleon)
- * @since   1.0.0
- *
  * @example
  * ```php
  * use oihana\files\phar\getPharCompressionType;
@@ -36,6 +32,10 @@ use oihana\files\exceptions\UnsupportedCompressionException;
  *
  * echo $pharConstant; // Outputs: 4096 (Phar::GZ)
  * ```
+ *
+ * @package oihana\files\phar
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getPharCompressionType( string $compression ): int
 {

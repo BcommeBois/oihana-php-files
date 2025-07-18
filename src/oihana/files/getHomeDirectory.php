@@ -29,6 +29,10 @@ use function oihana\files\path\canonicalizePath;
  * ```php
  * $home = getHomeDirectory(); // "/home/alice" or "C:/Users/Alice"
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getHomeDirectory(): string
 {

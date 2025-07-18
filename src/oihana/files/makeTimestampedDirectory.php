@@ -28,34 +28,43 @@ use function oihana\core\date\formatDateTime;
  * @throws DirectoryException If directory creation fails due to an error.
  *
  * @example
+ * **Example 1:** simple directory in current path, using current date‑time
  * ```php
  * use oihana\\files\\createTimestampedDirectory;
  * use oihana\\enums\\Char;
  *
- * // Example 1: simple directory in current path, using current date‑time
  * $dir = createTimestampedDirectory();
  * // e.g. ./2025-07-15T10:30:12
+ * ```
  *
- * // Example 2 : directory inside /tmp with custom prefix/suffix and explicit date
- * $dir = createTimestampedDirectory(
- * date:     '2025-12-01 14:00:00',
- * basePath: '/tmp',
- * prefix:   'backup_',
- * suffix:   '_v1'
+ * **Example 2 :** directory inside /tmp with custom prefix/suffix and explicit date
+ * ```php
+ * $dir = createTimestampedDirectory
+ * (
+ *     date:     '2025-12-01 14:00:00',
+ *     basePath: '/tmp',
+ *     prefix:   'backup_',
+ *     suffix:   '_v1'
  * );
  * // e.g. /tmp/backup_2025-12-01T14:00:00_v1
+ * ```
  *
- * // Example 3 : use a different timezone and format
- * $dir = createTimestampedDirectory(
- * date:     null,              // now
- * basePath: Char::EMPTY,       // current directory
- * prefix:   'log_',
- * suffix:   Char::EMPTY,
- * timezone: 'UTC',
- * format:   'Ymd_His'          // 20250715_083012
+ * **Example 3 :** use a different timezone and format
+ * ```php
+ * $dir = createTimestampedDirectory
+ * (
+ *     date:     null,              // now
+ *     basePath: Char::EMPTY,       // current directory
+ *     prefix:   'log_',
+ *     suffix:   Char::EMPTY,
+ *     timezone: 'UTC',
+ *     format:   'Ymd_His'          // 20250715_083012
  * );
  * // e.g. ./log_20250715_083012
  * ```
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function makeTimestampedDirectory
 (

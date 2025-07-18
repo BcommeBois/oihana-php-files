@@ -24,18 +24,22 @@ use oihana\files\exceptions\DirectoryException;
  * @throws DirectoryException If validation/deletion fails.
  *
  * @example
- * ```
+ * ```php
  * use function oihana\files\deleteTemporaryDirectory;
  *
- * // Supprime /tmp/old_reports (et son contenu)
+ * // Remove /tmp/old_reports (et son contenu)
  * deleteTemporaryDirectory('old_reports');
  *
- * // Supprime /tmp/tmp123/cache/images
+ * // Remove /tmp/tmp123/cache/images
  * deleteTemporaryDirectory(['tmp123', 'cache', 'images']);
  *
- * // Force l’échec si le dossier n’est pas accessible en écriture
+ * // Force failure if folder is not writable
  * deleteTemporaryDirectory('protected_dir', isWritable: true);
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function deleteTemporaryDirectory( string|array|null $path , bool $assertable = true , bool $isReadable = true , bool $isWritable = true ): bool
 {

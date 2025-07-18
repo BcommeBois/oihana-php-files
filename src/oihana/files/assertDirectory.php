@@ -16,6 +16,26 @@ use oihana\files\exceptions\DirectoryException;
  * @return void
  *
  * @throws DirectoryException If the path is null, empty, not a directory, or fails accessibility checks.
+ *
+ * @example
+ * ```php
+ * try
+ * {
+ *     $directoryPath = '/chemin/vers/le/repertoire' ;
+ *
+ *     assertDirectory( $directoryPath , true , true , 0755 ) ;
+ *
+ *     echo "The directory is accessible with the good permissions.\n";
+ * }
+ * catch ( DirectoryException $e )
+ * {
+ *     echo "Error: " . $e->getMessage() . PHP_EOL ;
+ * }
+ * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function assertDirectory
 (

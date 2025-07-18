@@ -22,6 +22,52 @@ use function oihana\core\strings\lower;
  *
  * @return string|null The file extension including the leading dot (e.g. `.tar.gz`),
  *                     or null if the file has no extension.
+ *
+ * @example
+ *
+ * Basic usage: extract extension from a file path.
+ * ```php
+ * use function oihana\files\getFileExtension;
+ *
+ * echo getFileExtension('/path/to/archive.tar.gz');    // .tar.gz
+ * echo getFileExtension('photo.JPG');                  // .jpg (lowercased by default)
+ * echo getFileExtension('/some/file.txt');             // .txt
+ * echo getFileExtension('/templates/home.blade.php');  // .blade.php
+ * echo getFileExtension('script.min.js');              // .js
+ * ```
+ *
+ * Using custom multipart extensions:
+ * ```php
+ * $custom = ['.custom.ext', '.tpl.php'];
+ *
+ * echo getFileExtension('file.custom.ext', $custom);   // .custom.ext
+ * echo getFileExtension('file.tpl.php', $custom);      // .tpl.php
+ * ```
+ *
+ * Preserving original case:
+ * ```php
+ * echo getFileExtension('README.MD', null, false);     // .MD
+ * ```
+ *
+ * Files with no extension:
+ * ```php
+ * echo getFileExtension('Makefile');                   // null
+ * echo getFileExtension('.env');                       // null
+ * ```
+ *
+ * Windows-style path normalization:
+ * ```php
+ * echo getFileExtension('C:\\projects\\demo.tar.bz2'); // .tar.bz2
+ * ```
+ *
+ * Edge case: file with multiple dots and unknown multipart extension:
+ * ```php
+ * echo getFileExtension('data.backup.final.bak');      // .bak
+ * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getFileExtension( string $file , ?array $multiplePartExtensions = null , bool $lowercase = true ): ?string
 {

@@ -17,7 +17,6 @@ class TarInfo
 {
     use ConstantsTrait ;
 
-
     public const string COMPRESSION = 'compression' ;
     public const string EXTENSION   = 'extension'   ;
     public const string FILE_COUNT  = 'fileCount'   ;

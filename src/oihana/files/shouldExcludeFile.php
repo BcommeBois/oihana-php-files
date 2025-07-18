@@ -21,7 +21,7 @@ namespace oihana\files ;
  * @return bool Returns `true` if the file path matches any of the exclusion patterns, `false` otherwise.
  *
  * @example
- * ```
+ * ```php
  * $patterns = [
  * '*.log',          // Exclude all .log files (matches basename)
  * '/^error_\d+/',   // Exclude files starting with error_... (regex)
@@ -40,6 +40,10 @@ namespace oihana\files ;
  * // Returns false (no pattern matches)
  * shouldExcludeFile('/var/www/index.php', $patterns);
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function shouldExcludeFile( string $filePath , array $excludePatterns ) :bool
 {

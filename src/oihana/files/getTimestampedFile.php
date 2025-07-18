@@ -60,6 +60,10 @@ use function oihana\core\date\formatDateTime;
  * );
  * // e.g. ./log_20250715_084533.txt
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getTimestampedFile
 (

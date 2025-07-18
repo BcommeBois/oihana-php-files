@@ -33,6 +33,10 @@ use function oihana\core\strings\lower;
  * // 5) Type then case‑insensitive name
  * sortFiles($files, ['type', 'ci_name']);
  * ```
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function sortFiles( array &$files, callable|string|array $sort , ?string $order = 'asc' ): void
 {

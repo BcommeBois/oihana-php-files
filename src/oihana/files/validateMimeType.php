@@ -13,6 +13,59 @@ use oihana\files\exceptions\FileException;
  * @return void
  *
  * @throws FileException If the MIME type is not allowed or cannot be determined.
+ *
+ * @example
+ *
+ * Basic usage: validate that an uploaded file is a PDF or plain text file.
+ * ```php
+ * use function oihana\files\validateMimeType;
+ * use oihana\files\exceptions\FileException;
+ *
+ * $file = __DIR__ . '/example.txt';
+ * file_put_contents($file, 'Some text content');
+ *
+ * try
+ * {
+ *     validateMimeType($file, ['text/plain', 'application/pdf']);
+ *     echo "File is valid.";
+ * }
+ * catch ( FileException $e )
+ * {
+ *     echo "Error: " . $e->getMessage();
+ * }
+ *
+ * unlink($file);
+ * ```
+ *
+ * Accepting multiple MIME types (grouped by type):
+ * ```php
+ * $allowedTypes =
+ * [
+ *     ['image/png', 'image/jpeg'],
+ *     ['application/pdf'],
+ * ];
+ * validateMimeType('photo.jpg', $allowedTypes);
+ * ```
+ *
+ * Error example:
+ * ```php
+ * try
+ * {
+ *     validateMimeType('fake.exe', ['image/png', 'image/jpeg']);
+ * }
+ * catch (FileException $e)
+ * {
+ *     echo "Validation failed: " . $e->getMessage();
+ * }
+ * ```
+ *
+ * Notes:
+ * - This function uses `mime_content_type()`, which relies on the system's `file` command or magic database.
+ * - For consistent results across platforms, ensure the PHP `fileinfo` extension is enabled.
+ *
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function validateMimeType( string $file , array $allowedMimeTypes ): void
 {
@@ -21,7 +74,7 @@ function validateMimeType( string $file , array $allowedMimeTypes ): void
 
     if ( $actualMimeType === false )
     {
-        throw new FileException(sprintf('Unable to determine MIME type for file "%s".' , $file ) ) ;
+        throw new FileException( sprintf('Unable to determine MIME type for file "%s".' , $file ) ) ;
     }
 
     $normalizedAllowedTypes = [] ;

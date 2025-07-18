@@ -18,9 +18,48 @@ use oihana\files\exceptions\DirectoryException;
  * @param bool $isReadable Whether to assert that the directory is readable. Default: true.
  * @param bool $isWritable Whether to assert that the directory is writable. Default: false.
  *
- * @return string Normalised directory path.
+ * @return string Normalized directory path.
  *
  * @throws DirectoryException If validation is enabled and the directory is invalid.
+ *
+ * @example
+ * **Basic use with a character string**
+ * Validates that the system temporary directory exists and deletes the final separator.
+ * ```php
+ * $path = getDirectory( sys_get_temp_dir() . DIRECTORY_SEPARATOR );
+ * // $path contient maintenant quelque chose comme '/tmp' ou 'C:\Users\...\Temp'.
+ * ```
+ *
+ * **Builds and validates a path from an array.**
+ * Empty or null elements are ignored (assumes ‘/tmp/logs’ exists and is readable).
+ * ```php
+ * $parts = [sys_get_temp_dir(), '', 'logs', null];
+ * $path = getDirectory($parts);
+ * // $path contient maintenant quelque chose comme '/tmp/logs'.
+ * ```
+ *
+ * **Normalizes a path without validating it**
+ * Ne lève pas d'exception si le chemin n'existe pas.
+ * ```php
+ * $path = getDirectory('/path/not/exist/', assertable: false);
+ * // $path contains '/path/not/exist/'.
+ * ```
+ *
+ * **Validates that a directory is also writable.**
+ * ```php
+ * try
+ * {
+ *     $path = getDirectory(sys_get_temp_dir(), isWritable: true);
+ *     // The script continue if the directory is writable
+ * }
+ * catch ( DirectoryException $e )
+ * {
+ *     // Thrown an error
+ * }
+ * ```
+ * @package oihana\files
+ * @author  Marc Alcaraz (ekameleon)
+ * @since   1.0.0
  */
 function getDirectory( string|array|null $path , bool $assertable = true , bool $isReadable = true , bool $isWritable = false ): string
 {

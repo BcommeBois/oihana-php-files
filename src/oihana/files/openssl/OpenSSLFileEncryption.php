@@ -28,6 +28,7 @@ use function oihana\files\assertFile;
  * $encryptedPath = $crypto->encrypt('/path/to/file.txt');
  * $decryptedPath = $crypto->decrypt($encryptedPath);
  * ```
+ *
  * @package oihana\files\openssl
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
