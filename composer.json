@@ -90,7 +90,7 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",
-        "doc": "php -d \"error_reporting=E_ALL & ~E_DEPRECATED\" ./vendor/bin/phpdoc",
+        "doc": "php -d error_reporting='E_ALL & ~E_DEPRECATED' ./vendor/bin/phpdoc 2>&1 | grep -v \"Deprecated\"",
         "post-install-cmd": [
             "composer doc"
         ],
