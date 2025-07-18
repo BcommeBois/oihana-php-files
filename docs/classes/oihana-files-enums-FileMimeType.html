@@ -1,0 +1,3661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>Oihana PHP Files</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title">
+    <a href="" class="phpdocumentor-title__link">
+        <svg width="40px" height="40px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+            <g id="Calque-1" serif:id="Calque 1">
+                <g transform="matrix(1,0,0,1,195.093,113.904)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.667,-50.078 -47.138,-50.078C-53.609,-50.078 -59.701,-48.892 -65.419,-46.525C-71.136,-44.156 -76.105,-40.748 -80.319,-36.302C-84.538,-31.853 -87.859,-26.538 -90.286,-20.36C-92.712,-14.179 -93.925,-7.276 -93.925,0.349C-93.925,7.512 -92.712,14.153 -90.286,20.275C-87.859,26.399 -84.538,31.712 -80.319,36.218C-76.105,40.723 -71.136,44.275 -65.419,46.874C-59.701,49.473 -53.609,50.774 -47.138,50.774C-40.667,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.138,98.253C-60.191,98.253 -72.465,95.741 -83.959,90.715C-95.458,85.69 -105.505,78.819 -114.109,70.095C-122.717,61.374 -129.507,51.034 -134.471,39.077C-139.44,27.121 -141.922,14.211 -141.922,0.349C-141.922,-13.745 -139.44,-26.797 -134.471,-38.813C-129.507,-50.827 -122.717,-61.194 -114.109,-69.919C-105.505,-78.64 -95.458,-85.483 -83.959,-90.452C-72.465,-95.418 -60.191,-97.904 -47.138,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,400.607,113.904)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.665,-50.078 -47.136,-50.078C-53.607,-50.078 -59.704,-48.892 -65.417,-46.525C-71.139,-44.156 -76.103,-40.748 -80.317,-36.302C-84.54,-31.853 -87.861,-26.538 -90.288,-20.36C-92.714,-14.179 -93.923,-7.276 -93.923,0.349C-93.923,7.512 -92.714,14.153 -90.288,20.275C-87.861,26.399 -84.54,31.712 -80.317,36.218C-76.103,40.723 -71.139,44.275 -65.417,46.874C-59.704,49.473 -53.607,50.774 -47.136,50.774C-40.665,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.136,98.253C-60.189,98.253 -72.467,95.741 -83.961,90.715C-95.456,85.69 -105.503,78.819 -114.111,70.095C-122.719,61.374 -129.505,51.034 -134.469,39.077C-139.442,27.121 -141.919,14.211 -141.919,0.349C-141.919,-13.745 -139.442,-26.797 -134.469,-38.813C-129.505,-50.827 -122.719,-61.194 -114.111,-69.919C-105.503,-78.64 -95.456,-85.483 -83.961,-90.452C-72.467,-95.418 -60.189,-97.904 -47.136,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,195.093,330.86)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.667,-50.078 -47.138,-50.078C-53.609,-50.078 -59.701,-48.892 -65.419,-46.525C-71.136,-44.156 -76.105,-40.748 -80.319,-36.302C-84.538,-31.853 -87.859,-26.538 -90.286,-20.36C-92.712,-14.179 -93.925,-7.276 -93.925,0.349C-93.925,7.512 -92.712,14.153 -90.286,20.275C-87.859,26.399 -84.538,31.712 -80.319,36.218C-76.105,40.723 -71.136,44.275 -65.419,46.874C-59.701,49.473 -53.609,50.774 -47.138,50.774C-40.667,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.138,98.253C-60.191,98.253 -72.465,95.741 -83.959,90.715C-95.458,85.69 -105.505,78.819 -114.109,70.095C-122.717,61.374 -129.507,51.034 -134.471,39.077C-139.44,27.121 -141.922,14.211 -141.922,0.349C-141.922,-13.745 -139.44,-26.797 -134.471,-38.813C-129.507,-50.827 -122.717,-61.194 -114.109,-69.919C-105.505,-78.64 -95.458,-85.483 -83.959,-90.452C-72.465,-95.418 -60.191,-97.904 -47.138,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,411.344,398.094)">
+                    <path d="M0,-67.232C0,-75.087 -1.243,-82.134 -3.721,-88.373C-6.207,-94.612 -9.587,-99.898 -13.862,-104.23C-18.136,-108.561 -23.159,-111.88 -28.932,-114.194C-34.714,-116.503 -40.835,-117.659 -47.306,-117.659C-53.777,-117.659 -59.865,-116.503 -65.587,-114.194C-71.3,-111.88 -76.298,-108.561 -80.573,-104.23C-84.847,-99.898 -88.227,-94.612 -90.713,-88.373C-93.2,-82.134 -94.434,-75.087 -94.434,-67.232C-94.434,-59.722 -93.2,-52.851 -90.713,-46.612C-88.227,-40.373 -84.847,-35.06 -80.573,-30.671C-76.298,-26.279 -71.3,-22.872 -65.587,-20.447C-59.865,-18.02 -53.777,-16.807 -47.306,-16.807C-40.835,-16.807 -34.714,-18.02 -28.932,-20.447C-23.159,-22.872 -18.136,-26.279 -13.862,-30.671C-9.587,-35.06 -6.207,-40.373 -3.721,-46.612C-1.243,-52.851 0,-59.722 0,-67.232M-94.783,97.906L-142.439,97.906L-142.439,-158.38L-130.995,-158.38L-112.11,-136.027C-107.836,-140.069 -103.162,-143.882 -98.078,-147.464C-92.995,-151.042 -87.708,-154.135 -82.224,-156.734C-76.733,-159.333 -71.045,-161.383 -65.153,-162.886C-59.261,-164.384 -53.309,-165.138 -47.306,-165.138C-34.254,-165.138 -21.976,-162.799 -10.481,-158.12C1.013,-153.441 11.06,-146.828 19.668,-138.279C28.277,-129.728 35.063,-119.419 40.035,-107.348C44.999,-95.274 47.485,-81.902 47.485,-67.232C47.485,-51.985 44.999,-38.266 40.035,-26.077C35.063,-13.889 28.277,-3.552 19.668,4.939C11.06,13.43 1.013,19.929 -10.481,24.433C-21.976,28.939 -34.254,31.191 -47.306,31.191C-51.462,31.191 -55.591,30.729 -59.695,29.805C-63.799,28.88 -67.835,27.641 -71.82,26.08C-75.804,24.52 -79.738,22.76 -83.604,20.795C-87.478,18.832 -91.207,16.81 -94.783,14.731L-94.783,97.906Z" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+            </g>
+        </svg>
+         Oihana PHP Files
+    </a>
+</h1>    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/oihana.html" class="">oihana</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/oihana-files.html" class="">files</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/oihana.html" class="">oihana</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/oihana-files.html" class="">files</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana.html">oihana</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files.html">files</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files-enums.html">enums</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    FileMimeType
+
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana.html">oihana</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana-files.html">files</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana-files-enums.html">enums</a></li>
+                            </ul>
+        </div>
+    
+    
+            <span class="phpdocumentor-element__extends">
+            uses
+                            <abbr title="\oihana\reflections\traits\ConstantsTrait">ConstantsTrait</abbr>                    </span>
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">16</span>
+
+    </aside>
+
+            <p class="phpdocumentor-summary">FileExtension</p>
+
+
+    <section class="phpdocumentor-description"><p>Enumeration class that defines various file mime-types supported by the application.</p>
+</section>
+
+
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/oihana-files-enums-FileMimeType.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+
+
+
+
+<h3 id="toc">
+    Table of Contents
+    <a href="classes/oihana-files-enums-FileMimeType.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h3>
+
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/oihana-files-enums-FileMimeType.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_AAC">AAC</a>
+    <span>
+        &nbsp;= &#039;audio/aac&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ACCDB">ACCDB</a>
+    <span>
+        &nbsp;= &#039;application/msaccess&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_AI">AI</a>
+    <span>
+        &nbsp;= [&#039;application/postscript&#039;, &#039;application/illustrator&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_APP">APP</a>
+    <span>
+        &nbsp;= &#039;application/octet-stream&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_AVI">AVI</a>
+    <span>
+        &nbsp;= &#039;video/x-msvideo&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_BAT">BAT</a>
+    <span>
+        &nbsp;= &#039;application/x-bat&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_BMP">BMP</a>
+    <span>
+        &nbsp;= &#039;image/bmp&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_COM">COM</a>
+    <span>
+        &nbsp;= &#039;application/x-msdownload&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_CSS">CSS</a>
+    <span>
+        &nbsp;= &#039;text/css&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_CSV">CSV</a>
+    <span>
+        &nbsp;= &#039;text/csv&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_DB">DB</a>
+    <span>
+        &nbsp;= &#039;application/octet-stream&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_DLL">DLL</a>
+    <span>
+        &nbsp;= &#039;application/x-msdownload&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_DMG">DMG</a>
+    <span>
+        &nbsp;= &#039;application/x-apple-diskimage&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_DOC">DOC</a>
+    <span>
+        &nbsp;= &#039;application/msword&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_DOCX">DOCX</a>
+    <span>
+        &nbsp;= &#039;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ENCRYPTED">ENCRYPTED</a>
+    <span>
+        &nbsp;= &#039;application/octet-stream&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_EXE">EXE</a>
+    <span>
+        &nbsp;= [&#039;application/x-msdownload&#039;, &#039;application/vnd.microsoft.portable-executable&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_FLAC">FLAC</a>
+    <span>
+        &nbsp;= &#039;audio/flac&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_FLV">FLV</a>
+    <span>
+        &nbsp;= &#039;video/x-flv&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_GIF">GIF</a>
+    <span>
+        &nbsp;= &#039;image/gif&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_GZ">GZ</a>
+    <span>
+        &nbsp;= &#039;application/gzip&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_HTM">HTM</a>
+    <span>
+        &nbsp;= &#039;text/html&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_HTML">HTML</a>
+    <span>
+        &nbsp;= &#039;text/html&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ICO">ICO</a>
+    <span>
+        &nbsp;= &#039;image/vnd.microsoft.icon&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_JAR">JAR</a>
+    <span>
+        &nbsp;= &#039;application/java-archive&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_JPEG">JPEG</a>
+    <span>
+        &nbsp;= &#039;image/jpeg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_JPG">JPG</a>
+    <span>
+        &nbsp;= &#039;image/jpeg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_JS">JS</a>
+    <span>
+        &nbsp;= [&#039;application/javascript&#039;, &#039;text/javascript&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_JSON">JSON</a>
+    <span>
+        &nbsp;= &#039;application/json&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_M4A">M4A</a>
+    <span>
+        &nbsp;= [&#039;audio/mp4&#039;, &#039;audio/x-m4a&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_M4V">M4V</a>
+    <span>
+        &nbsp;= [&#039;video/x-m4&#039;, &#039;video/mp4v&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MD">MD</a>
+    <span>
+        &nbsp;= &#039;text/markdown&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MDB">MDB</a>
+    <span>
+        &nbsp;= &#039;application/x-msaccess&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MKV">MKV</a>
+    <span>
+        &nbsp;= &#039;video/x-matroska&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MOV">MOV</a>
+    <span>
+        &nbsp;= &#039;video/quicktime&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MP3">MP3</a>
+    <span>
+        &nbsp;= &#039;audio/mpeg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MP4">MP4</a>
+    <span>
+        &nbsp;= &#039;video/mp4&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MPEG">MPEG</a>
+    <span>
+        &nbsp;= &#039;video/mpeg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_MPG">MPG</a>
+    <span>
+        &nbsp;= &#039;video/mpeg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ODP">ODP</a>
+    <span>
+        &nbsp;= &#039;application/vnd.oasis.opendocument.presentation&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ODS">ODS</a>
+    <span>
+        &nbsp;= &#039;application/vnd.oasis.opendocument.spreadsheet&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ODT">ODT</a>
+    <span>
+        &nbsp;= &#039;application/vnd.oasis.opendocument.text&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_OGG">OGG</a>
+    <span>
+        &nbsp;= &#039;audio/ogg&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_OTF">OTF</a>
+    <span>
+        &nbsp;= &#039;font/otf&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PDF">PDF</a>
+    <span>
+        &nbsp;= &#039;application/pdf&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PHP">PHP</a>
+    <span>
+        &nbsp;= [&#039;application/x-php&#039;, &#039;application/x-httpd-php&#039;, &#039;application/x-httpd-php-source&#039;, &#039;text/php&#039;, &#039;text/x-php&#039;, &#039;application/php&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PNG">PNG</a>
+    <span>
+        &nbsp;= &#039;image/png&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PPT">PPT</a>
+    <span>
+        &nbsp;= &#039;application/vnd.ms-powerpoint&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PPTX">PPTX</a>
+    <span>
+        &nbsp;= &#039;application/vnd.openxmlformats-officedocument.presentationml.presentation&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_PSD">PSD</a>
+    <span>
+        &nbsp;= &#039;image/vnd.adobe.photoshop&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_RAR">RAR</a>
+    <span>
+        &nbsp;= &#039;application/vnd.rar&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_RTF">RTF</a>
+    <span>
+        &nbsp;= &#039;application/rtf&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_SEVEN_Z">SEVEN_Z</a>
+    <span>
+        &nbsp;= &#039;application/x-7z-compressed&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_SH">SH</a>
+    <span>
+        &nbsp;= &#039;application/x-sh&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_SQL">SQL</a>
+    <span>
+        &nbsp;= &#039;application/sql&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_SQLITE">SQLITE</a>
+    <span>
+        &nbsp;= &#039;application/vnd.sqlite3&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_SVG">SVG</a>
+    <span>
+        &nbsp;= &#039;image/svg+xml&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TAR">TAR</a>
+    <span>
+        &nbsp;= [&#039;application/tar&#039;, &#039;application/x-tar&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_BZ2">TAR_BZ2</a>
+    <span>
+        &nbsp;= &#039;application/x-bzip2&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ">TAR_GZ</a>
+    <span>
+        &nbsp;= &#039;application/gzip&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ_ENCRYPTED">TAR_GZ_ENCRYPTED</a>
+    <span>
+        &nbsp;= &#039;application/octet-stream&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TGZ">TGZ</a>
+    <span>
+        &nbsp;= &#039;application/gzip&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TIF">TIF</a>
+    <span>
+        &nbsp;= &#039;image/tiff&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TIFF">TIFF</a>
+    <span>
+        &nbsp;= &#039;image/tiff&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TOML">TOML</a>
+    <span>
+        &nbsp;= &#039;application/toml&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TTF">TTF</a>
+    <span>
+        &nbsp;= &#039;font/ttf&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_TXT">TXT</a>
+    <span>
+        &nbsp;= &#039;text/plain&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WAV">WAV</a>
+    <span>
+        &nbsp;= &#039;audio/wav&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WEBM">WEBM</a>
+    <span>
+        &nbsp;= &#039;video/webm&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WEBP">WEBP</a>
+    <span>
+        &nbsp;= &#039;image/webp&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WMA">WMA</a>
+    <span>
+        &nbsp;= &#039;audio/x-ms-wma&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WMV">WMV</a>
+    <span>
+        &nbsp;= &#039;video/x-ms-wmv&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF">WOFF</a>
+    <span>
+        &nbsp;= &#039;font/woff&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF2">WOFF2</a>
+    <span>
+        &nbsp;= &#039;font/woff2&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_XLS">XLS</a>
+    <span>
+        &nbsp;= &#039;application/vnd.ms-excel&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_XLSX">XLSX</a>
+    <span>
+        &nbsp;= &#039;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_XML">XML</a>
+    <span>
+        &nbsp;= &#039;application/xml&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_YAML">YAML</a>
+    <span>
+        &nbsp;= [&#039;application/x-yaml&#039;, &#039;text/yaml&#039;]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_YML">YML</a>
+    <span>
+        &nbsp;= &#039;application/x-yaml&#039;                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#constant_ZIP">ZIP</a>
+    <span>
+        &nbsp;= &#039;application/zip&#039;                            </span>
+</dt>
+
+    </dl>
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/oihana-files-enums-FileMimeType.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -property -private">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#property_EXTENSIONS">$EXTENSIONS</a>
+    <span>
+                        &nbsp;: array&lt;string|int, mixed&gt;|null            </span>
+</dt>
+
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/oihana-files-enums-FileMimeType.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#method_getExtension">getExtension()</a>
+    <span>
+                                &nbsp;: string|array&lt;string|int, mixed&gt;|null    </span>
+</dt>
+<dd>Returns the mimetype(s) for a given code.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#method_getFromExtension">getFromExtension()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;|string|null    </span>
+</dt>
+<dd>Returns the extension(s) of the specific mime-type value.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/oihana-files-enums-FileMimeType.html#method_resetCaches">resetCaches()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Reset the internal cache of the static methods.</dd>
+
+    </dl>
+
+
+
+        
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="classes/oihana-files-enums-FileMimeType.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_AAC">
+        AAC
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_AAC" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">25</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">AAC</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/aac&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ACCDB">
+        ACCDB
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ACCDB" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">124</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ACCDB</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/msaccess&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_AI">
+        AI
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_AI" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">AI</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/postscript&#039;, &#039;application/illustrator&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_APP">
+        APP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_APP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">114</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">APP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/octet-stream&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_AVI">
+        AVI
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_AVI" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">50</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">AVI</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/x-msvideo&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_BAT">
+        BAT
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_BAT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">115</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">BAT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-bat&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_BMP">
+        BMP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_BMP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">36</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">BMP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/bmp&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_COM">
+        COM
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_COM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">116</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">COM</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-msdownload&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CSS">
+        CSS
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_CSS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">94</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CSS</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/css&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CSV">
+        CSV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_CSV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">63</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CSV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/csv&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DB">
+        DB
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_DB" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">125</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DB</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/octet-stream&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DLL">
+        DLL
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_DLL" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">117</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DLL</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-msdownload&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DMG">
+        DMG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_DMG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">118</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DMG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-apple-diskimage&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DOC">
+        DOC
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_DOC" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">64</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DOC</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/msword&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DOCX">
+        DOCX
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_DOCX" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">65</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DOCX</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ENCRYPTED">
+        ENCRYPTED
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ENCRYPTED" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">79</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ENCRYPTED</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/octet-stream&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_EXE">
+        EXE
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_EXE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">119</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">EXE</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/x-msdownload&#039;, &#039;application/vnd.microsoft.portable-executable&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_FLAC">
+        FLAC
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_FLAC" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">26</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">FLAC</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/flac&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_FLV">
+        FLV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_FLV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">51</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">FLV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/x-flv&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_GIF">
+        GIF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_GIF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">37</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">GIF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/gif&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_GZ">
+        GZ
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_GZ" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">80</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">GZ</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/gzip&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_HTM">
+        HTM
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_HTM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">95</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">HTM</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/html&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_HTML">
+        HTML
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_HTML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">96</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">HTML</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/html&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ICO">
+        ICO
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ICO" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">38</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ICO</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/vnd.microsoft.icon&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_JAR">
+        JAR
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_JAR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">120</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">JAR</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/java-archive&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_JPEG">
+        JPEG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_JPEG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">39</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">JPEG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/jpeg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_JPG">
+        JPG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_JPG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">40</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">JPG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/jpeg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_JS">
+        JS
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_JS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">97</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">JS</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/javascript&#039;, &#039;text/javascript&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_JSON">
+        JSON
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_JSON" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">98</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">JSON</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/json&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_M4A">
+        M4A
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_M4A" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">27</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">M4A</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;audio/mp4&#039;, &#039;audio/x-m4a&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_M4V">
+        M4V
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_M4V" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">52</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">M4V</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;video/x-m4&#039;, &#039;video/mp4v&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MD">
+        MD
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MD" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">99</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MD</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/markdown&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MDB">
+        MDB
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MDB" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">126</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MDB</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-msaccess&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MKV">
+        MKV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MKV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">53</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MKV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/x-matroska&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MOV">
+        MOV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MOV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">54</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MOV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/quicktime&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MP3">
+        MP3
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MP3" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">28</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MP3</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/mpeg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MP4">
+        MP4
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MP4" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">55</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MP4</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/mp4&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MPEG">
+        MPEG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MPEG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">57</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MPEG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/mpeg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MPG">
+        MPG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_MPG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">56</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MPG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/mpeg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ODP">
+        ODP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ODP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">66</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ODP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.oasis.opendocument.presentation&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ODS">
+        ODS
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ODS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">67</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ODS</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.oasis.opendocument.spreadsheet&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ODT">
+        ODT
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ODT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">68</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ODT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.oasis.opendocument.text&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_OGG">
+        OGG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_OGG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">29</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">OGG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/ogg&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_OTF">
+        OTF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_OTF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">108</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">OTF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;font/otf&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PDF">
+        PDF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PDF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">69</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PDF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/pdf&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PHP">
+        PHP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PHP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">100</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PHP</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/x-php&#039;, &#039;application/x-httpd-php&#039;, &#039;application/x-httpd-php-source&#039;, &#039;text/php&#039;, &#039;text/x-php&#039;, &#039;application/php&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PNG">
+        PNG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PNG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">41</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PNG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/png&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PPT">
+        PPT
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PPT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">70</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PPT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.ms-powerpoint&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PPTX">
+        PPTX
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PPTX" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">71</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PPTX</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.openxmlformats-officedocument.presentationml.presentation&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PSD">
+        PSD
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_PSD" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">42</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PSD</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/vnd.adobe.photoshop&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_RAR">
+        RAR
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_RAR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">81</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">RAR</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.rar&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_RTF">
+        RTF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_RTF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">72</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">RTF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/rtf&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SEVEN_Z">
+        SEVEN_Z
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_SEVEN_Z" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">82</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SEVEN_Z</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-7z-compressed&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SH">
+        SH
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_SH" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">121</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SH</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-sh&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SQL">
+        SQL
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_SQL" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">127</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SQL</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/sql&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SQLITE">
+        SQLITE
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_SQLITE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">128</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SQLITE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.sqlite3&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SVG">
+        SVG
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_SVG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">43</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SVG</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/svg+xml&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TAR">
+        TAR
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">85</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TAR</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/tar&#039;, &#039;application/x-tar&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TAR_BZ2">
+        TAR_BZ2
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_BZ2" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">86</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TAR_BZ2</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-bzip2&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TAR_GZ">
+        TAR_GZ
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">87</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TAR_GZ</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/gzip&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TAR_GZ_ENCRYPTED">
+        TAR_GZ_ENCRYPTED
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ_ENCRYPTED" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">88</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TAR_GZ_ENCRYPTED</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/octet-stream&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TGZ">
+        TGZ
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TGZ" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">89</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TGZ</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/gzip&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TIF">
+        TIF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TIF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">44</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TIF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/tiff&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TIFF">
+        TIFF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TIFF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">45</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TIFF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/tiff&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TOML">
+        TOML
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TOML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">101</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TOML</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/toml&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TTF">
+        TTF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TTF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">109</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TTF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;font/ttf&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TXT">
+        TXT
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_TXT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">73</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TXT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;text/plain&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WAV">
+        WAV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WAV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">30</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WAV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/wav&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WEBM">
+        WEBM
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WEBM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">58</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WEBM</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/webm&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WEBP">
+        WEBP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WEBP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">46</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WEBP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;image/webp&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WMA">
+        WMA
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WMA" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">31</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WMA</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;audio/x-ms-wma&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WMV">
+        WMV
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WMV" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">59</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WMV</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;video/x-ms-wmv&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WOFF">
+        WOFF
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">110</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WOFF</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;font/woff&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WOFF2">
+        WOFF2
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF2" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">111</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WOFF2</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;font/woff2&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_XLS">
+        XLS
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_XLS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">74</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">XLS</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.ms-excel&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_XLSX">
+        XLSX
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_XLSX" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">75</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">XLSX</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_XML">
+        XML
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_XML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">102</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">XML</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/xml&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_YAML">
+        YAML
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_YAML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">103</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">YAML</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/x-yaml&#039;, &#039;text/yaml&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_YML">
+        YML
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_YML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">104</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">YML</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/x-yaml&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_ZIP">
+        ZIP
+        <a href="classes/oihana-files-enums-FileMimeType.html#constant_ZIP" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">83</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">ZIP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;application/zip&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+            </section>
+
+        
+    <section class="phpdocumentor-properties">
+        <h3 class="phpdocumentor-elements__header" id="properties">
+            Properties
+            <a href="classes/oihana-files-enums-FileMimeType.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -private
+            -static                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="property_EXTENSIONS">
+        $EXTENSIONS
+        <a href="classes/oihana-files-enums-FileMimeType.html#property_EXTENSIONS" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">135</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">private</span>
+        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;|null</span>
+    <span class="phpdocumentor-signature__name">$EXTENSIONS</span>
+     = <span class="phpdocumentor-signature__default-value">null</span></code>
+
+    
+    
+    
+
+    
+
+    
+
+</article>
+            </section>
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/oihana-files-enums-FileMimeType.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getExtension">
+        getExtension()
+        <a href="classes/oihana-files-enums-FileMimeType.html#method_getExtension" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">142</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Returns the mimetype(s) for a given code.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$mimeType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$mimeType</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The mime type to evaluates.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|null</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getFromExtension">
+        getFromExtension()
+        <a href="classes/oihana-files-enums-FileMimeType.html#method_getFromExtension" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">182</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Returns the extension(s) of the specific mime-type value.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getFromExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$extension</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The extension to evaluates.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string|null</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_resetCaches">
+        resetCaches()
+        <a href="classes/oihana-files-enums-FileMimeType.html#method_resetCaches" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FileMimeType.php"><a href="files/src-oihana-files-enums-filemimetype.html"><abbr title="src/oihana/files/enums/FileMimeType.php">FileMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">191</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Reset the internal cache of the static methods.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">resetCaches</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+    
+</article>
+            </section>
+
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/enums/FileMimeType.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
+    </article>
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/oihana-files-enums-FileMimeType.html#toc-constants">Constants</a></li>
+                                                            <li><a href="classes/oihana-files-enums-FileMimeType.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/oihana-files-enums-FileMimeType.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_AAC">AAC</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ACCDB">ACCDB</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_AI">AI</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_APP">APP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_AVI">AVI</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_BAT">BAT</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_BMP">BMP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_COM">COM</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_CSS">CSS</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_CSV">CSV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_DB">DB</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_DLL">DLL</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_DMG">DMG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_DOC">DOC</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_DOCX">DOCX</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ENCRYPTED">ENCRYPTED</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_EXE">EXE</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_FLAC">FLAC</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_FLV">FLV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_GIF">GIF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_GZ">GZ</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_HTM">HTM</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_HTML">HTML</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ICO">ICO</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_JAR">JAR</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_JPEG">JPEG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_JPG">JPG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_JS">JS</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_JSON">JSON</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_M4A">M4A</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_M4V">M4V</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MD">MD</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MDB">MDB</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MKV">MKV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MOV">MOV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MP3">MP3</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MP4">MP4</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MPEG">MPEG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_MPG">MPG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ODP">ODP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ODS">ODS</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ODT">ODT</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_OGG">OGG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_OTF">OTF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PDF">PDF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PHP">PHP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PNG">PNG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PPT">PPT</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PPTX">PPTX</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_PSD">PSD</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_RAR">RAR</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_RTF">RTF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_SEVEN_Z">SEVEN_Z</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_SH">SH</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_SQL">SQL</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_SQLITE">SQLITE</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_SVG">SVG</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR">TAR</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_BZ2">TAR_BZ2</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ">TAR_GZ</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TAR_GZ_ENCRYPTED">TAR_GZ_ENCRYPTED</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TGZ">TGZ</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TIF">TIF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TIFF">TIFF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TOML">TOML</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TTF">TTF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_TXT">TXT</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WAV">WAV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WEBM">WEBM</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WEBP">WEBP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WMA">WMA</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WMV">WMV</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF">WOFF</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_WOFF2">WOFF2</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_XLS">XLS</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_XLSX">XLSX</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_XML">XML</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_YAML">YAML</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_YML">YML</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#constant_ZIP">ZIP</a></li>
+                                            </ul>
+                </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#property_EXTENSIONS">$EXTENSIONS</a></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#method_getExtension">getExtension()</a></li>
+                                            <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#method_getFromExtension">getFromExtension()</a></li>
+                                            <li class=""><a href="classes/oihana-files-enums-FileMimeType.html#method_resetCaches">resetCaches()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="classes/oihana-files-enums-FileMimeType.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

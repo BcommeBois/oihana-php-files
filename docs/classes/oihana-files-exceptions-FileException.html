@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>Oihana PHP Files</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title">
+    <a href="" class="phpdocumentor-title__link">
+        <svg width="40px" height="40px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+            <g id="Calque-1" serif:id="Calque 1">
+                <g transform="matrix(1,0,0,1,195.093,113.904)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.667,-50.078 -47.138,-50.078C-53.609,-50.078 -59.701,-48.892 -65.419,-46.525C-71.136,-44.156 -76.105,-40.748 -80.319,-36.302C-84.538,-31.853 -87.859,-26.538 -90.286,-20.36C-92.712,-14.179 -93.925,-7.276 -93.925,0.349C-93.925,7.512 -92.712,14.153 -90.286,20.275C-87.859,26.399 -84.538,31.712 -80.319,36.218C-76.105,40.723 -71.136,44.275 -65.419,46.874C-59.701,49.473 -53.609,50.774 -47.138,50.774C-40.667,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.138,98.253C-60.191,98.253 -72.465,95.741 -83.959,90.715C-95.458,85.69 -105.505,78.819 -114.109,70.095C-122.717,61.374 -129.507,51.034 -134.471,39.077C-139.44,27.121 -141.922,14.211 -141.922,0.349C-141.922,-13.745 -139.44,-26.797 -134.471,-38.813C-129.507,-50.827 -122.717,-61.194 -114.109,-69.919C-105.505,-78.64 -95.458,-85.483 -83.959,-90.452C-72.465,-95.418 -60.191,-97.904 -47.138,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,400.607,113.904)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.665,-50.078 -47.136,-50.078C-53.607,-50.078 -59.704,-48.892 -65.417,-46.525C-71.139,-44.156 -76.103,-40.748 -80.317,-36.302C-84.54,-31.853 -87.861,-26.538 -90.288,-20.36C-92.714,-14.179 -93.923,-7.276 -93.923,0.349C-93.923,7.512 -92.714,14.153 -90.288,20.275C-87.861,26.399 -84.54,31.712 -80.317,36.218C-76.103,40.723 -71.139,44.275 -65.417,46.874C-59.704,49.473 -53.607,50.774 -47.136,50.774C-40.665,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.136,98.253C-60.189,98.253 -72.467,95.741 -83.961,90.715C-95.456,85.69 -105.503,78.819 -114.111,70.095C-122.719,61.374 -129.505,51.034 -134.469,39.077C-139.442,27.121 -141.919,14.211 -141.919,0.349C-141.919,-13.745 -139.442,-26.797 -134.469,-38.813C-129.505,-50.827 -122.719,-61.194 -114.111,-69.919C-105.503,-78.64 -95.456,-85.483 -83.961,-90.452C-72.467,-95.418 -60.189,-97.904 -47.136,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,195.093,330.86)">
+                    <path d="M0,0.349C0,-7.276 -1.243,-14.179 -3.729,-20.36C-6.216,-26.538 -9.596,-31.853 -13.87,-36.302C-18.144,-40.748 -23.134,-44.156 -28.856,-46.525C-34.577,-48.892 -40.667,-50.078 -47.138,-50.078C-53.609,-50.078 -59.701,-48.892 -65.419,-46.525C-71.136,-44.156 -76.105,-40.748 -80.319,-36.302C-84.538,-31.853 -87.859,-26.538 -90.286,-20.36C-92.712,-14.179 -93.925,-7.276 -93.925,0.349C-93.925,7.512 -92.712,14.153 -90.286,20.275C-87.859,26.399 -84.538,31.712 -80.319,36.218C-76.105,40.723 -71.136,44.275 -65.419,46.874C-59.701,49.473 -53.609,50.774 -47.138,50.774C-40.667,50.774 -34.577,49.561 -28.856,47.134C-23.134,44.709 -18.144,41.302 -13.87,36.91C-9.596,32.521 -6.216,27.208 -3.729,20.969C-1.243,14.73 0,7.859 0,0.349M47.647,0.349C47.647,14.211 45.161,27.121 40.197,39.077C35.233,51.034 28.472,61.374 19.924,70.095C11.375,78.819 1.354,85.69 -10.141,90.715C-21.635,95.741 -33.964,98.253 -47.138,98.253C-60.191,98.253 -72.465,95.741 -83.959,90.715C-95.458,85.69 -105.505,78.819 -114.109,70.095C-122.717,61.374 -129.507,51.034 -134.471,39.077C-139.44,27.121 -141.922,14.211 -141.922,0.349C-141.922,-13.745 -139.44,-26.797 -134.471,-38.813C-129.507,-50.827 -122.717,-61.194 -114.109,-69.919C-105.505,-78.64 -95.458,-85.483 -83.959,-90.452C-72.465,-95.418 -60.191,-97.904 -47.138,-97.904C-33.964,-97.904 -21.635,-95.565 -10.141,-90.886C1.354,-86.207 11.375,-79.564 19.924,-70.958C28.472,-62.352 35.233,-52.011 40.197,-39.939C45.161,-27.868 47.647,-14.439 47.647,0.349" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+                <g transform="matrix(1,0,0,1,411.344,398.094)">
+                    <path d="M0,-67.232C0,-75.087 -1.243,-82.134 -3.721,-88.373C-6.207,-94.612 -9.587,-99.898 -13.862,-104.23C-18.136,-108.561 -23.159,-111.88 -28.932,-114.194C-34.714,-116.503 -40.835,-117.659 -47.306,-117.659C-53.777,-117.659 -59.865,-116.503 -65.587,-114.194C-71.3,-111.88 -76.298,-108.561 -80.573,-104.23C-84.847,-99.898 -88.227,-94.612 -90.713,-88.373C-93.2,-82.134 -94.434,-75.087 -94.434,-67.232C-94.434,-59.722 -93.2,-52.851 -90.713,-46.612C-88.227,-40.373 -84.847,-35.06 -80.573,-30.671C-76.298,-26.279 -71.3,-22.872 -65.587,-20.447C-59.865,-18.02 -53.777,-16.807 -47.306,-16.807C-40.835,-16.807 -34.714,-18.02 -28.932,-20.447C-23.159,-22.872 -18.136,-26.279 -13.862,-30.671C-9.587,-35.06 -6.207,-40.373 -3.721,-46.612C-1.243,-52.851 0,-59.722 0,-67.232M-94.783,97.906L-142.439,97.906L-142.439,-158.38L-130.995,-158.38L-112.11,-136.027C-107.836,-140.069 -103.162,-143.882 -98.078,-147.464C-92.995,-151.042 -87.708,-154.135 -82.224,-156.734C-76.733,-159.333 -71.045,-161.383 -65.153,-162.886C-59.261,-164.384 -53.309,-165.138 -47.306,-165.138C-34.254,-165.138 -21.976,-162.799 -10.481,-158.12C1.013,-153.441 11.06,-146.828 19.668,-138.279C28.277,-129.728 35.063,-119.419 40.035,-107.348C44.999,-95.274 47.485,-81.902 47.485,-67.232C47.485,-51.985 44.999,-38.266 40.035,-26.077C35.063,-13.889 28.277,-3.552 19.668,4.939C11.06,13.43 1.013,19.929 -10.481,24.433C-21.976,28.939 -34.254,31.191 -47.306,31.191C-51.462,31.191 -55.591,30.729 -59.695,29.805C-63.799,28.88 -67.835,27.641 -71.82,26.08C-75.804,24.52 -79.738,22.76 -83.604,20.795C-87.478,18.832 -91.207,16.81 -94.783,14.731L-94.783,97.906Z" style="fill:rgb(81,66,63);fill-rule:nonzero;"/>
+                </g>
+            </g>
+        </svg>
+         Oihana PHP Files
+    </a>
+</h1>    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -namespaces">
+            <h2 class="phpdocumentor-sidebar__category-header">Namespaces</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/oihana.html" class="">oihana</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/oihana-files.html" class="">files</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+                <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/oihana.html" class="">oihana</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/oihana-files.html" class="">files</a>
+                
+            </li>
+            </ul>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana.html">oihana</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files.html">files</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files-exceptions.html">exceptions</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    FileException
+
+        <span class="phpdocumentor-element__extends">
+        extends <abbr title="\Exception">Exception</abbr>
+    </span>
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana.html">oihana</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana-files.html">files</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/oihana-files-exceptions.html">exceptions</a></li>
+                            </ul>
+        </div>
+    
+    
+            <span class="phpdocumentor-element__extends">
+            uses
+                            <abbr title="\oihana\exceptions\ExceptionTrait">ExceptionTrait</abbr>                    </span>
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/exceptions/FileException.php"><a href="files/src-oihana-files-exceptions-fileexception.html"><abbr title="src/oihana/files/exceptions/FileException.php">FileException.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">15</span>
+
+    </aside>
+
+            <p class="phpdocumentor-summary">Thrown when an error occurred in the component File.</p>
+
+
+
+
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/oihana-files-exceptions-FileException.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+
+
+
+
+<h3 id="toc">
+    Table of Contents
+    <a href="classes/oihana-files-exceptions-FileException.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+        
+
+        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/exceptions/FileException.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
+    </article>
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                                            </ul>
+            </li>
+            
+            
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="classes/oihana-files-exceptions-FileException.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>
