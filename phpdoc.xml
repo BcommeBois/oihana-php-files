@@ -5,26 +5,36 @@
         xmlns="https://www.phpdoc.org"
         xsi:noNamespaceSchemaLocation="data/xsd/phpdoc.xsd"
 >
+
     <title>Oihana Php Files</title>
+
     <paths>
         <output>docs</output>
     </paths>
-    <version number="3.0.0">
+
+    <version number="1.0.0">
+
         <folder>latest</folder>
+
         <api ignore-packages="true">
+
             <source dsn=".">
                 <path>src</path>
             </source>
+
             <output>api</output>
+
             <ignore hidden="true" symlinks="true">
                 <path>tests/**/*</path>
                 <path>build/**/*</path>
                 <path>var/**/*</path>
                 <path>vendor/**/*</path>
             </ignore>
+
             <extensions>
                 <extension>php</extension>
             </extensions>
+
             <ignore-tags>
                 <ignore-tag>template</ignore-tag>
                 <ignore-tag>template-extends</ignore-tag>
@@ -32,10 +42,24 @@
                 <ignore-tag>extends</ignore-tag>
                 <ignore-tag>implements</ignore-tag>
             </ignore-tags>
-            <default-package-name>phpDocumentor</default-package-name>
+
+            <default-package-name>Oihana Php Files</default-package-name>
+
         </api>
+
+<!--        <guide format="md">-->
+<!--            <source dsn="docs">-->
+<!--                <path>.</path>-->
+<!--            </source>-->
+<!--            <output>guide</output>-->
+<!--        </guide>-->
+
     </version>
+
     <setting name="guides.enabled" value="false"/>
     <setting name="graphs.enabled" value="false"/>
-    <template name=".phpdoc/template" />
+<!--    <setting name="linker.guides.enabled" value="true"/>-->
+<!--    <template name="default" />-->
+<!--    <template name=".phpdoc/template" />-->
+
 </phpdocumentor>

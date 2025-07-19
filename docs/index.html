@@ -27,7 +27,7 @@
     <header class="phpdocumentor-header phpdocumentor-section">
     <h1 class="phpdocumentor-title">
     <a href="" class="phpdocumentor-title__link">
-        <img src="images/logo.png" alt="Logo de l'entreprise" style="width: 50px; height: 50px;"/>
+        <img src="assets/images/logo.png" alt="Oihana PHP" style="width: 50px; height: 50px;"/>
          Oihana Php Files
     </a>
 </h1>    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
@@ -47,7 +47,15 @@
 
     <nav class="phpdocumentor-topnav">
     <ul class="phpdocumentor-topnav__menu">
-        </ul>
+                        <li class="phpdocumentor-topnav__menu-item -social">
+                <a href="https://github.com/BcommeBois/oihana-php-files">
+                    <span>
+                                                                        <i class="fab fa-github"></i>
+                                                
+                    </span>
+                </a>
+            </li>
+                </ul>
 </nav>
 </header>
 
@@ -86,13 +94,51 @@
 </aside>
 
             <div class="phpdocumentor-column -nine phpdocumentor-content">
-                                        <section>
-        <h2>Documentation</h2>
+                                    <section>
 
-        Welcome in the documentation of the Oihana PHP Files library.
+<h1>Oihana Php Files</h1>
 
-        
-        
+<p>Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.</p>
+
+<h3>Installation and Usage</h3>
+
+<div>The library requires <b><a href="https://php.net/releases/">PHP 8.4+</a></b> and using <b><a href="https://getcomposer.org">Composer</a></b></div>
+
+
+<div>
+<pre class="language-bash prettyprint">
+composer require oihana/php-files
+</pre>
+</div>
+
+<h4>Unit tests</h4>
+<p>Run all unit tests.</p>
+
+<div>
+<pre class="language-bash prettyprint">
+composer run-script test
+</pre>
+</div>
+
+<div>
+Run a unique unit test.
+<pre class="language-bash prettyprint">
+composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
+</pre>
+</div>
+
+<h3>Licences</h3>
+<p><b>Licence MPL 2.0</b> : Mozilla Public License Version 2.0</p>
+
+<h3>About</h3>
+<ul>
+    <li>Author : Marc ALCARAZ (aka eKameleon)</li>
+    <li>Mail : marc@ooop.fr</li>
+    <li>Link : https://www.ooop.fr</li>
+</ul>
+
+
+
 <h3 id="toc">
     Table of Contents
     <a href="namespaces/default.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
@@ -118,10 +164,12 @@
 
 
 
-        
 
-        
-    </section>
+
+
+
+
+</section>
                             </div>
             <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">

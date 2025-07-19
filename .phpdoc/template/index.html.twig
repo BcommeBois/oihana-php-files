@@ -1,24 +1,65 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    <section>
-        <h2>Documentation</h2>
+<section>
 
-        Welcome in the documentation of the Oihana PHP Files library.
+<h1>Oihana Php Files</h1>
 
-        {% set node = project.namespace %}
+<p>Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.</p>
 
-        {{
-        include(
-            'components/table-of-contents.html.twig',
-            {
-                'node': project.namespace,
-                'namespaces': usesNamespaces or not usesPackages ? node.children : [],
-                'packages': usesPackages ? project.package.children : []
-            }
-        )
-        }}
-        {{ include('components/constants.html.twig', {'node': project.namespace}) }}
-        {{ include('components/functions.html.twig', {'node': project.namespace}) }}
-    </section>
+<h3>Installation and Usage</h3>
+
+<div>The library requires <b><a href="https://php.net/releases/">PHP 8.4+</a></b> and using <b><a href="https://getcomposer.org">Composer</a></b></div>
+
+
+<div>
+<pre class="language-bash prettyprint">
+composer require oihana/php-files
+</pre>
+</div>
+
+<h4>Unit tests</h4>
+<p>Run all unit tests.</p>
+
+<div>
+<pre class="language-bash prettyprint">
+composer run-script test
+</pre>
+</div>
+
+<div>
+Run a unique unit test.
+<pre class="language-bash prettyprint">
+composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
+</pre>
+</div>
+
+<h3>Licences</h3>
+<p><b>Licence MPL 2.0</b> : Mozilla Public License Version 2.0</p>
+
+<h3>About</h3>
+<ul>
+    <li>Author : Marc ALCARAZ (aka eKameleon)</li>
+    <li>Mail : marc@ooop.fr</li>
+    <li>Link : https://www.ooop.fr</li>
+</ul>
+
+{% set node = project.namespace %}
+
+{{
+    include
+    (
+        'components/table-of-contents.html.twig',
+        {
+            'node'       : project.namespace,
+            'namespaces' : usesNamespaces or not usesPackages ? node.children : [] ,
+            'packages'   : usesPackages ? project.package.children : []
+        }
+    )
+}}
+
+{{ include('components/constants.html.twig', {'node': project.namespace}) }}
+{{ include('components/functions.html.twig', {'node': project.namespace}) }}
+
+</section>
 {% endblock %}

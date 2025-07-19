@@ -12,7 +12,7 @@ Thumbs.db
 # Php
 composer.lock
 composer-dev.lock
-/build
+/build/parser
 /.phpdoc/cache
 .php-cs-fixer.cache
 .phpunit.cache

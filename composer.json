@@ -90,7 +90,7 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",
-        "doc": "./vendor/bin/phpdoc",
+        "doc": "rm -rf docs && mkdir docs && cp -r .phpdoc/template/assets docs/assets && ./vendor/bin/phpdoc -c phpdoc.xml -v" ,
         "post-install-cmd": [],
         "post-update-cmd": []
     },
