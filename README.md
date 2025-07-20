@@ -36,11 +36,12 @@ To run a specific test file:
 composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
 ```
 
-## Licence
+## 🧾 Licence
 
 This project is licensed under the [Mozilla Public License 2.0 (MPL-2.0)](https://www.mozilla.org/en-US/MPL/2.0/).
 
-## About
+## 👤 About the author
+
 * Author : Marc ALCARAZ (aka eKameleon)
 * Mail : marc@ooop.fr
 * Website : http://www.ooop.fr
