@@ -1,48 +1,41 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-<section>
+<section class="phpdocumentor-section">
 
+<a href="https://github.com/BcommeBois/oihana-php-files" class="phpdocumentor-title__link">
+    <img src="assets/images/oihana-php-files-logo-inline-512x160.png" alt="Oihana PHP Files" style="width: 256px; height: 80px;"/>
+</a>
 
-<h2>Oihana PHP Files</h2>
+</br>
 
-<img src="assets/images/logo.png" alt="Oihana PHP" style="width: 256px; height: 108px;"/>
-<p>Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.</p>
+<h3>🔗 Project on GitHub</h3>
+<p>View the full source code and contribute on GitHub:</p>
+<p>
+    <a href="https://github.com/BcommeBois/oihana-php-files" target="_blank">
+        https://github.com/BcommeBois/oihana-php-files
+    </a>
+</p>
 
+<h3>📦 Installation</h3>
+<p>This library requires <a href="https://php.net/releases/" target="_blank">PHP 8.4+</a> and is installed via <a href="https://getcomposer.org/" target="_blank">Composer</a>:</p>
+<pre class="language-bash prettyprint">composer require oihana/php-core</pre>
 
-<h3>Installation and Usage</h3>
+<h3>✅ Running Unit Tests</h3>
+<p>Run all unit tests:</p>
+<pre class="language-bash prettyprint">composer run-script test</pre>
 
-<div>The library requires <b><a href="https://php.net/releases/">PHP 8.4+</a></b> and using <b><a href="https://getcomposer.org">Composer</a></b></div>
-<div>
-<pre class="language-bash prettyprint">
-composer require oihana/php-files
-</pre>
-</div>
+<p>Run a specific test:</p>
+<pre class="language-bash prettyprint">composer run test ./tests/oihana/files/openssl/OpenSSLFileEncryptionTest</pre>
 
-<h4>Unit tests</h4>
-<p>Run all unit tests.</p>
+<h3>📄 License</h3>
+<p>This project is licensed under the <strong><a href="https://www.mozilla.org/en-US/MPL/2.0/" target="_blank">Mozilla Public License 2.0 (MPL-2.0)</a></strong>.</p>
 
-<div>
-<pre class="language-bash prettyprint">
-composer run-script test
-</pre>
-</div>
-
-<div>
-Run a unique unit test.
-<pre class="language-bash prettyprint">
-composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
-</pre>
-</div>
-
-<h3>Licences</h3>
-<p><b>Licence MPL 2.0</b> : Mozilla Public License Version 2.0</p>
-
-<h3>About</h3>
+<h3>👤 About the Author</h3>
 <ul>
-    <li>Author : Marc ALCARAZ (aka eKameleon)</li>
-    <li>Mail : marc@ooop.fr</li>
-    <li>Link : https://www.ooop.fr</li>
+    <li><strong>Name:</strong> Marc ALCARAZ (aka <em>eKameleon</em>)</li>
+    <li><strong>Website:</strong> <a href="https://www.ooop.fr" target="_blank">www.ooop.fr</a></li>
+    <li><strong>Email:</strong> <a href="mailto:marc@ooop.fr">marc@ooop.fr</a></li>
 </ul>
 
 {% set node = project.namespace %}
