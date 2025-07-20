@@ -2,8 +2,6 @@
 
 ![Oihana PHP Files](https://raw.githubusercontent.com/BcommeBois/oihana-php-files/main/.phpdoc/template/assets/images/oihana-php-files-logo-inline-512x160.png)
 
----
-
 ## 📚 Documentation
 
 Full project documentation is available at:  
