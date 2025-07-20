@@ -5,7 +5,7 @@
 ## 📚 Documentation
 
 Full project documentation is available at:  
-👉 https://bcommebois.github.io/oihana-php-files/
+👉 https://bcommebois.github.io/oihana-php-files
 
 ## 🚀 Features
 
