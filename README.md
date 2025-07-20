@@ -1,48 +1,56 @@
-# oihana-php-files
+# Oihana PHP - Files library
 
-## Oihana PHP - Files library
+![Oihana PHP Files](https://raw.githubusercontent.com/BcommeBois/oihana-php-files/main/.phpdoc/template/assets/images/oihana-php-files-logo-inline-512x160.png)
 
-Provides universal PHP utilities for handling filesystem operations and manipulating file and directory paths, independent of the platform in use.
+---
 
-## Documentation
+## 📚 Documentation
 
-Read the full documentation of the project on : 
-- https://bcommebois.github.io/oihana-php-files/
+Full project documentation is available at:  
+👉 https://bcommebois.github.io/oihana-php-files/
 
-## Installation and Usage
+## 🚀 Features
 
-> **Requires [PHP 8.4+](https://php.net/releases/)**
+- 📁 Cross-platform path and file utilities
+- 🔐 File encryption and decryption with OpenSSL
+- 🗜️ Tar and compressed `.tar.gz` archive creation and extraction
+- 📂 Recursive file discovery with filters and options
+- 🧪 Full unit test coverage
 
-This library using [Composer](https://getcomposer.org):
+## 📦 Installation
 
+> **Requires [PHP 8.4+](https://php.net/releases/)**  
+
+Install via [Composer](https://getcomposer.org):
 ```bash
 composer require oihana/php-files
 ```
 
-## Unit tests
+## ✅ Running Unit Tests
 
-Run all unit tests.
+To run all tests:
 ```bash
 composer run-script test
 ```
 
-Run a unique unit test.
+To run a specific test file:
 ```bash
 composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
 ```
 
-## Licences
- * Licence MPL 2.0 : Mozilla Public License Version 2.0
+## Licence
+
+This project is licensed under the [Mozilla Public License 2.0 (MPL-2.0)](https://www.mozilla.org/en-US/MPL/2.0/).
 
 ## About
- * Author : Marc ALCARAZ (aka eKameleon)
- * Mail : marc@ooop.fr
- * Link : http://www.ooop.fr
+* Author : Marc ALCARAZ (aka eKameleon)
+* Mail : marc@ooop.fr
+* Website : http://www.ooop.fr
 
 
-### Generates and update the documentation
+## 🛠️ Generate the Documentation
 
-We use PhpDocumentor to generates the documentation of the library in the ./docs directory.
+We use [phpDocumentor](https://phpdoc.org/) to generate the documentation into the ./docs folder.
 
 ### Usage
 Run the command : 
