@@ -1,4 +1,4 @@
-# Oihana PHP - Files library
+# Oihana PHP - Files
 
 ![Oihana PHP Files](https://raw.githubusercontent.com/BcommeBois/oihana-php-files/main/.phpdoc/template/assets/images/oihana-php-files-logo-inline-512x160.png)
 
