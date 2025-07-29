@@ -174,6 +174,13 @@
 <dd>Deletes a directory recursively.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_deleteFile">deleteFile()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Deletes a file from the filesystem.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_deleteTemporaryDirectory">deleteTemporaryDirectory()</a>
     <span>
                                 &nbsp;: bool    </span>
@@ -1012,6 +1019,138 @@ catch (DirectoryException $e)
         <span class="phpdocumentor-signature__response_type">bool</span>
                     &mdash;
                 <section class="phpdocumentor-description"><p>Returns true if the directory is removed.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_deleteFile">
+        deleteFile()
+        <a href="namespaces/oihana-files.html#function_deleteFile" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/deleteFile.php"><a href="files/src-oihana-files-deletefile.html"><abbr title="src/oihana/files/deleteFile.php">deleteFile.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">43</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Deletes a file from the filesystem.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">deleteFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$assertable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isReadable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isWritable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+        <section class="phpdocumentor-description"><p>This function optionally asserts that the file exists and meets
+the specified readability and writability requirements before attempting deletion.
+If the deletion fails, a <code class="prettyprint">FileException</code> is thrown.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$filePath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The path to the file to delete.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$assertable</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Whether to perform assertions on the file before deletion (default: true).</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$isReadable</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Whether to assert that the file is readable (default: true).</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$isWritable</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Whether to assert that the file is writable (default: true).</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_deleteFile#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file does not meet the assertions or cannot be deleted.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">$file = 'example.txt';
+file_put_contents($file, 'Sample content');
+
+try
+{
+    deleteFile($file);
+    echo &quot;File deleted successfully.&quot;;
+}
+catch (FileException $e)
+{
+    echo &quot;Error deleting file: &quot; . $e-&gt;getMessage();
+}
+</code></pre>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true on successful deletion.</p>
 </section>
 
             </section>
@@ -4169,6 +4308,7 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_assertWritableDirectory">assertWritableDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_copyFilteredFiles">copyFilteredFiles()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_deleteDirectory">deleteDirectory()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_deleteFile">deleteFile()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_deleteTemporaryDirectory">deleteTemporaryDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_findFiles">findFiles()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getBaseFileName">getBaseFileName()</a></li>

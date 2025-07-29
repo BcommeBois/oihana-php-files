@@ -63,6 +63,7 @@
             "src/oihana/files/assertFile.php",
             "src/oihana/files/copyFilteredFiles.php",
             "src/oihana/files/deleteDirectory.php",
+            "src/oihana/files/deleteFile.php",
             "src/oihana/files/deleteTemporaryDirectory.php",
             "src/oihana/files/findFiles.php",
             "src/oihana/files/getBaseFileName.php",

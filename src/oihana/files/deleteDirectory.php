@@ -80,7 +80,7 @@ function deleteDirectory( string|array|null $path , bool $assertable = true , bo
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
-        foreach ($iterator as $file)
+        foreach ( $iterator as $file )
         {
             if ( $file->isDir() )
             {

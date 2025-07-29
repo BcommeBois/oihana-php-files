@@ -71,6 +71,11 @@ Search.appendIndex(
             "summary": "Deletes\u0020a\u0020directory\u0020recursively.",
             "url": "namespaces/oihana-files.html#function_deleteDirectory"
         },                {
+            "fqsen": "\\oihana\\files\\deleteFile\u0028\u0029",
+            "name": "deleteFile",
+            "summary": "Deletes\u0020a\u0020file\u0020from\u0020the\u0020filesystem.",
+            "url": "namespaces/oihana-files.html#function_deleteFile"
+        },                {
             "fqsen": "\\oihana\\files\\deleteTemporaryDirectory\u0028\u0029",
             "name": "deleteTemporaryDirectory",
             "summary": "Deletes\u0020a\u0020directory\u0020located\u0020in\u0020the\u0020system\u0020temporary\u0020folder\u0020\u0028recursively\u0029.",
@@ -1070,6 +1075,11 @@ Search.appendIndex(
             "name": "MakeFileOption",
             "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
             "url": "classes/oihana-files-enums-MakeFileOption.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Returns\u0020the\u0020string\u0020expression\u0020of\u0020the\u0020object.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#method___toString"
         },                {
             "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AAPPEND",
             "name": "APPEND",
