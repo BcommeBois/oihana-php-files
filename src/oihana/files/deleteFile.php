@@ -44,10 +44,10 @@ function deleteFile( string $filePath, bool $assertable = true, bool $isReadable
 {
     if ( $assertable )
     {
-        assertFile( $filePath , null , $isReadable , $isWritable );
+        assertFile( $filePath , isReadable:  $isReadable , isWritable: $isWritable );
     }
 
-    if ( ! @unlink( $filePath ) )
+    if ( !@unlink( $filePath ) )
     {
         throw new FileException( sprintf( 'Failed to remove file "%s".' , $filePath ) ) ;
     }
