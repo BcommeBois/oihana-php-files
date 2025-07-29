@@ -150,4 +150,26 @@ class MakeFileTest extends TestCase
         // We cannot reliably assert owner/group without posix extension but at least no exception thrown
         $this->assertFileExists($file);
     }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testSetOwnerAndGroupWithArrayParameter(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $this->markTestSkipped('Owner and group tests skipped on Windows.');
+        }
+
+        $file = $this->tmpDir . '/file_from_array.txt';
+
+        makeFile([
+            'filePath' => $file,
+            'content'  => "test content",
+            'owner'    => get_current_user(),
+            'group'    => posix_getgid(),
+        ]);
+
+        $this->assertFileExists($file);
+    }
 }

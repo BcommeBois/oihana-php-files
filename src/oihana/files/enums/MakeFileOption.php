@@ -21,6 +21,16 @@ class MakeFileOption
     public const string APPEND = 'append' ;
 
     /**
+     * The content to write into the file.
+     */
+    public const string CONTENT = 'content' ;
+
+    /**
+     * The path of the file to create or modify.
+     */
+    public const string FILE_PATH = 'filePath' ;
+
+    /**
      * If true, creates parent directories if they do not exist. Default: true.
      */
     public const string FORCE = 'force' ;

@@ -2775,7 +2775,7 @@ file_put_contents( $path . '/sample.txt', 'content' ) ;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/makeFile.php"><a href="files/src-oihana-files-makefile.html"><abbr title="src/oihana/files/makeFile.php">makeFile.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">72</span>
+    <span class="phpdocumentor-element-found-in__line">108</span>
 
     </aside>
 
@@ -2784,32 +2784,49 @@ file_put_contents( $path . '/sample.txt', 'content' ) ;
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">makeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$content</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">makeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, filePath: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileOrOptions</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$content</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
         <section class="phpdocumentor-description"><p>This function writes content to the specified file path. It supports
 appending to existing files, overwriting, setting file permissions,
 changing ownership, and group. It can also create the parent directories
 if needed.</p>
+<p>Usage:</p>
+<ul>
+<li>Classic signature:</li>
+</ul>
+<pre class="prettyprint"><code class="language-php">makeFile(string $filePath, string $content = '', array $options = []);
+</code></pre>
+<ul>
+<li>Signature with options array as first parameter:</li>
+</ul>
+<pre class="prettyprint"><code class="language-php">makeFile(array $options);
+</code></pre>
+<p>Required keys in $options:</p>
+<ul>
+<li>'filePath' (string): The path of the file to create or modify (mandatory).</li>
+<li>'content' (string): The content to write into the file (optional, default '').
+Other keys correspond to options (see below).</li>
+</ul>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$filePath</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                <span class="phpdocumentor-signature__argument__name">$fileOrOptions</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, filePath: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The path of the file to create or modify.
-Cannot be null or empty.</p>
+                    <section class="phpdocumentor-description"><p>Either the file path as a string (classic usage),
+or an associative array containing at least 'filePath' and optionally 'content' and other options.</p>
 </section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$content</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The content to write into the file. Defaults to empty string.</p>
+                    <section class="phpdocumentor-description"><p>The content to write into the file. Defaults to empty string. Ignored if $filePathOrOptions is array.</p>
 </section>
 
             </dd>
@@ -2846,8 +2863,7 @@ Cannot be null or empty.</p>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
                                                             
-                                                 <section class="phpdocumentor-description"><p>If the file path is invalid, writing fails,
-or permission/ownership changes fail.</p>
+                                                 <section class="phpdocumentor-description"><p>If the file path is invalid, writing fails, or permission/ownership changes fail.</p>
 </section>
 
                                     </dd>
@@ -2917,6 +2933,14 @@ or permission/ownership changes fail.</p>
 </code></pre>
 <p>Create a file without forcing directory creation (will fail if directory missing)</p>
 <pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Content&quot;, ['force' =&gt; false]);
+</code></pre>
+<p>With a unique array definition :</p>
+<pre class="prettyprint"><code class="language-php"> makeFile([
+     'filePath'    =&gt; '/path/to/file.txt',
+     'content'     =&gt; &quot;Hello World&quot;,
+     'append'      =&gt; true,
+     'permissions' =&gt; 0600,
+ ]);
 </code></pre>
 </section>
 

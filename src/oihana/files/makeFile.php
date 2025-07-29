@@ -3,6 +3,7 @@
 namespace oihana\files ;
 
 use oihana\files\enums\MakeFileOption;
+use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 
 /**
@@ -13,9 +14,35 @@ use oihana\files\exceptions\FileException;
  * changing ownership, and group. It can also create the parent directories
  * if needed.
  *
- * @param string|null $filePath The path of the file to create or modify.
- * Cannot be null or empty.
- * @param string $content The content to write into the file. Defaults to empty string.
+ * Usage:
+ * - Classic signature:
+ * ```php
+ * makeFile(string $filePath, string $content = '', array $options = []);
+ * ```
+ *
+ * - Signature with options array as first parameter:
+ * ```php
+ * makeFile(array $options);
+ * ```
+ *
+ * Required keys in $options:
+ * - 'filePath' (string): The path of the file to create or modify (mandatory).
+ * - 'content' (string): The content to write into the file (optional, default '').
+ * Other keys correspond to options (see below).
+ *
+ * @param array{
+ *     append:bool ,
+ *     content:string|null ,
+ *     filePath:string|null ,
+ *     force:bool ,
+ *     group:null|string ,
+ *     lock:bool ,
+ *     overwrite:bool ,
+ *     permissions:int ,
+ *     owner:string|null
+ * }|string|null $fileOrOptions Either the file path as a string (classic usage),
+ * or an associative array containing at least 'filePath' and optionally 'content' and other options.
+ * @param string|null $content The content to write into the file. Defaults to empty string. Ignored if $filePathOrOptions is array.
  * @param array{ append:bool , force:bool , group:null|string , lock:bool , overwrite:bool , permissions:int , owner:string|null } $options An associative array of options:
  * - 'append' (bool): If true, appends content instead of overwriting. Default: false.
  * - 'force' (bool): If true, creates parent directories if they do not exist. Default: true.
@@ -27,9 +54,8 @@ use oihana\files\exceptions\FileException;
  *
  * @return string The path of the created or updated file.
  *
- * @throws FileException           If the file path is invalid, writing fails,
- * or permission/ownership changes fail.
- * @throws exceptions\DirectoryException If directory creation fails.
+ * @throws FileException If the file path is invalid, writing fails, or permission/ownership changes fail.
+ * @throws DirectoryException If directory creation fails.
  *
  * @package oihana\files
  * @author Marc Alcaraz (ekameleon)
@@ -65,12 +91,47 @@ use oihana\files\exceptions\FileException;
  * makeFile('/path/to/file.txt', "Content", ['force' => false]);
  * ```
  *
+ * With a unique array definition :
+ * ```php
+ *  makeFile([
+ *      'filePath'    => '/path/to/file.txt',
+ *      'content'     => "Hello World",
+ *      'append'      => true,
+ *      'permissions' => 0600,
+ *  ]);
+ * ```
+ *
  * @package oihana\files
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
  */
-function makeFile( ?string $filePath , string $content = '' , array $options = [] ): string
+function makeFile( array|string|null $fileOrOptions , ?string $content = null , array $options = [] ): string
 {
+    if ( is_array( $fileOrOptions ) )
+    {
+        $opts = $fileOrOptions ;
+
+        $filePath = $opts[ MakeFileOption::FILE_PATH ] ?? null;
+        if ( empty( $filePath ) )
+        {
+            throw new FileException('File path cannot be null or empty.');
+        }
+
+        $content = $opts[ MakeFileOption::CONTENT ] ?? '' ;
+
+        unset( $opts[ MakeFileOption::FILE_PATH ] , $opts[ MakeFileOption::CONTENT ] );
+
+        $options = $opts ;
+    }
+    else
+    {
+        $filePath = $fileOrOptions;
+        if ($content === null)
+        {
+            $content = '' ;
+        }
+    }
+
     if ( empty( $filePath ) )
     {
         throw new FileException('File path cannot be null or empty.' ) ;

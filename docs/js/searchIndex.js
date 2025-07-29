@@ -1076,6 +1076,16 @@ Search.appendIndex(
             "summary": "If\u0020true,\u0020appends\u0020content\u0020instead\u0020of\u0020overwriting.\u0020Default\u003A\u0020false.",
             "url": "classes/oihana-files-enums-MakeFileOption.html#constant_APPEND"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003ACONTENT",
+            "name": "CONTENT",
+            "summary": "The\u0020content\u0020to\u0020write\u0020into\u0020the\u0020file.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_CONTENT"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFILE_PATH",
+            "name": "FILE_PATH",
+            "summary": "The\u0020path\u0020of\u0020the\u0020file\u0020to\u0020create\u0020or\u0020modify.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_FILE_PATH"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFORCE",
             "name": "FORCE",
             "summary": "If\u0020true,\u0020creates\u0020parent\u0020directories\u0020if\u0020they\u0020do\u0020not\u0020exist.\u0020Default\u003A\u0020true.",
