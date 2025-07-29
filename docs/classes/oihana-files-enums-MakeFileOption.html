@@ -102,7 +102,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    FindFileOption
+    MakeFileOption
 
     
     
@@ -118,22 +118,20 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">14</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">FileExtension</p>
+            <p class="phpdocumentor-summary">Enumeration class that defines various options to use in the makeFile function.</p>
 
 
-    <section class="phpdocumentor-description"><p>Enumeration class that defines various options to use in the findFiles function.</p>
-</section>
 
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/oihana-files-enums-FindFileOption.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/oihana-files-enums-MakeFileOption.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -162,7 +160,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/oihana-files-enums-FindFileOption.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/oihana-files-enums-MakeFileOption.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -174,65 +172,58 @@
 
 <h4 id="toc-constants">
     Constants
-    <a href="classes/oihana-files-enums-FindFileOption.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/oihana-files-enums-MakeFileOption.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_FILTER">FILTER</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_APPEND">APPEND</a>
     <span>
-        &nbsp;= &#039;filter&#039;                            </span>
+        &nbsp;= &#039;append&#039;                            </span>
 </dt>
-<dd>The optional function to filter all files.</dd>
+<dd>If true, appends content instead of overwriting. Default: false.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_FOLLOW_LINKS">FOLLOW_LINKS</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_FORCE">FORCE</a>
     <span>
-        &nbsp;= &#039;followLinks&#039;                            </span>
+        &nbsp;= &#039;force&#039;                            </span>
 </dt>
-<dd>Indicates whether symbolic links should be followed.</dd>
+<dd>If true, creates parent directories if they do not exist. Default: true.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_INCLUDE_DOTS">INCLUDE_DOTS</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_GROUP">GROUP</a>
     <span>
-        &nbsp;= &#039;includeDots&#039;                            </span>
+        &nbsp;= &#039;group&#039;                            </span>
 </dt>
-<dd>Indicates if the dot files are included.</dd>
+<dd>Group name or ID to set as file group owner. Default: null.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_MODE">MODE</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_LOCK">LOCK</a>
     <span>
-        &nbsp;= &#039;mode&#039;                            </span>
+        &nbsp;= &#039;lock&#039;                            </span>
 </dt>
-<dd>Filter mode (&quot;files&quot;, &quot;dirs&quot; or &quot;both&quot;).</dd>
+<dd>If true, uses an exclusive lock while writing. Default: true.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_ORDER">ORDER</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_OVERWRITE">OVERWRITE</a>
     <span>
-        &nbsp;= &#039;order&#039;                            </span>
+        &nbsp;= &#039;overwrite&#039;                            </span>
 </dt>
-<dd>The order of the file sorting : default &#039;asc&#039; or &#039;desc&#039;.</dd>
+<dd>If true, overwrites existing files. Default: false.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_PATTERN">PATTERN</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_OWNER">OWNER</a>
     <span>
-        &nbsp;= &#039;pattern&#039;                            </span>
+        &nbsp;= &#039;owner&#039;                            </span>
 </dt>
-<dd>A pattern (a regexp, a glob, or a string) or an array of patterns.</dd>
+<dd>User name or ID to set as file owner. Default: null.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_RECURSIVE">RECURSIVE</a>
+    <a class="" href="classes/oihana-files-enums-MakeFileOption.html#constant_PERMISSIONS">PERMISSIONS</a>
     <span>
-        &nbsp;= &#039;recursive&#039;                            </span>
+        &nbsp;= &#039;permissions&#039;                            </span>
 </dt>
-<dd>Indicates if all sub-directories are browsed.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/oihana-files-enums-FindFileOption.html#constant_SORT">SORT</a>
-    <span>
-        &nbsp;= &#039;sort&#039;                            </span>
-</dt>
-<dd>The optional sort option to sort all files.</dd>
+<dd>File permissions to set (octal). Default: 0644.</dd>
 
     </dl>
 
@@ -245,31 +236,31 @@
     <section class="phpdocumentor-constants">
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
-            <a href="classes/oihana-files-enums-FindFileOption.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/oihana-files-enums-MakeFileOption.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_FILTER">
-        FILTER
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_FILTER" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_APPEND">
+        APPEND
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_APPEND" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">The optional function to filter all files.</p>
+        <p class="phpdocumentor-summary">If true, appends content instead of overwriting. Default: false.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">FILTER</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;filter&#039;</span>
+    <span class="phpdocumentor-signature__name">APPEND</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;append&#039;</span>
 </code>
 
 
@@ -281,27 +272,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_FOLLOW_LINKS">
-        FOLLOW_LINKS
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_FOLLOW_LINKS" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_FORCE">
+        FORCE
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_FORCE" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">28</span>
+    <span class="phpdocumentor-element-found-in__line">26</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Indicates whether symbolic links should be followed.</p>
+        <p class="phpdocumentor-summary">If true, creates parent directories if they do not exist. Default: true.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">FOLLOW_LINKS</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;followLinks&#039;</span>
+    <span class="phpdocumentor-signature__name">FORCE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;force&#039;</span>
 </code>
 
 
@@ -313,27 +304,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_INCLUDE_DOTS">
-        INCLUDE_DOTS
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_INCLUDE_DOTS" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_GROUP">
+        GROUP
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_GROUP" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">33</span>
+    <span class="phpdocumentor-element-found-in__line">31</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Indicates if the dot files are included.</p>
+        <p class="phpdocumentor-summary">Group name or ID to set as file group owner. Default: null.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">INCLUDE_DOTS</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;includeDots&#039;</span>
+    <span class="phpdocumentor-signature__name">GROUP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;group&#039;</span>
 </code>
 
 
@@ -345,27 +336,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_MODE">
-        MODE
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_MODE" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_LOCK">
+        LOCK
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_LOCK" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">38</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Filter mode (&quot;files&quot;, &quot;dirs&quot; or &quot;both&quot;).</p>
+        <p class="phpdocumentor-summary">If true, uses an exclusive lock while writing. Default: true.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">MODE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;mode&#039;</span>
+    <span class="phpdocumentor-signature__name">LOCK</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;lock&#039;</span>
 </code>
 
 
@@ -377,27 +368,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_ORDER">
-        ORDER
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_ORDER" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_OVERWRITE">
+        OVERWRITE
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_OVERWRITE" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">41</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">The order of the file sorting : default &#039;asc&#039; or &#039;desc&#039;.</p>
+        <p class="phpdocumentor-summary">If true, overwrites existing files. Default: false.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">ORDER</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;order&#039;</span>
+    <span class="phpdocumentor-signature__name">OVERWRITE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;overwrite&#039;</span>
 </code>
 
 
@@ -409,27 +400,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_PATTERN">
-        PATTERN
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_PATTERN" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_OWNER">
+        OWNER
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_OWNER" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">48</span>
+    <span class="phpdocumentor-element-found-in__line">51</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">A pattern (a regexp, a glob, or a string) or an array of patterns.</p>
+        <p class="phpdocumentor-summary">User name or ID to set as file owner. Default: null.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">PATTERN</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;pattern&#039;</span>
+    <span class="phpdocumentor-signature__name">OWNER</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;owner&#039;</span>
 </code>
 
 
@@ -441,59 +432,27 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_RECURSIVE">
-        RECURSIVE
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_RECURSIVE" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_PERMISSIONS">
+        PERMISSIONS
+        <a href="classes/oihana-files-enums-MakeFileOption.html#constant_PERMISSIONS" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/MakeFileOption.php"><a href="files/src-oihana-files-enums-makefileoption.html"><abbr title="src/oihana/files/enums/MakeFileOption.php">MakeFileOption.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">53</span>
+    <span class="phpdocumentor-element-found-in__line">46</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Indicates if all sub-directories are browsed.</p>
+        <p class="phpdocumentor-summary">File permissions to set (octal). Default: 0644.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">RECURSIVE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;recursive&#039;</span>
-</code>
-
-
-    
-    
-    
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_SORT">
-        SORT
-        <a href="classes/oihana-files-enums-FindFileOption.html#constant_SORT" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/enums/FindFileOption.php"><a href="files/src-oihana-files-enums-findfileoption.html"><abbr title="src/oihana/files/enums/FindFileOption.php">FindFileOption.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">58</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">The optional sort option to sort all files.</p>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">SORT</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;sort&#039;</span>
+    <span class="phpdocumentor-signature__name">PERMISSIONS</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;permissions&#039;</span>
 </code>
 
 
@@ -513,7 +472,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/enums/FindFileOption.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/enums/MakeFileOption.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -614,20 +573,19 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                        <li><a href="classes/oihana-files-enums-FindFileOption.html#toc-constants">Constants</a></li>
+                                        <li><a href="classes/oihana-files-enums-MakeFileOption.html#toc-constants">Constants</a></li>
                                                                             </ul>
             </li>
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_FILTER">FILTER</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_FOLLOW_LINKS">FOLLOW_LINKS</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_INCLUDE_DOTS">INCLUDE_DOTS</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_MODE">MODE</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_ORDER">ORDER</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_PATTERN">PATTERN</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_RECURSIVE">RECURSIVE</a></li>
-                                                    <li class=""><a href="classes/oihana-files-enums-FindFileOption.html#constant_SORT">SORT</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_APPEND">APPEND</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_FORCE">FORCE</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_GROUP">GROUP</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_LOCK">LOCK</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_OVERWRITE">OVERWRITE</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_OWNER">OWNER</a></li>
+                                                    <li class=""><a href="classes/oihana-files-enums-MakeFileOption.html#constant_PERMISSIONS">PERMISSIONS</a></li>
                                             </ul>
                 </li>
             
@@ -649,7 +607,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/oihana-files-enums-FindFileOption.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/oihana-files-enums-MakeFileOption.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

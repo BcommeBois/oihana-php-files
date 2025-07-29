@@ -75,6 +75,7 @@
             "src/oihana/files/getTimestampedDirectory.php",
             "src/oihana/files/getTimestampedFile.php",
             "src/oihana/files/makeDirectory.php",
+            "src/oihana/files/makeFile.php",
             "src/oihana/files/makeTemporaryDirectory.php",
             "src/oihana/files/makeTimestampedDirectory.php",
             "src/oihana/files/makeTimestampedFile.php",
@@ -103,7 +104,8 @@
         "phpunit/phpunit": "^12",
         "nunomaduro/collision": "^8.8",
         "mikey179/vfsstream": "^1.6",
-        "phpdocumentor/shim": "^3.8"
+        "phpdocumentor/shim": "^3.8" ,
+        "ext-posix" : "*"
     },
     "config": {
         "allow-plugins": {

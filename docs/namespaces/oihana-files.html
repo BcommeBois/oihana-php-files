@@ -258,6 +258,13 @@
 <dd>Creates a directory if it does not exist and returns the path of the directory.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_makeFile">makeFile()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Creates or updates a file with the given content and options.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_makeTemporaryDirectory">makeTemporaryDirectory()</a>
     <span>
                                 &nbsp;: string    </span>
@@ -2760,6 +2767,173 @@ file_put_contents( $path . '/sample.txt', 'content' ) ;
 
 </article>
                     <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_makeFile">
+        makeFile()
+        <a href="namespaces/oihana-files.html#function_makeFile" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/makeFile.php"><a href="files/src-oihana-files-makefile.html"><abbr title="src/oihana/files/makeFile.php">makeFile.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">72</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Creates or updates a file with the given content and options.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">makeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$content</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+        <section class="phpdocumentor-description"><p>This function writes content to the specified file path. It supports
+appending to existing files, overwriting, setting file permissions,
+changing ownership, and group. It can also create the parent directories
+if needed.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$filePath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The path of the file to create or modify.
+Cannot be null or empty.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$content</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The content to write into the file. Defaults to empty string.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$options</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>An associative array of options:</p>
+<ul>
+<li>'append' (bool): If true, appends content instead of overwriting. Default: false.</li>
+<li>'force' (bool): If true, creates parent directories if they do not exist. Default: true.</li>
+<li>'group' (string|null): Group name or ID to set as file group owner. Default: null.</li>
+<li>'lock' (bool): If true, uses an exclusive lock while writing. Default: true.</li>
+<li>'overwrite' (bool): If true, overwrites existing files. Default: false.</li>
+<li>'permissions' (int): File permissions to set (octal). Default: 0644.</li>
+<li>'owner' (string|null): User name or ID to set as file owner. Default: null.</li>
+</ul>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_makeFile#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file path is invalid, writing fails,
+or permission/ownership changes fail.</p>
+</section>
+
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-DirectoryException.html"><abbr title="\oihana\files\exceptions\DirectoryException">DirectoryException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If directory creation fails.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Create a new file with content, creating directories if needed</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Hello World&quot;);
+</code></pre>
+<p>Append content to an existing file, creating directories if needed</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;\nAppended line&quot;, ['append' =&gt; true]);
+</code></pre>
+<p>Overwrite existing file with new content</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Overwrite content&quot;, ['overwrite' =&gt; true]);
+</code></pre>
+<p>Create a file with custom permissions and without locking</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Content&quot;, ['permissions' =&gt; 0600, 'lock' =&gt; false]);
+</code></pre>
+<p>Create a file and set ownership and group (requires appropriate permissions)</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Content&quot;, ['owner' =&gt; 'username', 'group' =&gt; 'groupname']);
+</code></pre>
+<p>Create a file without forcing directory creation (will fail if directory missing)</p>
+<pre class="prettyprint"><code class="language-php">makeFile('/path/to/file.txt', &quot;Content&quot;, ['force' =&gt; false]);
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The path of the created or updated file.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
     <h4 class="phpdocumentor-element__name" id="function_makeTemporaryDirectory">
         makeTemporaryDirectory()
         <a href="namespaces/oihana-files.html#function_makeTemporaryDirectory" class="headerlink"><i class="fas fa-link"></i></a>
@@ -3889,6 +4063,8 @@ catch (FileException $e)
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
                             Prism.highlightElement(code);
+                            d=document.getElementsByClassName("line-numbers");
+                            d[0].scrollTop = d[0].children[1].offsetTop;
                             return;
                         }
 
@@ -3981,6 +4157,7 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTimestampedDirectory">getTimestampedDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTimestampedFile">getTimestampedFile()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_makeDirectory">makeDirectory()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_makeFile">makeFile()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_makeTemporaryDirectory">makeTemporaryDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_makeTimestampedDirectory">makeTimestampedDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_makeTimestampedFile">makeTimestampedFile()</a></li>

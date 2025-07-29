@@ -157,7 +157,7 @@ use function oihana\core\strings\isRegexp;
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
  */
-function findFiles( ?string $directory, array $options = [] ): array
+function findFiles( ?string $directory , array $options = [] ): array
 {
     assertDirectory( $directory );
 

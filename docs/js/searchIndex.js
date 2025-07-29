@@ -1066,6 +1066,46 @@ Search.appendIndex(
             "summary": "List\u0020directories\u0020only.",
             "url": "classes/oihana-files-enums-FindMode.html#constant_DIRS"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption",
+            "name": "MakeFileOption",
+            "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AAPPEND",
+            "name": "APPEND",
+            "summary": "If\u0020true,\u0020appends\u0020content\u0020instead\u0020of\u0020overwriting.\u0020Default\u003A\u0020false.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_APPEND"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFORCE",
+            "name": "FORCE",
+            "summary": "If\u0020true,\u0020creates\u0020parent\u0020directories\u0020if\u0020they\u0020do\u0020not\u0020exist.\u0020Default\u003A\u0020true.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_FORCE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AGROUP",
+            "name": "GROUP",
+            "summary": "Group\u0020name\u0020or\u0020ID\u0020to\u0020set\u0020as\u0020file\u0020group\u0020owner.\u0020Default\u003A\u0020null.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_GROUP"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003ALOCK",
+            "name": "LOCK",
+            "summary": "If\u0020true,\u0020uses\u0020an\u0020exclusive\u0020lock\u0020while\u0020writing.\u0020Default\u003A\u0020true.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_LOCK"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AOVERWRITE",
+            "name": "OVERWRITE",
+            "summary": "If\u0020true,\u0020overwrites\u0020existing\u0020files.\u0020Default\u003A\u0020false.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_OVERWRITE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003APERMISSIONS",
+            "name": "PERMISSIONS",
+            "summary": "File\u0020permissions\u0020to\u0020set\u0020\u0028octal\u0029.\u0020Default\u003A\u00200644.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_PERMISSIONS"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AOWNER",
+            "name": "OWNER",
+            "summary": "User\u0020name\u0020or\u0020ID\u0020to\u0020set\u0020as\u0020file\u0020owner.\u0020Default\u003A\u0020null.",
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_OWNER"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\TarExtension",
             "name": "TarExtension",
             "summary": "FileExtension",
@@ -1305,6 +1345,11 @@ Search.appendIndex(
             "name": "makeDirectory",
             "summary": "Creates\u0020a\u0020directory\u0020if\u0020it\u0020does\u0020not\u0020exist\u0020and\u0020returns\u0020the\u0020path\u0020of\u0020the\u0020directory.",
             "url": "namespaces/oihana-files.html#function_makeDirectory"
+        },                {
+            "fqsen": "\\oihana\\files\\makeFile\u0028\u0029",
+            "name": "makeFile",
+            "summary": "Creates\u0020or\u0020updates\u0020a\u0020file\u0020with\u0020the\u0020given\u0020content\u0020and\u0020options.",
+            "url": "namespaces/oihana-files.html#function_makeFile"
         },                {
             "fqsen": "\\oihana\\files\\makeTemporaryDirectory\u0028\u0029",
             "name": "makeTemporaryDirectory",

@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\getTimestampedDirectory
 - Adds oihana\files\getTimestampedFile
 - Adds oihana\files\makeDirectory
+- Adds oihana\files\makeFile
 - Adds oihana\files\makeTimestampedDirectory
 - Adds oihana\files\makeTimestampedFile
 - Adds oihana\files\recursiveFilePaths
