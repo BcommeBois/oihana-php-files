@@ -28,7 +28,7 @@ class MakeFileOption
     /**
      * The path of the file to create or modify.
      */
-    public const string FILE_PATH = 'filePath' ;
+    public const string FILE = 'file' ;
 
     /**
      * If true, creates parent directories if they do not exist. Default: true.

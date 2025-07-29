@@ -164,10 +164,10 @@ class MakeFileTest extends TestCase
         $file = $this->tmpDir . '/file_from_array.txt';
 
         makeFile([
-            'filePath' => $file,
-            'content'  => "test content",
-            'owner'    => get_current_user(),
-            'group'    => posix_getgid(),
+            'file'    => $file,
+            'content' => "test content",
+            'owner'   => get_current_user(),
+            'group'   => posix_getgid(),
         ]);
 
         $this->assertFileExists($file);

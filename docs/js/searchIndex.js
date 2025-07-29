@@ -1081,10 +1081,10 @@ Search.appendIndex(
             "summary": "The\u0020content\u0020to\u0020write\u0020into\u0020the\u0020file.",
             "url": "classes/oihana-files-enums-MakeFileOption.html#constant_CONTENT"
         },                {
-            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFILE_PATH",
-            "name": "FILE_PATH",
+            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFILE",
+            "name": "FILE",
             "summary": "The\u0020path\u0020of\u0020the\u0020file\u0020to\u0020create\u0020or\u0020modify.",
-            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_FILE_PATH"
+            "url": "classes/oihana-files-enums-MakeFileOption.html#constant_FILE"
         },                {
             "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AFORCE",
             "name": "FORCE",

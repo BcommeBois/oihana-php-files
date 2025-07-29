@@ -33,7 +33,7 @@ use oihana\files\exceptions\FileException;
  * @param array{
  *     append:bool ,
  *     content:string|null ,
- *     filePath:string|null ,
+ *     file:string|null ,
  *     force:bool ,
  *     group:null|string ,
  *     lock:bool ,
@@ -94,7 +94,7 @@ use oihana\files\exceptions\FileException;
  * With a unique array definition :
  * ```php
  *  makeFile([
- *      'filePath'    => '/path/to/file.txt',
+ *      'file'        => '/path/to/file.txt',
  *      'content'     => "Hello World",
  *      'append'      => true,
  *      'permissions' => 0600,
@@ -111,7 +111,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
     {
         $opts = $fileOrOptions ;
 
-        $filePath = $opts[ MakeFileOption::FILE_PATH ] ?? null;
+        $filePath = $opts[ MakeFileOption::FILE ] ?? null;
         if ( empty( $filePath ) )
         {
             throw new FileException('File path cannot be null or empty.');
@@ -119,7 +119,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
 
         $content = $opts[ MakeFileOption::CONTENT ] ?? '' ;
 
-        unset( $opts[ MakeFileOption::FILE_PATH ] , $opts[ MakeFileOption::CONTENT ] );
+        unset( $opts[ MakeFileOption::FILE ] , $opts[ MakeFileOption::CONTENT ] );
 
         $options = $opts ;
     }

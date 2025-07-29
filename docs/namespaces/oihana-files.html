@@ -2784,7 +2784,7 @@ file_put_contents( $path . '/sample.txt', 'content' ) ;
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">makeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, filePath: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileOrOptions</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$content</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">makeFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, file: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileOrOptions</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$content</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{append: bool, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
         <section class="phpdocumentor-description"><p>This function writes content to the specified file path. It supports
 appending to existing files, overwriting, setting file permissions,
@@ -2813,7 +2813,7 @@ Other keys correspond to options (see below).</li>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$fileOrOptions</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, filePath: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{append: bool, content: string|null, file: string|null, force: bool, group: null|string, lock: bool, overwrite: bool, permissions: int, owner: string|null}|string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Either the file path as a string (classic usage),
@@ -2936,7 +2936,7 @@ or an associative array containing at least 'filePath' and optionally 'content' 
 </code></pre>
 <p>With a unique array definition :</p>
 <pre class="prettyprint"><code class="language-php"> makeFile([
-     'filePath'    =&gt; '/path/to/file.txt',
+     'file'        =&gt; '/path/to/file.txt',
      'content'     =&gt; &quot;Hello World&quot;,
      'append'      =&gt; true,
      'permissions' =&gt; 0600,
