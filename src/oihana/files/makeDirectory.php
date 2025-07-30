@@ -98,6 +98,8 @@ use oihana\files\exceptions\DirectoryException;
  * @package oihana\files
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
+ *
+ * @see MakeDirectoryOption
  */
 function makeDirectory
 (
