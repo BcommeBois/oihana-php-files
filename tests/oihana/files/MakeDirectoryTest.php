@@ -114,4 +114,21 @@ class MakeDirectoryTest extends TestCase
         makeDirectory($path);
     }
 
+    /**
+     * @throws DirectoryException
+     */
+    public function testCreateDirectoryWithOptionsArray(): void
+    {
+        $path = vfsStream::url('testDir/option_array_dir');
+
+        $result = makeDirectory([
+            'path'        => $path,
+            'permissions' => 0750,
+            'recursive'   => true
+        ]);
+
+        $this->assertSame($path, $result);
+        $this->assertTrue(is_dir($path));
+        $this->assertEquals(0750, $this->root->getChild('option_array_dir')->getPermissions());
+    }
 }

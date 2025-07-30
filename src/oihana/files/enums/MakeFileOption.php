@@ -2,7 +2,6 @@
 
 namespace oihana\files\enums;
 
-use oihana\enums\Char;
 use oihana\reflections\traits\ConstantsTrait;
 
 /**
@@ -60,13 +59,4 @@ class MakeFileOption
      * User name or ID to set as file owner. Default: null.
      */
     public const string OWNER = 'owner' ;
-
-    /**
-     * Returns the string expression of the object.
-     * @return string
-     */
-    public function __toString() : string
-    {
-        return $this->file ?? Char::EMPTY ;
-    }
 }

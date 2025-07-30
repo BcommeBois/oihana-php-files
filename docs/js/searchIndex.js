@@ -1071,15 +1071,40 @@ Search.appendIndex(
             "summary": "List\u0020directories\u0020only.",
             "url": "classes/oihana-files-enums-FindMode.html#constant_DIRS"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption",
+            "name": "MakeDirectoryOption",
+            "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption\u003A\u003AGROUP",
+            "name": "GROUP",
+            "summary": "Group\u0020name\u0020or\u0020ID\u0020to\u0020set\u0020as\u0020file\u0020group\u0020owner.\u0020Default\u003A\u0020null.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html#constant_GROUP"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption\u003A\u003AOWNER",
+            "name": "OWNER",
+            "summary": "User\u0020name\u0020or\u0020ID\u0020to\u0020set\u0020as\u0020file\u0020owner.\u0020Default\u003A\u0020null.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html#constant_OWNER"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption\u003A\u003APATH",
+            "name": "PATH",
+            "summary": "The\u0020path\u0020of\u0020the\u0020directory\u0020to\u0020create.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html#constant_PATH"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption\u003A\u003APERMISSIONS",
+            "name": "PERMISSIONS",
+            "summary": "The\u0020permissions\u0020to\u0020set\u0020for\u0020the\u0020directory\u0020\u0028default\u003A\u00200755\u0029.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html#constant_PERMISSIONS"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption\u003A\u003ARECURSIVE",
+            "name": "RECURSIVE",
+            "summary": "If\u0020true,\u0020creates\u0020parent\u0020directories\u0020as\u0020needed\u0020\u0028default\u003A\u0020true\u0029.",
+            "url": "classes/oihana-files-enums-MakeDirectoryOption.html#constant_RECURSIVE"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\MakeFileOption",
             "name": "MakeFileOption",
             "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
             "url": "classes/oihana-files-enums-MakeFileOption.html"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Returns\u0020the\u0020string\u0020expression\u0020of\u0020the\u0020object.",
-            "url": "classes/oihana-files-enums-MakeFileOption.html#method___toString"
         },                {
             "fqsen": "\\oihana\\files\\enums\\MakeFileOption\u003A\u003AAPPEND",
             "name": "APPEND",
