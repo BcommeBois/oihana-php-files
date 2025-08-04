@@ -1151,6 +1151,61 @@ Search.appendIndex(
             "summary": "User\u0020name\u0020or\u0020ID\u0020to\u0020set\u0020as\u0020file\u0020owner.\u0020Default\u003A\u0020null.",
             "url": "classes/oihana-files-enums-MakeFileOption.html#constant_OWNER"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo",
+            "name": "OwnershipInfo",
+            "summary": "Represents\u0020the\u0020ownership\u0020information\u0020of\u0020a\u0020file\u0020or\u0020directory.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AequalsTo\u0028\u0029",
+            "name": "equalsTo",
+            "summary": "Compares\u0020this\u0020OwnershipInfo\u0020object\u0020with\u0020another\u0020to\u0020determine\u0020if\u0020they\u0020are\u0020identical.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#method_equalsTo"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Returns\u0020a\u0020string\u0020representation\u0020of\u0020the\u0020ownership.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#method___toString"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AGROUP",
+            "name": "GROUP",
+            "summary": "",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_GROUP"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AGID",
+            "name": "GID",
+            "summary": "",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_GID"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AOWNER",
+            "name": "OWNER",
+            "summary": "",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_OWNER"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AUID",
+            "name": "UID",
+            "summary": "",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_UID"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024owner",
+            "name": "owner",
+            "summary": "The\u0020file\u0020owner\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_owner"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024group",
+            "name": "group",
+            "summary": "The\u0020file\u0020group\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_group"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024uid",
+            "name": "uid",
+            "summary": "The\u0020file\u0020owner\u0027s\u0020UID.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_uid"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024gid",
+            "name": "gid",
+            "summary": "The\u0020file\u0020group\u0027s\u0020GID.",
+            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_gid"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\TarExtension",
             "name": "TarExtension",
             "summary": "FileExtension",
@@ -1336,6 +1391,11 @@ Search.appendIndex(
             "summary": "Returns\u0020the\u0020current\u0020user\u2019s\u0020home\u0020directory\u0020as\u0020a\u0020\u002A\u002Acanonical\u002A\u002A\u0020path.",
             "url": "namespaces/oihana-files.html#function_getHomeDirectory"
         },                {
+            "fqsen": "\\oihana\\files\\getOwnershipInfo\u0028\u0029",
+            "name": "getOwnershipInfo",
+            "summary": "Retrieves\u0020the\u0020current\u0020ownership\u0020information\u0020of\u0020a\u0020given\u0020file\u0020or\u0020directory.",
+            "url": "namespaces/oihana-files.html#function_getOwnershipInfo"
+        },                {
             "fqsen": "\\oihana\\files\\getRoot\u0028\u0029",
             "name": "getRoot",
             "summary": "Extracts\u0020the\u0020root\u0020directory\u0020component\u0020of\u0020a\u0020given\u0020path.",
@@ -1460,6 +1520,61 @@ Search.appendIndex(
             "name": "ivLength",
             "summary": "",
             "url": "classes/oihana-files-openssl-OpenSSLFileEncryption.html#property_ivLength"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions",
+            "name": "MakeFileOptions",
+            "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Returns\u0020the\u0020string\u0020expression\u0020of\u0020the\u0020object.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#method___toString"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024append",
+            "name": "append",
+            "summary": "If\u0020true,\u0020appends\u0020content\u0020instead\u0020of\u0020overwriting.\u0020Default\u003A\u0020false.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_append"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024content",
+            "name": "content",
+            "summary": "The\u0020content\u0020of\u0020the\u0020robots.txt\u0020file.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_content"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024file",
+            "name": "file",
+            "summary": "Set\u0020the\u0020robots.txt\u0020file\u0020path.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_file"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024force",
+            "name": "force",
+            "summary": "If\u0020true,\u0020creates\u0020parent\u0020directories\u0020if\u0020they\u0020do\u0020not\u0020exist.\u0020Default\u003A\u0020true.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_force"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024group",
+            "name": "group",
+            "summary": "Set\u0020the\u0020group\u0020of\u0020the\u0020file.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_group"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024lock",
+            "name": "lock",
+            "summary": "If\u0020true,\u0020creates\u0020parent\u0020directories\u0020if\u0020they\u0020do\u0020not\u0020exist.\u0020Default\u003A\u0020true.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_lock"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024overwrite",
+            "name": "overwrite",
+            "summary": "If\u0020true,\u0020overwrites\u0020existing\u0020files.\u0020Default\u003A\u0020true.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_overwrite"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024owner",
+            "name": "owner",
+            "summary": "Set\u0020the\u0020owner\u0020of\u0020the\u0020file.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_owner"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\MakeFileOptions\u003A\u003A\u0024permissions",
+            "name": "permissions",
+            "summary": "File\u0020permissions\u0020to\u0020set\u0020\u0028octal\u0029.\u0020Default\u003A\u00200644.",
+            "url": "classes/oihana-files-options-MakeFileOptions.html#property_permissions"
         },                {
             "fqsen": "\\oihana\\files\\path\\canonicalizePath\u0028\u0029",
             "name": "canonicalizePath",
@@ -1610,6 +1725,11 @@ Search.appendIndex(
             "name": "openssl",
             "summary": "",
             "url": "namespaces/oihana-files-openssl.html"
+        },                {
+            "fqsen": "\\oihana\\files\\options",
+            "name": "options",
+            "summary": "",
+            "url": "namespaces/oihana-files-options.html"
         },                {
             "fqsen": "\\oihana\\files\\path",
             "name": "path",

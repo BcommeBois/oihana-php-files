@@ -120,6 +120,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-exceptions.html"><abbr title="\oihana\files\exceptions">exceptions</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-helpers.html"><abbr title="\oihana\files\helpers">helpers</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-openssl.html"><abbr title="\oihana\files\openssl">openssl</abbr></a></dt>
+            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-options.html"><abbr title="\oihana\files\options">options</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-path.html"><abbr title="\oihana\files\path">path</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/oihana-files-phar.html"><abbr title="\oihana\files\phar">phar</abbr></a></dt>
     </dl>
@@ -221,6 +222,13 @@
                                 &nbsp;: string    </span>
 </dt>
 <dd>Returns the current user’s home directory as a **canonical** path.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_getOwnershipInfo">getOwnershipInfo()</a>
+    <span>
+                                &nbsp;: <a href="classes/oihana-files-enums-OwnershipInfo.html"><abbr title="\oihana\files\enums\OwnershipInfo">OwnershipInfo</abbr></a>    </span>
+</dt>
+<dd>Retrieves the current ownership information of a given file or directory.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_getRoot">getRoot()</a>
@@ -2041,6 +2049,90 @@ are removed.</p>
         <span class="phpdocumentor-signature__response_type">string</span>
                     &mdash;
                 <section class="phpdocumentor-description"><p>Canonical absolute path to the user’s home directory.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_getOwnershipInfo">
+        getOwnershipInfo()
+        <a href="namespaces/oihana-files.html#function_getOwnershipInfo" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/getOwnershipInfo.php"><a href="files/src-oihana-files-getownershipinfo.html"><abbr title="src/oihana/files/getOwnershipInfo.php">getOwnershipInfo.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">34</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retrieves the current ownership information of a given file or directory.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">getOwnershipInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/oihana-files-enums-OwnershipInfo.html"><abbr title="\oihana\files\enums\OwnershipInfo">OwnershipInfo</abbr></a></span></code>
+
+        <section class="phpdocumentor-description"><p>Returns an <code class="prettyprint">OwnershipInfo</code> object containing both numeric UID/GID and
+their corresponding human-readable owner and group names (if resolvable).</p>
+<p>Requires the <code class="prettyprint">posix</code> extension to resolve usernames and group names;
+otherwise, <code class="prettyprint">owner</code> and <code class="prettyprint">group</code> may be <code class="prettyprint">null</code>.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$path</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Absolute or relative path to the file or directory.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_getOwnershipInfo#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\RuntimeException">RuntimeException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the given path does not exist.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">use oihana\files\getOwnershipInfo;
+
+$info = getOwnershipInfo('/var/www/html');
+
+echo $info-&gt;owner; // 'www-data'
+echo $info-&gt;uid;   // 33
+echo $info;        // www-data:www-data (33:33)
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/oihana-files-enums-OwnershipInfo.html"><abbr title="\oihana\files\enums\OwnershipInfo">OwnershipInfo</abbr></a></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Object containing UID, GID, and optionally owner and group names.</p>
 </section>
 
             </section>
@@ -4354,6 +4446,7 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getDirectory">getDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getFileExtension">getFileExtension()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getHomeDirectory">getHomeDirectory()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_getOwnershipInfo">getOwnershipInfo()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getRoot">getRoot()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getSchemeAndHierarchy">getSchemeAndHierarchy()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTemporaryDirectory">getTemporaryDirectory()</a></li>

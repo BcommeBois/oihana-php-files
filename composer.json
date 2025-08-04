@@ -70,6 +70,7 @@
             "src/oihana/files/getDirectory.php",
             "src/oihana/files/getFileExtension.php",
             "src/oihana/files/getHomeDirectory.php",
+            "src/oihana/files/getOwnershipInfo.php",
             "src/oihana/files/getRoot.php",
             "src/oihana/files/getSchemeAndHierarchy.php",
             "src/oihana/files/getTemporaryDirectory.php",
