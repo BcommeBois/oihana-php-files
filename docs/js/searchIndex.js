@@ -1416,6 +1416,26 @@ Search.appendIndex(
             "summary": "The\u0020buffer\u0020size.",
             "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html#property_bufferSize"
         },                {
+            "fqsen": "\\oihana\\files\\isLinux\u0028\u0029",
+            "name": "isLinux",
+            "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020Linux.",
+            "url": "namespaces/oihana-files.html#function_isLinux"
+        },                {
+            "fqsen": "\\oihana\\files\\isMac\u0028\u0029",
+            "name": "isMac",
+            "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020Mac.",
+            "url": "namespaces/oihana-files.html#function_isMac"
+        },                {
+            "fqsen": "\\oihana\\files\\isOtherOS\u0028\u0029",
+            "name": "isOtherOS",
+            "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020not\u0020Windows,\u0020Mac\u0020or\u0020Linux.",
+            "url": "namespaces/oihana-files.html#function_isOtherOS"
+        },                {
+            "fqsen": "\\oihana\\files\\isWindows\u0028\u0029",
+            "name": "isWindows",
+            "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020Windows.",
+            "url": "namespaces/oihana-files.html#function_isWindows"
+        },                {
             "fqsen": "\\oihana\\files\\makeDirectory\u0028\u0029",
             "name": "makeDirectory",
             "summary": "Creates\u0020a\u0020directory\u0020if\u0020it\u0020does\u0020not\u0020exist\u0020and\u0020returns\u0020the\u0020path\u0020of\u0020the\u0020directory.",

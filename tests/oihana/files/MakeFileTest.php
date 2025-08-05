@@ -16,41 +16,31 @@ class MakeFileTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tmpDir = sys_get_temp_dir() . '/makefile_test_' . uniqid();
+        $this->tmpDir = sys_get_temp_dir() . '/oihana/files/makefile_test_' . uniqid();
         mkdir($this->tmpDir, 0777, true);
     }
 
+    /**
+     * @throws DirectoryException
+     */
     protected function tearDown(): void
     {
-        $this->deleteDir($this->tmpDir);
+        deleteDirectory( $this->tmpDir ) ;
     }
 
-    private function deleteDir(string $dir): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-        $files = scandir($dir);
-        foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-            $path = $dir . DIRECTORY_SEPARATOR . $file;
-            if (is_dir($path)) {
-                $this->deleteDir($path);
-            } else {
-                @unlink($path);
-            }
-        }
-        @rmdir($dir);
-    }
-
+    /**
+     * @throws DirectoryException
+     */
     public function testThrowsExceptionWhenFilePathIsEmpty(): void
     {
         $this->expectException(FileException::class);
         makeFile(null, 'content');
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testCreateFileWithContent(): void
     {
         $file = $this->tmpDir . '/file.txt';
@@ -61,6 +51,10 @@ class MakeFileTest extends TestCase
         $this->assertStringEqualsFile($file, "Hello World");
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testAppendToFile(): void
     {
         $file = $this->tmpDir . '/file.txt';
@@ -72,6 +66,10 @@ class MakeFileTest extends TestCase
         $this->assertStringEqualsFile($file, $expected);
     }
 
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testOverwriteFile(): void
     {
         $file = $this->tmpDir . '/file.txt';

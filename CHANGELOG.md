@@ -28,6 +28,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\getTemporaryDirectory
 - Adds oihana\files\getTimestampedDirectory
 - Adds oihana\files\getTimestampedFile
+- Adds oihana\files\isLinux
+- Adds oihana\files\isMac
+- Adds oihana\files\isOtherOS
+- Adds oihana\files\isWindows
 - Adds oihana\files\makeDirectory
 - Adds oihana\files\makeFile
 - Adds oihana\files\makeTimestampedDirectory
