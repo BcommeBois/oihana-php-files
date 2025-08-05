@@ -95,46 +95,149 @@
             <div class="phpdocumentor-column -nine phpdocumentor-content">
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana.html">oihana</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files.html">files</a></li>
     </ul>
 
-    <article class="phpdocumentor-element -namespace">
-        <h2 class="phpdocumentor-content__title">options</h2>
+    <article class="phpdocumentor-element -file">
+        <h2 class="phpdocumentor-content__title">getOwnershipInfos.php</h2>
+
+        
+        
+        
+        
+
 
         
 <h3 id="toc">
     Table of Contents
-    <a href="namespaces/oihana-files-options.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-files-getownershipinfos.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
 
 
 
-    <h4 id="toc-classes">
-        Classes
-        <a href="namespaces/oihana-files-options.html#toc-classes" class="headerlink"><i class="fas fa-link"></i></a>
+
+
+
+
+
+
+
+<h4 id="toc-functions">
+    Functions
+    <a href="files/src-oihana-files-getownershipinfos.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_getOwnershipInfos">getOwnershipInfos()</a>
+    <span>
+                                &nbsp;: <a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a>    </span>
+</dt>
+<dd>Retrieves the current ownership information of a given file or directory.</dd>
+
+    </dl>
+
+
+        
+
+            <section class="phpdocumentor-functions">
+        <h3 class="phpdocumentor-elements__header" id="functions">
+            Functions
+            <a href="files/src-oihana-files-getownershipinfos.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_getOwnershipInfos">
+        getOwnershipInfos()
+        <a href="namespaces/oihana-files.html#function_getOwnershipInfos" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
-    <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/oihana-files-options-MakeFileOptions.html"><abbr title="\oihana\files\options\MakeFileOptions">MakeFileOptions</abbr></a></dt><dd>Enumeration class that defines various options to use in the makeFile function.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a></dt><dd>Represents the ownership information of a file or directory.</dd>    </dl>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/getOwnershipInfos.php"><a href="files/src-oihana-files-getownershipinfos.html"><abbr title="src/oihana/files/getOwnershipInfos.php">getOwnershipInfos.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
 
+    </aside>
 
+        <p class="phpdocumentor-summary">Retrieves the current ownership information of a given file or directory.</p>
 
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">getOwnershipInfos</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a></span></code>
 
+        <section class="phpdocumentor-description"><p>Returns an <code class="prettyprint">OwnershipInfo</code> object containing both numeric UID/GID and
+their corresponding human-readable owner and group names (if resolvable).</p>
+<p>Requires the <code class="prettyprint">posix</code> extension to resolve usernames and group names;
+otherwise, <code class="prettyprint">owner</code> and <code class="prettyprint">group</code> may be <code class="prettyprint">null</code>.</p>
+</section>
 
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$path</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Absolute or relative path to the file or directory.</p>
+</section>
 
+            </dd>
+            </dl>
 
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_getOwnershipInfos#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
-        
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\RuntimeException">RuntimeException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the given path does not exist.</p>
+</section>
 
-        
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">use oihana\files\getOwnershipInfo;
+
+$info = getOwnershipInfo('/var/www/html');
+
+echo $info-&gt;owner; // 'www-data'
+echo $info-&gt;uid;   // 33
+echo $info;        // www-data:www-data (33:33)
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Object containing UID, GID, and optionally owner and group names.</p>
+</section>
+
+            </section>
+
+</article>
+            </section>
+
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/getOwnershipInfos.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -235,11 +338,17 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                    <li><a href="namespaces/oihana-files-options.html#toc-classes">Classes</a></li>
-                                                                                                                    </ul>
+                                                                                                                                                                                        <li><a href="files/src-oihana-files-getownershipinfos.html#toc-functions">Functions</a></li>
+                                    </ul>
             </li>
 
             
+                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_getOwnershipInfos">getOwnershipInfos()</a></li>
+                                            </ul>
+                </li>
                     </ul>
     </section>
 
@@ -257,7 +366,7 @@
     </section>
 </section>
         </div>
-        <a href="namespaces/oihana-files-options.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="files/src-oihana-files-getownershipinfos.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

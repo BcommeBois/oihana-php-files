@@ -1153,18 +1153,8 @@ Search.appendIndex(
         },                {
             "fqsen": "\\oihana\\files\\enums\\OwnershipInfo",
             "name": "OwnershipInfo",
-            "summary": "Represents\u0020the\u0020ownership\u0020information\u0020of\u0020a\u0020file\u0020or\u0020directory.",
+            "summary": "Enumeration\u0020of\u0020all\u0020ownership\u0020information\u0020components.",
             "url": "classes/oihana-files-enums-OwnershipInfo.html"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AequalsTo\u0028\u0029",
-            "name": "equalsTo",
-            "summary": "Compares\u0020this\u0020OwnershipInfo\u0020object\u0020with\u0020another\u0020to\u0020determine\u0020if\u0020they\u0020are\u0020identical.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#method_equalsTo"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Returns\u0020a\u0020string\u0020representation\u0020of\u0020the\u0020ownership.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#method___toString"
         },                {
             "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003AGROUP",
             "name": "GROUP",
@@ -1185,26 +1175,6 @@ Search.appendIndex(
             "name": "UID",
             "summary": "",
             "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_UID"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024owner",
-            "name": "owner",
-            "summary": "The\u0020file\u0020owner\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_owner"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024group",
-            "name": "group",
-            "summary": "The\u0020file\u0020group\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_group"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024uid",
-            "name": "uid",
-            "summary": "The\u0020file\u0020owner\u0027s\u0020UID.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_uid"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\OwnershipInfo\u003A\u003A\u0024gid",
-            "name": "gid",
-            "summary": "The\u0020file\u0020group\u0027s\u0020GID.",
-            "url": "classes/oihana-files-enums-OwnershipInfo.html#property_gid"
         },                {
             "fqsen": "\\oihana\\files\\enums\\TarExtension",
             "name": "TarExtension",
@@ -1391,10 +1361,10 @@ Search.appendIndex(
             "summary": "Returns\u0020the\u0020current\u0020user\u2019s\u0020home\u0020directory\u0020as\u0020a\u0020\u002A\u002Acanonical\u002A\u002A\u0020path.",
             "url": "namespaces/oihana-files.html#function_getHomeDirectory"
         },                {
-            "fqsen": "\\oihana\\files\\getOwnershipInfo\u0028\u0029",
-            "name": "getOwnershipInfo",
+            "fqsen": "\\oihana\\files\\getOwnershipInfos\u0028\u0029",
+            "name": "getOwnershipInfos",
             "summary": "Retrieves\u0020the\u0020current\u0020ownership\u0020information\u0020of\u0020a\u0020given\u0020file\u0020or\u0020directory.",
-            "url": "namespaces/oihana-files.html#function_getOwnershipInfo"
+            "url": "namespaces/oihana-files.html#function_getOwnershipInfos"
         },                {
             "fqsen": "\\oihana\\files\\getRoot\u0028\u0029",
             "name": "getRoot",
@@ -1575,6 +1545,41 @@ Search.appendIndex(
             "name": "permissions",
             "summary": "File\u0020permissions\u0020to\u0020set\u0020\u0028octal\u0029.\u0020Default\u003A\u00200644.",
             "url": "classes/oihana-files-options-MakeFileOptions.html#property_permissions"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos",
+            "name": "OwnershipInfos",
+            "summary": "Represents\u0020the\u0020ownership\u0020information\u0020of\u0020a\u0020file\u0020or\u0020directory.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003AequalsTo\u0028\u0029",
+            "name": "equalsTo",
+            "summary": "Compares\u0020this\u0020OwnershipInfo\u0020object\u0020with\u0020another\u0020to\u0020determine\u0020if\u0020they\u0020are\u0020identical.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#method_equalsTo"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Returns\u0020a\u0020string\u0020representation\u0020of\u0020the\u0020ownership.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#method___toString"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003A\u0024owner",
+            "name": "owner",
+            "summary": "The\u0020file\u0020owner\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#property_owner"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003A\u0024group",
+            "name": "group",
+            "summary": "The\u0020file\u0020group\u0027s\u0020name\u0020\u0028e.g.\u0020\u0027www\u002Ddata\u0027\u0029.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#property_group"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003A\u0024uid",
+            "name": "uid",
+            "summary": "The\u0020file\u0020owner\u0027s\u0020UID.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#property_uid"
+        },                {
+            "fqsen": "\\oihana\\files\\options\\OwnershipInfos\u003A\u003A\u0024gid",
+            "name": "gid",
+            "summary": "The\u0020file\u0020group\u0027s\u0020GID.",
+            "url": "classes/oihana-files-options-OwnershipInfos.html#property_gid"
         },                {
             "fqsen": "\\oihana\\files\\path\\canonicalizePath\u0028\u0029",
             "name": "canonicalizePath",

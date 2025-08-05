@@ -3,12 +3,13 @@
 namespace oihana\files ;
 
 use oihana\files\enums\OwnershipInfo;
+use oihana\files\options\OwnershipInfos;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-#[CoversFunction('oihana\files\getOwnershipInfo')]
-final class GetOwnershipInfoTest extends TestCase
+#[CoversFunction('oihana\files\getOwnershipInfos')]
+final class GetOwnershipInfosTest extends TestCase
 {
     private string $tmpFile;
 
@@ -27,7 +28,7 @@ final class GetOwnershipInfoTest extends TestCase
 
     public function testReturnsOwnershipInfoObject(): void
     {
-        $info = getOwnershipInfo($this->tmpFile);
+        $info = getOwnershipInfos($this->tmpFile);
         $this->assertIsInt($info->uid);
         $this->assertIsInt($info->gid);
     }
@@ -39,7 +40,7 @@ final class GetOwnershipInfoTest extends TestCase
             $this->markTestSkipped('POSIX functions not available');
         }
 
-        $info = getOwnershipInfo($this->tmpFile);
+        $info = getOwnershipInfos($this->tmpFile);
 
         $this->assertNotNull($info->owner, 'Expected owner name to be resolved');
         $this->assertNotNull($info->group, 'Expected group name to be resolved');
@@ -52,12 +53,12 @@ final class GetOwnershipInfoTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("Path '/does/not/exist' does not exist.");
 
-        getOwnershipInfo('/does/not/exist');
+        getOwnershipInfos('/does/not/exist');
     }
 
     public function testToStringMethod(): void
     {
-        $info = getOwnershipInfo($this->tmpFile);
+        $info = getOwnershipInfos($this->tmpFile);
 
         $str = (string) $info;
         $this->assertMatchesRegularExpression('/.+:.+ \(\d+:\d+\)/', $str);
@@ -65,22 +66,24 @@ final class GetOwnershipInfoTest extends TestCase
 
     public function testEqualsToReturnsTrueForSameOwnership(): void
     {
-        $info1 = getOwnershipInfo($this->tmpFile);
-        $info2 = getOwnershipInfo($this->tmpFile);
+        $info1 = getOwnershipInfos($this->tmpFile);
+        $info2 = getOwnershipInfos($this->tmpFile);
 
         $this->assertTrue($info1->equalsTo($info2));
     }
 
     public function testEqualsToReturnsFalseForDifferentOwnership(): void
     {
-        $info1 = new OwnershipInfo([
+        $info1 = new OwnershipInfos
+        ([
             OwnershipInfo::UID   => 1000,
             OwnershipInfo::GID   => 1000,
             OwnershipInfo::OWNER => 'user1',
             OwnershipInfo::GROUP => 'group1',
         ]);
 
-        $info2 = new OwnershipInfo([
+        $info2 = new OwnershipInfos
+        ([
             OwnershipInfo::UID   => 2000,
             OwnershipInfo::GID   => 2000,
             OwnershipInfo::OWNER => 'user2',

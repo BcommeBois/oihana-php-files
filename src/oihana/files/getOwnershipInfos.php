@@ -3,6 +3,7 @@
 namespace oihana\files ;
 
 use oihana\files\enums\OwnershipInfo;
+use oihana\files\options\OwnershipInfos;
 use RuntimeException;
 
 /**
@@ -16,7 +17,7 @@ use RuntimeException;
  *
  * @param string $path Absolute or relative path to the file or directory.
  *
- * @return OwnershipInfo Object containing UID, GID, and optionally owner and group names.
+ * @return OwnershipInfos Object containing UID, GID, and optionally owner and group names.
  *
  * @throws RuntimeException If the given path does not exist.
  *
@@ -31,7 +32,7 @@ use RuntimeException;
  * echo $info;        // www-data:www-data (33:33)
  * ```
  */
-function getOwnershipInfo( string $path ): OwnershipInfo
+function getOwnershipInfos( string $path ): OwnershipInfos
 {
     if ( !file_exists( $path ) )
     {
@@ -44,7 +45,7 @@ function getOwnershipInfo( string $path ): OwnershipInfo
     $owner = function_exists('posix_getpwuid' ) ? posix_getpwuid( $uid )[ 'name' ] ?? null : null ;
     $group = function_exists('posix_getgrgid' ) ? posix_getgrgid( $gid )[ 'name' ] ?? null : null ;
 
-    return new OwnershipInfo
+    return new OwnershipInfos
     ([
         OwnershipInfo::OWNER => $owner ,
         OwnershipInfo::GROUP => $group ,

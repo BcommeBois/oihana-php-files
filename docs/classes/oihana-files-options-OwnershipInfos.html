@@ -102,7 +102,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    MakeFileOptions
+    OwnershipInfos
 
         <span class="phpdocumentor-element__extends">
         extends <abbr title="\oihana\options\Options">Options</abbr>
@@ -118,20 +118,24 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Enumeration class that defines various options to use in the makeFile function.</p>
+            <p class="phpdocumentor-summary">Represents the ownership information of a file or directory.</p>
 
 
+    <section class="phpdocumentor-description"><p>Includes both numeric (UID, GID) and textual (owner, group) identifiers.</p>
+<p>This object can be used for comparison, validation, or debugging when
+managing file permissions and ownerships (e.g. in <code class="prettyprint">makeFile</code>, <code class="prettyprint">chown</code>, etc.).</p>
+</section>
 
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/oihana-files-options-MakeFileOptions.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/oihana-files-options-OwnershipInfos.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -160,7 +164,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/oihana-files-options-MakeFileOptions.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/oihana-files-options-OwnershipInfos.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -174,87 +178,59 @@
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/oihana-files-options-MakeFileOptions.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/oihana-files-options-OwnershipInfos.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_append">$append</a>
-    <span>
-                        &nbsp;: bool            </span>
-</dt>
-<dd>If true, appends content instead of overwriting. Default: false.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_content">$content</a>
-    <span>
-                        &nbsp;: string|null            </span>
-</dt>
-<dd>The content of the robots.txt file.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_file">$file</a>
-    <span>
-                        &nbsp;: string|null            </span>
-</dt>
-<dd>Set the robots.txt file path.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_force">$force</a>
-    <span>
-                        &nbsp;: bool            </span>
-</dt>
-<dd>If true, creates parent directories if they do not exist. Default: true.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_group">$group</a>
-    <span>
-                        &nbsp;: string|null            </span>
-</dt>
-<dd>Set the group of the file.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_lock">$lock</a>
-    <span>
-                        &nbsp;: bool            </span>
-</dt>
-<dd>If true, creates parent directories if they do not exist. Default: true.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_overwrite">$overwrite</a>
-    <span>
-                        &nbsp;: bool|null            </span>
-</dt>
-<dd>If true, overwrites existing files. Default: true.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_owner">$owner</a>
-    <span>
-                        &nbsp;: string|null            </span>
-</dt>
-<dd>Set the owner of the file.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#property_permissions">$permissions</a>
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#property_gid">$gid</a>
     <span>
                         &nbsp;: int|null            </span>
 </dt>
-<dd>File permissions to set (octal). Default: 0644.</dd>
+<dd>The file group&#039;s GID.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#property_group">$group</a>
+    <span>
+                        &nbsp;: string|null            </span>
+</dt>
+<dd>The file group&#039;s name (e.g. &#039;www-data&#039;).</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#property_owner">$owner</a>
+    <span>
+                        &nbsp;: string|null            </span>
+</dt>
+<dd>The file owner&#039;s name (e.g. &#039;www-data&#039;).</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#property_uid">$uid</a>
+    <span>
+                        &nbsp;: int|null            </span>
+</dt>
+<dd>The file owner&#039;s UID.</dd>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/oihana-files-options-MakeFileOptions.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/oihana-files-options-OwnershipInfos.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/oihana-files-options-MakeFileOptions.html#method___toString">__toString()</a>
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#method___toString">__toString()</a>
     <span>
                                 &nbsp;: string    </span>
 </dt>
-<dd>Returns the string expression of the object.</dd>
+<dd>Returns a string representation of the ownership.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/oihana-files-options-OwnershipInfos.html#method_equalsTo">equalsTo()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Compares this OwnershipInfo object with another to determine if they are identical.</dd>
 
     </dl>
 
@@ -266,7 +242,7 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/oihana-files-options-MakeFileOptions.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/oihana-files-options-OwnershipInfos.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -276,145 +252,28 @@
             -public
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_append">
-        $append
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_append" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_gid">
+        $gid
+        <a href="classes/oihana-files-options-OwnershipInfos.html#property_gid" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">43</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">If true, appends content instead of overwriting. Default: false.</p>
+        <p class="phpdocumentor-summary">The file group&#039;s GID.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">bool</span>
-    <span class="phpdocumentor-signature__name">$append</span>
-     = <span class="phpdocumentor-signature__default-value">false</span></code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_content">
-        $content
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_content" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">26</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">The content of the robots.txt file.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">string|null</span>
-    <span class="phpdocumentor-signature__name">$content</span>
-    </code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_file">
-        $file
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_file" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">32</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Set the robots.txt file path.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">string|null</span>
-    <span class="phpdocumentor-signature__name">$file</span>
+            <span class="phpdocumentor-signature__type">int|null</span>
+    <span class="phpdocumentor-signature__name">$gid</span>
      = <span class="phpdocumentor-signature__default-value">null</span></code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_force">
-        $force
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_force" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">37</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">If true, creates parent directories if they do not exist. Default: true.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">bool</span>
-    <span class="phpdocumentor-signature__name">$force</span>
-     = <span class="phpdocumentor-signature__default-value">true</span></code>
 
     
     
@@ -434,19 +293,19 @@
 >
     <h4 class="phpdocumentor-element__name" id="property_group">
         $group
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_group" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/oihana-files-options-OwnershipInfos.html#property_group" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">31</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Set the group of the file.</p>
+        <p class="phpdocumentor-summary">The file group&#039;s name (e.g. &#039;www-data&#039;).</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
@@ -471,99 +330,21 @@
             -public
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_lock">
-        $lock
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_lock" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">48</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">If true, creates parent directories if they do not exist. Default: true.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">bool</span>
-    <span class="phpdocumentor-signature__name">$lock</span>
-     = <span class="phpdocumentor-signature__default-value">true</span></code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_overwrite">
-        $overwrite
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_overwrite" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">54</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">If true, overwrites existing files. Default: true.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">bool|null</span>
-    <span class="phpdocumentor-signature__name">$overwrite</span>
-     = <span class="phpdocumentor-signature__default-value">true</span></code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                                    "
->
     <h4 class="phpdocumentor-element__name" id="property_owner">
         $owner
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_owner" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/oihana-files-options-OwnershipInfos.html#property_owner" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">60</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Set the owner of the file.</p>
+        <p class="phpdocumentor-summary">The file owner&#039;s name (e.g. &#039;www-data&#039;).</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
@@ -588,27 +369,27 @@
             -public
                                                                     "
 >
-    <h4 class="phpdocumentor-element__name" id="property_permissions">
-        $permissions
-        <a href="classes/oihana-files-options-MakeFileOptions.html#property_permissions" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_uid">
+        $uid
+        <a href="classes/oihana-files-options-OwnershipInfos.html#property_uid" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">66</span>
+    <span class="phpdocumentor-element-found-in__line">37</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">File permissions to set (octal). Default: 0644.</p>
+        <p class="phpdocumentor-summary">The file owner&#039;s UID.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__type">int|null</span>
-    <span class="phpdocumentor-signature__name">$permissions</span>
+    <span class="phpdocumentor-signature__name">$uid</span>
      = <span class="phpdocumentor-signature__default-value">null</span></code>
 
     
@@ -625,7 +406,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/oihana-files-options-MakeFileOptions.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/oihana-files-options-OwnershipInfos.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -636,17 +417,17 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___toString">
         __toString()
-        <a href="classes/oihana-files-options-MakeFileOptions.html#method___toString" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/oihana-files-options-OwnershipInfos.html#method___toString" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/MakeFileOptions.php"><a href="files/src-oihana-files-options-makefileoptions.html"><abbr title="src/oihana/files/options/MakeFileOptions.php">MakeFileOptions.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">72</span>
+    <span class="phpdocumentor-element-found-in__line">67</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Returns the string expression of the object.</p>
+        <p class="phpdocumentor-summary">Returns a string representation of the ownership.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -664,6 +445,68 @@
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Format: &quot;owner:group (uid:gid)&quot;</p>
+</section>
+
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_equalsTo">
+        equalsTo()
+        <a href="classes/oihana-files-options-OwnershipInfos.html#method_equalsTo" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/options/OwnershipInfos.php"><a href="files/src-oihana-files-options-ownershipinfos.html"><abbr title="src/oihana/files/options/OwnershipInfos.php">OwnershipInfos.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">55</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Compares this OwnershipInfo object with another to determine if they are identical.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">equalsTo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$other</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>The comparison checks for strict equality between the UID, GID,
+owner name, and group name of both objects.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$other</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/oihana-files-options-OwnershipInfos.html"><abbr title="\oihana\files\options\OwnershipInfos">OwnershipInfos</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The OwnershipInfo instance to compare against.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if all ownership fields (UID, GID, owner, group) match exactly; false otherwise.</p>
+</section>
+
             </section>
 
 </article>
@@ -673,7 +516,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/options/MakeFileOptions.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/options/OwnershipInfos.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -774,30 +617,26 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/oihana-files-options-MakeFileOptions.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/oihana-files-options-MakeFileOptions.html#toc-methods">Methods</a></li>
+                                                            <li><a href="classes/oihana-files-options-OwnershipInfos.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/oihana-files-options-OwnershipInfos.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_append">$append</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_content">$content</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_file">$file</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_force">$force</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_group">$group</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_lock">$lock</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_overwrite">$overwrite</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_owner">$owner</a></li>
-                                                    <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#property_permissions">$permissions</a></li>
+                                                    <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#property_gid">$gid</a></li>
+                                                    <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#property_group">$group</a></li>
+                                                    <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#property_owner">$owner</a></li>
+                                                    <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#property_uid">$uid</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/oihana-files-options-MakeFileOptions.html#method___toString">__toString()</a></li>
+                                            <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#method___toString">__toString()</a></li>
+                                            <li class=""><a href="classes/oihana-files-options-OwnershipInfos.html#method_equalsTo">equalsTo()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -817,7 +656,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/oihana-files-options-MakeFileOptions.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/oihana-files-options-OwnershipInfos.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

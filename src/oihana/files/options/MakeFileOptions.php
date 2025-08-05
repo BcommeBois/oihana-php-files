@@ -2,8 +2,8 @@
 
 namespace oihana\files\options;
 
-use oihana\abstracts\Options;
 use oihana\enums\Char;
+use oihana\options\Options;
 
 /**
  * Enumeration class that defines various options to use in the makeFile function.

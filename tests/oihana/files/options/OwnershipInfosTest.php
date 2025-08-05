@@ -1,16 +1,17 @@
 <?php
 
-namespace oihana\files\enums ;
+namespace oihana\files\options ;
 
+use oihana\files\enums\OwnershipInfo;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(OwnershipInfo::class)]
-class OwnershipInfoTest extends TestCase
+#[CoversClass(OwnershipInfos::class)]
+class OwnershipInfosTest extends TestCase
 {
     public function testCanBeInstantiatedWithProperties(): void
     {
-        $info = new OwnershipInfo();
+        $info = new OwnershipInfos();
         $info->owner = 'www-data';
         $info->group = 'www-data';
         $info->uid   = 33;
@@ -24,7 +25,8 @@ class OwnershipInfoTest extends TestCase
 
     public function testCanBeInstantiatedFromArray(): void
     {
-        $info = new OwnershipInfo([
+        $info = new OwnershipInfos
+        ([
             OwnershipInfo::OWNER => 'root',
             OwnershipInfo::GROUP => 'staff',
             OwnershipInfo::UID   => 0,
@@ -39,14 +41,16 @@ class OwnershipInfoTest extends TestCase
 
     public function testEqualsToReturnsTrueForIdenticalObjects(): void
     {
-        $a = new OwnershipInfo([
+        $a = new OwnershipInfos
+        ([
             'owner' => 'user',
             'group' => 'staff',
             'uid'   => 501,
             'gid'   => 20,
         ]);
 
-        $b = new OwnershipInfo([
+        $b = new OwnershipInfos
+        ([
             'owner' => 'user',
             'group' => 'staff',
             'uid'   => 501,
@@ -58,14 +62,14 @@ class OwnershipInfoTest extends TestCase
 
     public function testEqualsToReturnsFalseForDifferentObjects(): void
     {
-        $a = new OwnershipInfo([
+        $a = new OwnershipInfos([
             'owner' => 'user1',
             'group' => 'staff',
             'uid'   => 501,
             'gid'   => 20,
         ]);
 
-        $b = new OwnershipInfo([
+        $b = new OwnershipInfos([
             'owner' => 'user2',
             'group' => 'staff',
             'uid'   => 502,
@@ -77,19 +81,19 @@ class OwnershipInfoTest extends TestCase
 
     public function testToStringReturnsExpectedFormat(): void
     {
-        $info = new OwnershipInfo([
+        $info = new OwnershipInfos([
             'owner' => 'www-data',
             'group' => 'www-data',
             'uid'   => 33,
             'gid'   => 33,
         ]);
 
-        $this->assertSame('www-data:www-data (33:33)', (string)$info);
+        $this->assertSame('www-data:www-data (33:33)', (string) $info ) ;
     }
 
     public function testToStringHandlesNullValuesGracefully(): void
     {
-        $info = new OwnershipInfo();
-        $this->assertSame('?:? (?:?)', (string)$info);
+        $info = new OwnershipInfos();
+        $this->assertSame('?:? (?:?)', (string) $info ) ;
     }
 }

@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\getDirectory
 - Adds oihana\files\getFileExtension
 - Adds oihana\files\getHomeDirectory
-- Adds oihana\files\getOwnershipInfo
+- Adds oihana\files\getOwnershipInfos
 - Adds oihana\files\getRoot
 - Adds oihana\files\getSchemeAndHierarchy
 - Adds oihana\files\getTemporaryDirectory
@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\requireAndMergeArrays
 - Adds oihana\files\shouldExcludeFile
 - Adds oihana\files\sortFiles
+- Adds oihana\files\validMimeType
 
 - Adds oihana\files\archive\tar\assertTar
 - Adds oihana\files\archive\tar\hasTarExtension
@@ -47,21 +48,32 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\archive\tar\untar
 - Adds oihana\files\archive\tar\validateTarStructure
 
-- Adds oihana\files\openssl\OpenSSLFileEncryption
-- Adds oihana\files\archive\TarFile
-
+- Adds oihana\files\enums\CompressionType
 - Adds oihana\files\enums\FileExtension
 - Adds oihana\files\enums\FileMimeType
 - Adds oihana\files\enums\FindFileOption
 - Adds oihana\files\enums\FindMode
+- Adds oihana\files\enums\MakeDirectoryOption
+- Adds oihana\files\enums\MakeFileOption
+- Adds oihana\files\enums\OwnershipInfo
+- Adds oihana\files\enums\TarExtension
+- Adds oihana\files\enums\TarInfo
+- Adds oihana\files\enums\TarOption
 
 - Adds oihana\files\exceptions\DirectoryException
 - Adds oihana\files\exceptions\FileException
 - Adds oihana\files\exceptions\UnsupportedCompressionException
  
 - Adds oihana\files\helpers\CanonicalizeBuffer
+- 
+- Adds oihana\files\openssl\OpenSSLFileEncryption
+
+- Adds oihana\files\options\Option
+- Adds oihana\files\options\Options
 
 - Adds oihana\files\path\canonicalizePath
+- Adds oihana\files\path\computeRelativePath
+- Adds oihana\files\path\directoryPath
 - Adds oihana\files\path\extractCanonicalParts
 - Adds oihana\files\path\isAbsolutePath
 - Adds oihana\files\path\isBasePath
