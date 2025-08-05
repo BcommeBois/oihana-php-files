@@ -114,7 +114,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
         $filePath = $opts[ MakeFileOption::FILE ] ?? null;
         if ( empty( $filePath ) )
         {
-            throw new FileException('File path cannot be null or empty.');
+            throw new FileException('File path cannot be null or empty.' ) ;
         }
 
         $content = $opts[ MakeFileOption::CONTENT ] ?? '' ;
@@ -172,7 +172,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
 
     if ( !chmod( $filePath , $permissions ) )
     {
-        throw new FileException(sprintf('Failed to set permissions %o on file "%s".', $permissions , $filePath ) ) ;
+        throw new FileException( sprintf('Failed to set permissions %o on file "%s".', $permissions , $filePath ) ) ;
     }
 
     if ( $owner !== null && !chown( $filePath , $owner ) )
@@ -182,7 +182,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
 
     if ( $group !== null && !chgrp( $filePath , $group ) )
     {
-        throw new FileException(sprintf('Failed to change group to "%s" for file "%s".', $group , $filePath ) );
+        throw new FileException( sprintf('Failed to change group to "%s" for file "%s".', $group , $filePath ) );
     }
 
     return $filePath ;
