@@ -1646,6 +1646,16 @@ Search.appendIndex(
             "summary": "Concatenates\u0020multiple\u0020path\u0020fragments\u0020into\u0020a\u0020single\u0020canonical\u0020path.",
             "url": "namespaces/oihana-files-path.html#function_joinPaths"
         },                {
+            "fqsen": "\\oihana\\files\\path\\makeAbsolute\u0028\u0029",
+            "name": "makeAbsolute",
+            "summary": "Turns\u0020a\u0020relative\u0020path\u0020into\u0020an\u0020absolute\u0020path\u0020in\u0020canonical\u0020form.",
+            "url": "namespaces/oihana-files-path.html#function_makeAbsolute"
+        },                {
+            "fqsen": "\\oihana\\files\\path\\makeRelative\u0028\u0029",
+            "name": "makeRelative",
+            "summary": "Turns\u0020an\u0020absolute\u0020path\u0020into\u0020a\u0020path\u0020relative\u0020to\u0020another\u0020absolute\u0020path.",
+            "url": "namespaces/oihana-files-path.html#function_makeRelative"
+        },                {
             "fqsen": "\\oihana\\files\\path\\normalizePath\u0028\u0029",
             "name": "normalizePath",
             "summary": "Normalizes\u0020the\u0020given\u0020file\u0020system\u0020path\u0020by\u0020replacing\u0020backslashes\u0020with\u0020slashes.",

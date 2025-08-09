@@ -64,18 +64,14 @@ function isAbsolutePath( string $path ) :bool
     }
 
     // 2. If a scheme is present (e.g., "file://"), strip it to analyze the path part.
-
     $schemeSeparatorPosition = strpos( $path , '://' ) ;
-
     if ( $schemeSeparatorPosition !== false )
     {
         $path = substr( $path , $schemeSeparatorPosition + 3 ) ;
     }
 
     // 3. Covers UNIX root "/" and Windows roots like "\" or "\\network-share".
-
     $firstCharacter = $path[0] ?? Char::EMPTY ;
-
     if ( $firstCharacter === Char::SLASH || $firstCharacter === Char::BACK_SLASH )
     {
         return true ;

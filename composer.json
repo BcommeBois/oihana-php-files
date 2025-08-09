@@ -51,6 +51,8 @@
             "src/oihana/files/path/isLocalPath.php",
             "src/oihana/files/path/isRelativePath.php",
             "src/oihana/files/path/joinPaths.php",
+            "src/oihana/files/path/makeAbsolute.php",
+            "src/oihana/files/path/makeRelative.php",
             "src/oihana/files/path/normalizePath.php",
             "src/oihana/files/path/relativePath.php",
             "src/oihana/files/path/splitPath.php",

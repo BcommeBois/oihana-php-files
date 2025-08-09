@@ -83,6 +83,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\path\isBasePath
 - Adds oihana\files\path\isLocalPath
 - Adds oihana\files\path\isRelativePath
+- Adds oihana\files\path\makeAbsolute
+- Adds oihana\files\path\makeRelative
 - Adds oihana\files\path\joinPaths
 - Adds oihana\files\path\normalizePath
 - Adds oihana\files\path\relativePath

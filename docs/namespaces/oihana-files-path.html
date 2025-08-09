@@ -189,6 +189,20 @@
 <dd>Concatenates multiple path fragments into a single canonical path.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files-path.html#function_makeAbsolute">makeAbsolute()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Turns a relative path into an absolute path in canonical form.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files-path.html#function_makeRelative">makeRelative()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Turns an absolute path into a path relative to another absolute path.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files-path.html#function_normalizePath">normalizePath()</a>
     <span>
                                 &nbsp;: string    </span>
@@ -1174,6 +1188,256 @@ joinPaths('', 'relative', 'path');   // leading blanks ignored
 
 </article>
                     <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_makeAbsolute">
+        makeAbsolute()
+        <a href="namespaces/oihana-files-path.html#function_makeAbsolute" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/path/makeAbsolute.php"><a href="files/src-oihana-files-path-makeabsolute.html"><abbr title="src/oihana/files/path/makeAbsolute.php">makeAbsolute.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">52</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Turns a relative path into an absolute path in canonical form.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">makeAbsolute</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$basePath</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+        <section class="phpdocumentor-description"><p>This function joins a relative path with an absolute base path to create a new
+absolute path. It also canonicalizes the result, which means:</p>
+<ul>
+<li>Dot segments (&quot;.&quot; and &quot;..&quot;) are resolved.</li>
+<li>All directory separators are converted to forward slashes (&quot;/&quot;).</li>
+<li>Redundant slashes are removed.</li>
+</ul>
+<p>If the provided path is already absolute, it is simply canonicalized and
+returned, ignoring the base path.</p>
+<p>The function correctly handles URI schemes (like &quot;phar://&quot; or &quot;vfs://&quot;)
+by preserving the scheme from the base path in the final result.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$path</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The path to resolve. Can be relative or absolute.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$basePath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The absolute base path. Must not be empty.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files-path.html#function_makeAbsolute#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the base path is empty or not an absolute path.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">// Basic usage with a Unix-style path
+makeAbsolute('documents/../project/file.txt', '/home/user');
+// =&gt; '/home/user/project/file.txt'
+
+// Usage with a Windows-style path
+makeAbsolute('data\\.\\config.ini', 'C:\\Users\\Test');
+// =&gt; 'C:/Users/Test/data/config.ini'
+
+// When the path is already absolute, the base path is ignored
+makeAbsolute('/etc/app.conf', '/var/www');
+// =&gt; '/etc/app.conf'
+
+// Correctly handles URI schemes
+makeAbsolute('src/bootstrap.php', 'phar:///usr/local/bin/composer.phar');
+// =&gt; 'phar:///usr/local/bin/composer.phar/src/bootstrap.php'
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The resulting absolute path in canonical form.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_makeRelative">
+        makeRelative()
+        <a href="namespaces/oihana-files-path.html#function_makeRelative" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/path/makeRelative.php"><a href="files/src-oihana-files-path-makerelative.html"><abbr title="src/oihana/files/path/makeRelative.php">makeRelative.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">52</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Turns an absolute path into a path relative to another absolute path.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">makeRelative</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$basePath</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$path</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The absolute path to convert.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$basePath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The absolute path to which the conversion should be relative.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files-path.html#function_makeRelative#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If paths cannot be compared (e.g., different roots, or not absolute).</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">// --- Basic Unix cases ---
+
+// The target path is a subdirectory
+makeRelative('/var/www/project/app', '/var/www/project');
+// =&gt; 'app'
+
+// Navigating to a parent then to a sibling directory
+makeRelative('/var/www/assets', '/var/www/project/app');
+// =&gt; '../../assets'
+
+// The paths are identical
+makeRelative('/var/www', '/var/www');
+// =&gt; ''
+
+// --- Specific cases ---
+
+// Navigating from the root directory
+makeRelative('/home/user/documents', '/');
+// =&gt; 'home/user/documents'
+
+// Example with a Windows path
+makeRelative('C:/Users/Test/Documents', 'C:/Users/Test/Downloads');
+// =&gt; '../Documents'
+
+// Example with a URI scheme (phar)
+makeRelative('phar:///app/src/controller', 'phar:///app/src/model');
+// =&gt; '../controller'
+</code></pre>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The relative path.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
     <h4 class="phpdocumentor-element__name" id="function_normalizePath">
         normalizePath()
         <a href="namespaces/oihana-files-path.html#function_normalizePath" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1646,6 +1910,8 @@ Both strings can be empty.</p>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_isLocalPath">isLocalPath()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_isRelativePath">isRelativePath()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_joinPaths">joinPaths()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files-path.html#function_makeAbsolute">makeAbsolute()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files-path.html#function_makeRelative">makeRelative()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_normalizePath">normalizePath()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_relativePath">relativePath()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files-path.html#function_splitPath">splitPath()</a></li>
