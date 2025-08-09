@@ -3,8 +3,7 @@
 namespace oihana\files\path ;
 
 use oihana\enums\Char;
-use oihana\files\helpers\CanonicalizeBuffer as Buffer;
-
+use oihana\files\enums\CanonicalizeBuffer as Buffer;
 use function oihana\files\getHomeDirectory;
 
 /**

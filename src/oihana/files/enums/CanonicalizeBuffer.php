@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\helpers ;
+namespace oihana\files\enums ;
 
 /**
  * The internal canonicalizePath static buffer helper.

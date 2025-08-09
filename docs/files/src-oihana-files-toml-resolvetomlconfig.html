@@ -98,7 +98,7 @@
     </ul>
 
     <article class="phpdocumentor-element -file">
-        <h2 class="phpdocumentor-content__title">canonicalizePath.php</h2>
+        <h2 class="phpdocumentor-content__title">resolveTomlConfig.php</h2>
 
         
         
@@ -109,7 +109,7 @@
         
 <h3 id="toc">
     Table of Contents
-    <a href="files/src-oihana-files-path-canonicalizepath.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-files-toml-resolvetomlconfig.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -125,16 +125,16 @@
 
 <h4 id="toc-functions">
     Functions
-    <a href="files/src-oihana-files-path-canonicalizepath.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-files-toml-resolvetomlconfig.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a class="" href="namespaces/oihana-files-path.html#function_canonicalizePath">canonicalizePath()</a>
+    <a class="" href="namespaces/oihana-files-toml.html#function_resolveTomlConfig">resolveTomlConfig()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd>Converts any given path to a **canonical, absolute‑style** representation.</dd>
+<dd>Resolves a TOML configuration file and merges it with default configuration.</dd>
 
     </dl>
 
@@ -144,55 +144,65 @@
             <section class="phpdocumentor-functions">
         <h3 class="phpdocumentor-elements__header" id="functions">
             Functions
-            <a href="files/src-oihana-files-path-canonicalizepath.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="files/src-oihana-files-toml-resolvetomlconfig.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_canonicalizePath">
-        canonicalizePath()
-        <a href="namespaces/oihana-files-path.html#function_canonicalizePath" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="function_resolveTomlConfig">
+        resolveTomlConfig()
+        <a href="namespaces/oihana-files-toml.html#function_resolveTomlConfig" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/path/canonicalizePath.php"><a href="files/src-oihana-files-path-canonicalizepath.html"><abbr title="src/oihana/files/path/canonicalizePath.php">canonicalizePath.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/toml/resolveTomlConfig.php"><a href="files/src-oihana-files-toml-resolvetomlconfig.html"><abbr title="src/oihana/files/toml/resolveTomlConfig.php">resolveTomlConfig.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">50</span>
+    <span class="phpdocumentor-element-found-in__line">83</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Converts any given path to a **canonical, absolute‑style** representation.</p>
+        <p class="phpdocumentor-summary">Resolves a TOML configuration file and merges it with default configuration.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">canonicalizePath</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">resolveTomlConfig</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultConfig</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultPath</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"><p>The algorithm:</p>
-<ol>
-<li><strong>Early return / cache</strong> – looks up the path in a static LRU‑style buffer
-(see <abbr title="\oihana\files\path\CanonicalizeBuffer">CanonicalizeBuffer</abbr>).</li>
-<li><strong>Home expansion</strong> – replaces a leading tilde <code class="prettyprint">~</code> with the current user’s
-home directory (platform‑aware via <abbr title="\oihana\files\path\getHomeDirectory()">getHomeDirectory()</abbr>).</li>
-<li><strong>Separator normalisation</strong> – back‑slashes ⇒ forward‑slashes via
-<a href="namespaces/oihana-files-path.html#function_normalizePath"><abbr title="\oihana\files\path\normalizePath()">normalizePath()</abbr></a>.</li>
-<li><strong>Root / remainder split</strong> – handled by <a href="namespaces/oihana-files-path.html#function_splitPath"><abbr title="\oihana\files\path\splitPath()">splitPath()</abbr></a>.</li>
-<li><strong>Dot &amp; dot‑dot cleanup</strong> – collapses <code class="prettyprint">.</code> and <code class="prettyprint">..</code> segments with
-<a href="namespaces/oihana-files-path.html#function_extractCanonicalParts"><abbr title="\oihana\files\path\extractCanonicalParts()">extractCanonicalParts()</abbr></a>.</li>
-<li><strong>Buffer write‑back</strong> – stores the result; periodically cleans the buffer
-after <a href="CanonicalizeBuffer::CLEANUP_THRESHOLD"></a> insertions.</li>
-</ol>
-<p><strong>No filesystem access</strong> is performed; non‑existent paths are allowed.</p>
+        <section class="phpdocumentor-description"><p>This function attempts to load a TOML config file by:</p>
+<ul>
+<li>Ensuring the file path ends with the <code class="prettyprint">.toml</code> extension.</li>
+<li>Resolving relative paths against the current working directory or a given base path.</li>
+<li>Validating the existence of the file and directories.</li>
+<li>Decoding the TOML content to an array.</li>
+<li>Deep merging with the provided default configuration.</li>
+</ul>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$path</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-signature__argument__name">$filePath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The path to canonicalise. May be relative or absolute,
-Windows or Unix, and may start with <code class="prettyprint">~</code>.</p>
+                    <section class="phpdocumentor-description"><p>Path to the TOML file. If null or empty, only default config is returned.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$defaultConfig</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Default configuration array to merge with the TOML file contents.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$defaultPath</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Base path used to resolve relative file paths when not absolute.</p>
 </section>
 
             </dd>
@@ -201,47 +211,39 @@ Windows or Unix, and may start with <code class="prettyprint">~</code>.</p>
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="namespaces/oihana-files-path.html#function_canonicalizePath#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="namespaces/oihana-files-toml.html#function_resolveTomlConfig#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">example</span>
+                    <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">canonicalizePath('~/projects/../site//index.php');
-// -&gt; &quot;/home/alice/site/index.php&quot;   (Linux)
-
-canonicalizePath('C:\\Temp\\..\\Logs\\.');
-// -&gt; &quot;C:/Logs&quot;
-</code></pre>
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file path is invalid or the file does not exist.</p>
 </section>
 
                                     </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">see</span>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="namespaces/oihana-files-path.html#function_normalizePath"><abbr title="\oihana\files\path\normalizePath()">normalizePath()</abbr></a></span>
-                                        
-                                             
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-DirectoryException.html"><abbr title="\oihana\files\exceptions\DirectoryException">DirectoryException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the provided default path is invalid or not a directory.</p>
+</section>
+
                                     </dd>
                             <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">see</span>
+                    <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="namespaces/oihana-files-path.html#function_splitPath"><abbr title="\oihana\files\path\splitPath()">splitPath()</abbr></a></span>
-                                        
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">see</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><a href="namespaces/oihana-files-path.html#function_extractCanonicalParts"><abbr title="\oihana\files\path\extractCanonicalParts()">extractCanonicalParts()</abbr></a></span>
-                                        
-                                             
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\Devium\Toml\TomlError">TomlError</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the TOML content cannot be parsed.</p>
+</section>
+
                                     </dd>
                                                 <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">author</span>
@@ -260,14 +262,58 @@ canonicalizePath('C:\\Temp\\..\\Logs\\.');
                                                                                 
                                              
                                     </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">use function oihana\files\toml\resolveTomlConfig;
+
+// Default config array
+$defaultConfig =
+[
+    'database' =&gt;
+    [
+        'host' =&gt; 'localhost',
+        'port' =&gt; 3306,
+    ],
+    'debug' =&gt; false,
+];
+
+// Path to your TOML config file (can be relative or absolute)
+$configFile = '/path/to/config'; // '.toml' appended automatically if missing
+
+// Optional base path to resolve relative paths
+$basePath = '/var/www/project/configs';
+
+try
+{
+   $config = resolveTomlConfig( $configFile , $defaultConfig , $basePath ) ;
+   print_r( $config ) ;
+}
+catch ( FileException $e )
+{
+   echo &quot;File error: &quot; . $e-&gt;getMessage();
+}
+catch ( DirectoryException $e )
+{
+    echo &quot;Directory error: &quot; . $e-&gt;getMessage();
+}
+catch ( TomlError $e )
+{
+    echo &quot;TOML parsing error: &quot; . $e-&gt;getMessage();
+}
+</code></pre>
+</section>
+
+                                    </dd>
                                             </dl>
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
                     &mdash;
-                <section class="phpdocumentor-description"><p>Canonicalised path with forward slashes and no redundant
-<code class="prettyprint">.</code> / <code class="prettyprint">..</code> segments.</p>
+                <section class="phpdocumentor-description"><p>Merged configuration array.</p>
 </section>
 
             </section>
@@ -279,7 +325,7 @@ canonicalizePath('C:\\Temp\\..\\Logs\\.');
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/path/canonicalizePath.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/toml/resolveTomlConfig.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -380,7 +426,7 @@ canonicalizePath('C:\\Temp\\..\\Logs\\.');
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                                                                                                        <li><a href="files/src-oihana-files-path-canonicalizepath.html#toc-functions">Functions</a></li>
+                                                                                                                                                                                        <li><a href="files/src-oihana-files-toml-resolvetomlconfig.html#toc-functions">Functions</a></li>
                                     </ul>
             </li>
 
@@ -388,7 +434,7 @@ canonicalizePath('C:\\Temp\\..\\Logs\\.');
                             <li class="phpdocumentor-on-this-page-section__title">Functions</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/oihana-files-path.html#function_canonicalizePath">canonicalizePath()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files-toml.html#function_resolveTomlConfig">resolveTomlConfig()</a></li>
                                             </ul>
                 </li>
                     </ul>
@@ -408,7 +454,7 @@ canonicalizePath('C:\\Temp\\..\\Logs\\.');
     </section>
 </section>
         </div>
-        <a href="files/src-oihana-files-path-canonicalizepath.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="files/src-oihana-files-toml-resolvetomlconfig.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

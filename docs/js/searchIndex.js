@@ -81,6 +81,31 @@ Search.appendIndex(
             "summary": "Deletes\u0020a\u0020directory\u0020located\u0020in\u0020the\u0020system\u0020temporary\u0020folder\u0020\u0028recursively\u0029.",
             "url": "namespaces/oihana-files.html#function_deleteTemporaryDirectory"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer",
+            "name": "CanonicalizeBuffer",
+            "summary": "The\u0020internal\u0020canonicalizePath\u0020static\u0020buffer\u0020helper.",
+            "url": "classes/oihana-files-enums-CanonicalizeBuffer.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer\u003A\u003ACLEANUP_THRESHOLD",
+            "name": "CLEANUP_THRESHOLD",
+            "summary": "The\u0020number\u0020of\u0020buffer\u0020entries\u0020that\u0020triggers\u0020a\u0020cleanup\u0020operation.",
+            "url": "classes/oihana-files-enums-CanonicalizeBuffer.html#constant_CLEANUP_THRESHOLD"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer\u003A\u003ACLEANUP_SIZE",
+            "name": "CLEANUP_SIZE",
+            "summary": "The\u0020buffer\u0020size\u0020after\u0020the\u0020cleanup\u0020operation.",
+            "url": "classes/oihana-files-enums-CanonicalizeBuffer.html#constant_CLEANUP_SIZE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer\u003A\u003A\u0024buffer",
+            "name": "buffer",
+            "summary": "Buffers\u0020input\/output\u0020of\u0020\u007B\u0040link\u0020canonicalizePath\u0028\u0029\u007D.",
+            "url": "classes/oihana-files-enums-CanonicalizeBuffer.html#property_buffer"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer\u003A\u003A\u0024bufferSize",
+            "name": "bufferSize",
+            "summary": "The\u0020buffer\u0020size.",
+            "url": "classes/oihana-files-enums-CanonicalizeBuffer.html#property_bufferSize"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\CompressionType",
             "name": "CompressionType",
             "summary": "CompressionType",
@@ -1391,31 +1416,6 @@ Search.appendIndex(
             "summary": "Get\u0020a\u0020timestamped\u0020file\u0020path\u0020using\u0020a\u0020formatted\u0020date\u0020and\u0020optional\u0020prefix\/suffix.",
             "url": "namespaces/oihana-files.html#function_getTimestampedFile"
         },                {
-            "fqsen": "\\oihana\\files\\helpers\\CanonicalizeBuffer",
-            "name": "CanonicalizeBuffer",
-            "summary": "The\u0020internal\u0020canonicalizePath\u0020static\u0020buffer\u0020helper.",
-            "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html"
-        },                {
-            "fqsen": "\\oihana\\files\\helpers\\CanonicalizeBuffer\u003A\u003ACLEANUP_THRESHOLD",
-            "name": "CLEANUP_THRESHOLD",
-            "summary": "The\u0020number\u0020of\u0020buffer\u0020entries\u0020that\u0020triggers\u0020a\u0020cleanup\u0020operation.",
-            "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html#constant_CLEANUP_THRESHOLD"
-        },                {
-            "fqsen": "\\oihana\\files\\helpers\\CanonicalizeBuffer\u003A\u003ACLEANUP_SIZE",
-            "name": "CLEANUP_SIZE",
-            "summary": "The\u0020buffer\u0020size\u0020after\u0020the\u0020cleanup\u0020operation.",
-            "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html#constant_CLEANUP_SIZE"
-        },                {
-            "fqsen": "\\oihana\\files\\helpers\\CanonicalizeBuffer\u003A\u003A\u0024buffer",
-            "name": "buffer",
-            "summary": "Buffers\u0020input\/output\u0020of\u0020\u007B\u0040link\u0020canonicalizePath\u0028\u0029\u007D.",
-            "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html#property_buffer"
-        },                {
-            "fqsen": "\\oihana\\files\\helpers\\CanonicalizeBuffer\u003A\u003A\u0024bufferSize",
-            "name": "bufferSize",
-            "summary": "The\u0020buffer\u0020size.",
-            "url": "classes/oihana-files-helpers-CanonicalizeBuffer.html#property_bufferSize"
-        },                {
             "fqsen": "\\oihana\\files\\isLinux\u0028\u0029",
             "name": "isLinux",
             "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020Linux.",
@@ -1711,6 +1711,11 @@ Search.appendIndex(
             "summary": "Sorts\u0020an\u0020array\u0020of\u0020SplFileInfo\u0020objects.",
             "url": "namespaces/oihana-files.html#function_sortFiles"
         },                {
+            "fqsen": "\\oihana\\files\\toml\\resolveTomlConfig\u0028\u0029",
+            "name": "resolveTomlConfig",
+            "summary": "Resolves\u0020a\u0020TOML\u0020configuration\u0020file\u0020and\u0020merges\u0020it\u0020with\u0020default\u0020configuration.",
+            "url": "namespaces/oihana-files-toml.html#function_resolveTomlConfig"
+        },                {
             "fqsen": "\\oihana\\files\\validateMimeType\u0028\u0029",
             "name": "validateMimeType",
             "summary": "Validate\u0020the\u0020MIME\u0020type\u0020of\u0020a\u0020file\u0020against\u0020a\u0020list\u0020of\u0020allowed\u0020types.",
@@ -1751,11 +1756,6 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/oihana-files-exceptions.html"
         },                {
-            "fqsen": "\\oihana\\files\\helpers",
-            "name": "helpers",
-            "summary": "",
-            "url": "namespaces/oihana-files-helpers.html"
-        },                {
             "fqsen": "\\oihana\\files\\openssl",
             "name": "openssl",
             "summary": "",
@@ -1775,5 +1775,10 @@ Search.appendIndex(
             "name": "phar",
             "summary": "",
             "url": "namespaces/oihana-files-phar.html"
+        },                {
+            "fqsen": "\\oihana\\files\\toml",
+            "name": "toml",
+            "summary": "",
+            "url": "namespaces/oihana-files-toml.html"
         }            ]
 );
