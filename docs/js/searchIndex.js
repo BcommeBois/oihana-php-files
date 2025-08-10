@@ -1416,6 +1416,16 @@ Search.appendIndex(
             "summary": "Get\u0020a\u0020timestamped\u0020file\u0020path\u0020using\u0020a\u0020formatted\u0020date\u0020and\u0020optional\u0020prefix\/suffix.",
             "url": "namespaces/oihana-files.html#function_getTimestampedFile"
         },                {
+            "fqsen": "\\oihana\\files\\hasDirectories\u0028\u0029",
+            "name": "hasDirectories",
+            "summary": "Checks\u0020if\u0020a\u0020directory\u0020contains\u0020at\u0020least\u0020one\u0020subdirectory,\nor\u0020only\u0020subdirectories\u0020if\u0020strict\u0020mode\u0020is\u0020enabled.",
+            "url": "namespaces/oihana-files.html#function_hasDirectories"
+        },                {
+            "fqsen": "\\oihana\\files\\hasFiles\u0028\u0029",
+            "name": "hasFiles",
+            "summary": "Checks\u0020if\u0020a\u0020directory\u0020contains\u0020at\u0020least\u0020one\u0020file,\nor\u0020only\u0020files\u0020if\u0020strict\u0020mode\u0020is\u0020enabled.",
+            "url": "namespaces/oihana-files.html#function_hasFiles"
+        },                {
             "fqsen": "\\oihana\\files\\isLinux\u0028\u0029",
             "name": "isLinux",
             "summary": "Indicates\u0020if\u0020the\u0020OS\u0020system\u0020is\u0020Linux.",

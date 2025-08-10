@@ -266,6 +266,22 @@
 <dd>Get a timestamped file path using a formatted date and optional prefix/suffix.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_hasDirectories">hasDirectories()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Checks if a directory contains at least one subdirectory,
+or only subdirectories if strict mode is enabled.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_hasFiles">hasFiles()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Checks if a directory contains at least one file,
+or only files if strict mode is enabled.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_isLinux">isLinux()</a>
     <span>
                                 &nbsp;: bool    </span>
@@ -2872,6 +2888,255 @@ $file = getTimestampedFile
 
 </article>
                     <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_hasDirectories">
+        hasDirectories()
+        <a href="namespaces/oihana-files.html#function_hasDirectories" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/hasDirectories.php"><a href="files/src-oihana-files-hasdirectories.html"><abbr title="src/oihana/files/hasDirectories.php">hasDirectories.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">61</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Checks if a directory contains at least one subdirectory,
+or only subdirectories if strict mode is enabled.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">hasDirectories</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dir</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$strict</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dir</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The path to the directory to check.
+Must be a valid readable directory.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$strict</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>If true, the function returns true only if
+the directory contains <em>only</em> subdirectories (no files or other items).
+Defaults to false.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_hasDirectories#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-DirectoryException.html"><abbr title="\oihana\files\exceptions\DirectoryException">DirectoryException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the path is null, empty, not a directory,
+or does not meet the readability/writability requirements
+as checked by assertDirectory().</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">try
+{
+    $dir = '/path/to/directory';
+
+    // Check if directory contains at least one subdirectory
+    if ( hasDirectories($dir) )
+    {
+        echo &quot;Directory contains at least one subdirectory.\n&quot;;
+    }
+    else
+    {
+        echo &quot;No subdirectories found.\n&quot;;
+    }
+
+    // Check if directory contains only subdirectories (strict mode)
+    if ( hasDirectories( $dir , true ) )
+    {
+        echo &quot;Directory contains only subdirectories.\n&quot;;
+    }
+    else
+    {
+        echo &quot;Directory contains files or other items besides subdirectories.\n&quot;;
+    }
+}
+catch (DirectoryException $e)
+{
+    echo &quot;Error: &quot; . $e-&gt;getMessage() . &quot;\n&quot;;
+}
+</code></pre>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if the directory contains at least one subdirectory,
+or if in strict mode, only subdirectories.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_hasFiles">
+        hasFiles()
+        <a href="namespaces/oihana-files.html#function_hasFiles" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/hasFiles.php"><a href="files/src-oihana-files-hasfiles.html"><abbr title="src/oihana/files/hasFiles.php">hasFiles.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">57</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Checks if a directory contains at least one file,
+or only files if strict mode is enabled.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">hasFiles</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dir</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$strict</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dir</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The path to the directory to check.
+Must be a valid readable directory.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$strict</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>If true, the function returns true only if
+the directory contains <em>only</em> files (no directories or other items).
+Defaults to false.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_hasFiles#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-DirectoryException.html"><abbr title="\oihana\files\exceptions\DirectoryException">DirectoryException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the path is null, empty, not a directory,
+or does not meet the readability/writability requirements
+as checked by assertDirectory().</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">try
+{
+    $dir = '/path/to/directory';
+
+    // Check if directory contains at least one file
+    if ( hasFiles( $dir ) )
+    {
+        echo &quot;Directory contains at least one file.\n&quot;;
+    }
+    else
+    {
+        echo &quot;No files found.\n&quot;;
+    }
+
+    // Check if directory contains only files (strict mode)
+    if (hasFiles($dir, true))
+    {
+        echo &quot;Directory contains only files.\n&quot;;
+    }
+    else
+    {
+        echo &quot;Directory contains directories or other items besides files.\n&quot;;
+    }
+}
+catch (DirectoryException $e)
+{
+    echo &quot;Error: &quot; . $e-&gt;getMessage() . &quot;\n&quot;;
+}
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if the directory contains at least one file,
+or if in strict mode, only files.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
     <h4 class="phpdocumentor-element__name" id="function_isLinux">
         isLinux()
         <a href="namespaces/oihana-files.html#function_isLinux" class="headerlink"><i class="fas fa-link"></i></a>
@@ -4696,6 +4961,8 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTemporaryDirectory">getTemporaryDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTimestampedDirectory">getTimestampedDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getTimestampedFile">getTimestampedFile()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_hasDirectories">hasDirectories()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_hasFiles">hasFiles()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_isLinux">isLinux()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_isMac">isMac()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_isOtherOS">isOtherOS()</a></li>

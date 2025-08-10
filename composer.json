@@ -79,6 +79,8 @@
             "src/oihana/files/getTemporaryDirectory.php",
             "src/oihana/files/getTimestampedDirectory.php",
             "src/oihana/files/getTimestampedFile.php",
+            "src/oihana/files/hasDirectories.php",
+            "src/oihana/files/hasFiles.php",
             "src/oihana/files/isLinux.php",
             "src/oihana/files/isMac.php",
             "src/oihana/files/isOtherOS.php",
