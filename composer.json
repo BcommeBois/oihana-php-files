@@ -100,7 +100,6 @@
         "ext-fileinfo": "*",
         "ext-openssl": "*",
         "oihana/php-core": "dev-main",
-        "oihana/php-system": "dev-main",
         "devium/toml": "^1.0"
     },
     "scripts": {
@@ -109,7 +108,6 @@
         "post-install-cmd": [],
         "post-update-cmd": []
     },
-
     "require-dev": {
         "ext-posix" : "*",
         "phpunit/phpunit": "^12",
