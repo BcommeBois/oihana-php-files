@@ -118,4 +118,42 @@ TOML;
 
         $this->assertSame('value', $result['key']);
     }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws TomlError
+     */
+    public function testInitCallableIsApplied(): void
+    {
+        $filePath = $this->tempDir . '/initconfig.toml';
+
+        $tomlContent = <<<TOML
+foo = "bar"
+number = 42
+TOML;
+
+        file_put_contents($filePath, $tomlContent);
+
+        $defaultConfig = ['foo' => 'default', 'extra' => 'keep'];
+
+        $init = function(array $config): array {
+            // Add or modify a key
+            $config['processed'] = true;
+            // Change a value
+            if (isset($config['number'])) {
+                $config['number'] = $config['number'] * 2;
+            }
+            return $config;
+        };
+
+        $result = resolveTomlConfig($filePath, $defaultConfig, null, $init);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('foo', $result);
+        $this->assertSame('bar', $result['foo']);
+        $this->assertSame('keep', $result['extra']);
+        $this->assertSame(84, $result['number']);  // 42 * 2
+        $this->assertTrue($result['processed']);
+    }
 }

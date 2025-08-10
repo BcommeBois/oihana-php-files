@@ -17,20 +17,25 @@ use function oihana\files\path\joinPaths;
 use function oihana\files\path\makeAbsolute;
 
 /**
- * Resolves a TOML configuration file and merges it with default configuration.
+ * Resolves a TOML configuration file and merges it with a default configuration.
  *
  * This function attempts to load a TOML config file by:
  * - Ensuring the file path ends with the `.toml` extension.
  * - Resolving relative paths against the current working directory or a given base path.
  * - Validating the existence of the file and directories.
- * - Decoding the TOML content to an array.
- * - Deep merging with the provided default configuration.
+ * - Decoding the TOML content to an associative array.
+ * - Deep merging the decoded config with the provided default configuration.
+ * - Optionally applying an initialization callable to the merged configuration.
  *
- * @param string|null $filePath       Path to the TOML file. If null or empty, only default config is returned.
- * @param array|null  $defaultConfig  Default configuration array to merge with the TOML file contents.
- * @param string|null $defaultPath    Base path used to resolve relative file paths when not absolute.
+ * If `$filePath` is null or empty, only the default configuration is returned (possibly processed by `$init`).
  *
- * @return array Merged configuration array.
+ * @param string|null $filePath Path to the TOML file. If null or empty, only default config is used.
+ * @param array|null $defaultConfig Default configuration array to merge with the TOML file contents.
+ * @param string|null $defaultPath Base path used to resolve relative file paths when not absolute.
+ * @param callable|null $init Optional callable that takes the merged config array as input
+ * and returns a processed config array. Signature: `function(array): array`.
+ *
+ * @return array Merged (and optionally initialized) configuration array.
  *
  * @throws FileException           If the file path is invalid or the file does not exist.
  * @throws DirectoryException      If the provided default path is invalid or not a directory.
@@ -61,9 +66,19 @@ use function oihana\files\path\makeAbsolute;
  * // Optional base path to resolve relative paths
  * $basePath = '/var/www/project/configs';
  *
+ * $init = function( array $config ): array
+ * {
+ *    // Custom post-processing of config, e.g. validation or transformation
+ *    if (!isset($config['debug']))
+ *    {
+ *       $config['debug'] = true;
+ *    }
+ *    return $config;
+ * };
+ *
  * try
  * {
- *    $config = resolveTomlConfig( $configFile , $defaultConfig , $basePath ) ;
+ *    $config = resolveTomlConfig( $configFile , $defaultConfig , $basePath , $init ) ;
  *    print_r( $config ) ;
  * }
  * catch ( FileException $e )
@@ -83,8 +98,9 @@ use function oihana\files\path\makeAbsolute;
 function resolveTomlConfig
 (
     ?string   $filePath ,
-    ?array    $defaultConfig = [] ,
-    ?string   $defaultPath   = null
+    ?array    $defaultConfig = []   ,
+    ?string   $defaultPath   = null ,
+    ?callable $init          = null ,
 )
 :array
 {
@@ -117,10 +133,12 @@ function resolveTomlConfig
         assertFile( $filePath ) ;
 
         $toml   = file_get_contents( $filePath ) ;
-        $config = toml_decode( $toml , true ) ;
-
-        return deepMerge( $defaultConfig , $config ) ;
+        $config = deepMerge( $defaultConfig , toml_decode( $toml , true ) ) ;
+    }
+    else
+    {
+        $config = deepMerge( $defaultConfig ) ;
     }
 
-    return deepMerge( $defaultConfig ) ;
+    return $init ? $init( $config ) : $config ;
 }

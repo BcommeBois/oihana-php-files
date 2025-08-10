@@ -134,7 +134,7 @@
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd>Resolves a TOML configuration file and merges it with default configuration.</dd>
+<dd>Resolves a TOML configuration file and merges it with a default configuration.</dd>
 
     </dl>
 
@@ -156,25 +156,27 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/toml/resolveTomlConfig.php"><a href="files/src-oihana-files-toml-resolvetomlconfig.html"><abbr title="src/oihana/files/toml/resolveTomlConfig.php">resolveTomlConfig.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">83</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Resolves a TOML configuration file and merges it with default configuration.</p>
+        <p class="phpdocumentor-summary">Resolves a TOML configuration file and merges it with a default configuration.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">resolveTomlConfig</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultConfig</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultPath</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">resolveTomlConfig</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultConfig</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$defaultPath</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">callable|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$init</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
         <section class="phpdocumentor-description"><p>This function attempts to load a TOML config file by:</p>
 <ul>
 <li>Ensuring the file path ends with the <code class="prettyprint">.toml</code> extension.</li>
 <li>Resolving relative paths against the current working directory or a given base path.</li>
 <li>Validating the existence of the file and directories.</li>
-<li>Decoding the TOML content to an array.</li>
-<li>Deep merging with the provided default configuration.</li>
+<li>Decoding the TOML content to an associative array.</li>
+<li>Deep merging the decoded config with the provided default configuration.</li>
+<li>Optionally applying an initialization callable to the merged configuration.</li>
 </ul>
+<p>If <code class="prettyprint">$filePath</code> is null or empty, only the default configuration is returned (possibly processed by <code class="prettyprint">$init</code>).</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -184,7 +186,7 @@
                 : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Path to the TOML file. If null or empty, only default config is returned.</p>
+                    <section class="phpdocumentor-description"><p>Path to the TOML file. If null or empty, only default config is used.</p>
 </section>
 
             </dd>
@@ -203,6 +205,16 @@
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Base path used to resolve relative file paths when not absolute.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$init</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Optional callable that takes the merged config array as input
+and returns a processed config array. Signature: <code class="prettyprint">function(array): array</code>.</p>
 </section>
 
             </dd>
@@ -286,9 +298,19 @@ $configFile = '/path/to/config'; // '.toml' appended automatically if missing
 // Optional base path to resolve relative paths
 $basePath = '/var/www/project/configs';
 
+$init = function( array $config ): array
+{
+   // Custom post-processing of config, e.g. validation or transformation
+   if (!isset($config['debug']))
+   {
+      $config['debug'] = true;
+   }
+   return $config;
+};
+
 try
 {
-   $config = resolveTomlConfig( $configFile , $defaultConfig , $basePath ) ;
+   $config = resolveTomlConfig( $configFile , $defaultConfig , $basePath , $init ) ;
    print_r( $config ) ;
 }
 catch ( FileException $e )
@@ -313,7 +335,7 @@ catch ( TomlError $e )
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
                     &mdash;
-                <section class="phpdocumentor-description"><p>Merged configuration array.</p>
+                <section class="phpdocumentor-description"><p>Merged (and optionally initialized) configuration array.</p>
 </section>
 
             </section>

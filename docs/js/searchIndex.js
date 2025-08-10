@@ -1713,7 +1713,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\oihana\\files\\toml\\resolveTomlConfig\u0028\u0029",
             "name": "resolveTomlConfig",
-            "summary": "Resolves\u0020a\u0020TOML\u0020configuration\u0020file\u0020and\u0020merges\u0020it\u0020with\u0020default\u0020configuration.",
+            "summary": "Resolves\u0020a\u0020TOML\u0020configuration\u0020file\u0020and\u0020merges\u0020it\u0020with\u0020a\u0020default\u0020configuration.",
             "url": "namespaces/oihana-files-toml.html#function_resolveTomlConfig"
         },                {
             "fqsen": "\\oihana\\files\\validateMimeType\u0028\u0029",
