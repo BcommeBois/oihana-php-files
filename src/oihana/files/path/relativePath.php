@@ -46,12 +46,17 @@ function relativePath( string $path , string $basePath ) :string
     [ $baseRoot , $relativeBasePath ] = splitPath( $basePath );
 
     // Case 1: Target path is relative, base path is absolute - Not supported
-    if ($root === Char::EMPTY && $baseRoot !== Char::EMPTY) {
-        throw new InvalidArgumentException(sprintf(
-            'The target path "%s" is relative, but the base path "%s" is absolute. This combination is not supported.',
-            $path,
-            $basePath
-        ));
+    if ($root === Char::EMPTY && $baseRoot !== Char::EMPTY)
+    {
+        throw new InvalidArgumentException
+        (
+            sprintf
+            (
+                'The target path "%s" is relative, but the base path "%s" is absolute. This combination is not supported.',
+                $path,
+                $basePath
+            )
+        );
     }
 
     // Case 2: Target path is absolute, base path is relative - Not supported

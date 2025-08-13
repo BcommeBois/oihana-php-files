@@ -2,6 +2,12 @@
 
 ![Oihana PHP Files](https://raw.githubusercontent.com/BcommeBois/oihana-php-files/main/.phpdoc/template/assets/images/oihana-php-files-logo-inline-512x160.png)
 
+A versatile PHP library for seamless and portable file and path handling.
+
+[![Latest Version](https://img.shields.io/packagist/v/oihana/php-files.svg?style=flat-square)](https://packagist.org/packages/oihana/php-files)  
+[![Total Downloads](https://img.shields.io/packagist/dt/oihana/php-files.svg?style=flat-square)](https://packagist.org/packages/oihana/php-files)  
+[![License](https://img.shields.io/packagist/l/oihana/php-files.svg?style=flat-square)](LICENSE)
+
 ## 📚 Documentation
 
 Full project documentation is available at:  
@@ -9,11 +15,13 @@ Full project documentation is available at:
 
 ## 🚀 Features
 
-- 📁 Cross-platform path and file utilities
-- 🔐 File encryption and decryption with OpenSSL
-- 🗜️ Tar and compressed `.tar.gz` archive creation and extraction
-- 📂 Recursive file discovery with filters and options
-- 🧪 Full unit test coverage
+- 📁 Cross-platform path and file utilities — Normalize, join, and manipulate file paths with ease.
+- 🔐 File encryption and decryption powered by OpenSSL.
+- 🗜️ Create, compress and extract archives (.tar and .tar.gz).
+- 📂 Recursive file discovery with advanced filters and options.
+- 🧪 Full unit test coverage ensuring reliability and maintainability.
+
+💡 Designed to be lightweight, testable, and compatible with any PHP 8.4+ project.
 
 ## 📦 Installation
 
@@ -36,7 +44,7 @@ To run a specific test file:
 composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
 ```
 
-## 🧾 Licence
+## 🧾 License
 
 This project is licensed under the [Mozilla Public License 2.0 (MPL-2.0)](https://www.mozilla.org/en-US/MPL/2.0/).
 
