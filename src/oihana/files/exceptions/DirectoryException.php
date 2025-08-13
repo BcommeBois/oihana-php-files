@@ -15,5 +15,4 @@ use oihana\exceptions\ExceptionTrait;
  */
 class DirectoryException extends Exception
 {
-    use ExceptionTrait ;
 }

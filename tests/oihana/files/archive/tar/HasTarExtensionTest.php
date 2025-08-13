@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\files\enums\FileExtension;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\archive\tar\hasTarExtension;
 
 class HasTarExtensionTest extends TestCase
 {
@@ -41,6 +42,6 @@ class HasTarExtensionTest extends TestCase
             FileExtension::TAR,
             '.tar.xz' // custom extension added
         ];
-        $this->assertTrue(hasTarExtension($filename, $customExtensions));
+        $this->assertTrue( hasTarExtension( $filename, $customExtensions ) );
     }
 }

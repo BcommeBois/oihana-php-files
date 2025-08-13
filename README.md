@@ -63,3 +63,9 @@ Run the command :
 ```bash
 composer doc
 ```
+
+## 🔗 Related packages
+
+- `oihana/php-core` – core helpers and utilities used by this library: `https://github.com/BcommeBois/oihana-php-core`
+- `oihana/php-reflect` – reflection and hydration utilities: `https://github.com/BcommeBois/oihana-php-reflect`
+- `oihana/php-enums` – a collection of strongly-typed constant enumerations for PHP.: `https://github.com/BcommeBois/oihana-php-enums`

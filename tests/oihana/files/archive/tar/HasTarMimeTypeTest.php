@@ -1,9 +1,12 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\files\exceptions\DirectoryException;
+
 use PHPUnit\Framework\TestCase;
+
+use function oihana\files\archive\tar\hasTarMimeType;
 use function oihana\files\deleteDirectory;
 
 class HasTarMimeTypeTest extends TestCase

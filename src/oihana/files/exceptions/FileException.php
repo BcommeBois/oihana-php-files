@@ -14,5 +14,4 @@ use oihana\exceptions\ExceptionTrait;
  */
 class FileException extends Exception
 {
-    use ExceptionTrait ;
 }

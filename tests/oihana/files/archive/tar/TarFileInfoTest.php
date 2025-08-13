@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\files\enums\CompressionType;
 use oihana\files\enums\TarInfo;
@@ -9,6 +9,7 @@ use oihana\files\exceptions\FileException;
 use Phar;
 use PharData;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\archive\tar\tarFileInfo;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use PharData;
 use RuntimeException;
@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
+use function oihana\files\archive\tar\untar;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 

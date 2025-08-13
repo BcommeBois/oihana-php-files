@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\files\enums\CompressionType;
 use oihana\files\exceptions\DirectoryException;
@@ -10,6 +10,7 @@ use PharData;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use function oihana\files\archive\tar\tar;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 
@@ -131,7 +132,7 @@ class TarTest extends TestCase
 
         $outputPath = $this->tempDir . '/my-archive.tar.gz';
 
-        $this->archivePath = tar( $file, $outputPath, CompressionType::GZIP);
+        $this->archivePath = tar( $file , $outputPath );
 
         $this->assertFileExists( $this->archivePath );
         $this->assertSame( $outputPath, $this->archivePath  );

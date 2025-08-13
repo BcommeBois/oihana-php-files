@@ -25,12 +25,13 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "oihana\\files\\" : "tests/oihana/files"
+            "tests\\" : "tests"
         }
     },
     "autoload": {
         "psr-4": {
-            "oihana\\files\\": "src/oihana/files"
+            "oihana\\files\\": "src/oihana/files",
+            "oihana\\options\\": "src/oihana/options"
         },
         "files": [
             "src/oihana/files/archive/tar/assertTar.php",
@@ -103,6 +104,7 @@
         "ext-openssl": "*",
         "oihana/php-core": "dev-main",
         "oihana/php-reflect": "dev-main",
+        "oihana/php-enums": "dev-main",
         "devium/toml": "^1.0"
     },
     "scripts": {
@@ -113,6 +115,7 @@
     },
     "require-dev": {
         "ext-posix" : "*",
+        "ext-zlib" : "*",
         "phpunit/phpunit": "^12",
         "nunomaduro/collision": "^8.8",
         "mikey179/vfsstream": "^1.6",

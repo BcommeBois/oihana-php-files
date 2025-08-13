@@ -1,9 +1,14 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
+
+use PharData;
+
+use PHPUnit\Framework\TestCase;
 
 use oihana\files\exceptions\DirectoryException;
-use PHPUnit\Framework\TestCase;
+
+use function oihana\files\archive\tar\validateTarStructure;
 use function oihana\files\deleteDirectory;
 
 class ValidateTarStructureTest extends TestCase
@@ -28,7 +33,7 @@ class ValidateTarStructureTest extends TestCase
     {
         $path = $this->tmpDir . '/' . 'valid.tar';
 
-        $phar = new \PharData($path);
+        $phar = new PharData($path);
         $phar->addFromString('file1.txt', 'hello');
         $phar->addFromString('file2.txt', 'world');
 
@@ -45,18 +50,18 @@ class ValidateTarStructureTest extends TestCase
     public function testValidTarStructure()
     {
         $tarFile = $this->makeValidTarFile();
-        $this->assertTrue(validateTarStructure($tarFile), 'Expected valid tar file to return true');
+        $this->assertTrue( validateTarStructure($tarFile), 'Expected valid tar file to return true');
     }
 
     public function testInvalidTarStructure()
     {
         $fakeTar = $this->makeInvalidTarFile();
-        $this->assertFalse(validateTarStructure($fakeTar), 'Expected invalid tar file to return false');
+        $this->assertFalse( validateTarStructure($fakeTar), 'Expected invalid tar file to return false');
     }
 
     public function testNonExistentFile()
     {
         $nonexistent = $this->tmpDir . '/missing.tar';
-        $this->assertFalse(validateTarStructure($nonexistent), 'Expected missing file to return false');
+        $this->assertFalse( validateTarStructure($nonexistent), 'Expected missing file to return false');
     }
 }

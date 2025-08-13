@@ -1,9 +1,11 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\files\exceptions\FileException;
 use PHPUnit\Framework\TestCase;
+
+use function oihana\files\archive\tar\assertTar;
 
 class AssertTarTest extends TestCase
 {
