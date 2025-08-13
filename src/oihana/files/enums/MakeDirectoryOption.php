@@ -2,7 +2,7 @@
 
 namespace oihana\files\enums;
 
-use oihana\reflections\traits\ConstantsTrait;
+use oihana\reflect\traits\ConstantsTrait;
 
 /**
  * Enumeration class that defines various options to use in the makeFile function.

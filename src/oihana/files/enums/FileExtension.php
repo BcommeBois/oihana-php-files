@@ -3,7 +3,7 @@
 namespace oihana\files\enums;
 
 use oihana\enums\Char;
-use oihana\reflections\traits\ConstantsTrait;
+use oihana\reflect\traits\ConstantsTrait;
 
 /**
  * FileExtension

@@ -12,7 +12,7 @@ use oihana\files\exceptions\UnsupportedCompressionException;
 
 use RuntimeException;
 
-use function oihana\core\reflections\getFunctionInfo;
+use function oihana\reflect\helpers\getFunctionInfo;
 use function oihana\files\assertDirectory;
 use function oihana\files\copyFilteredFiles;
 use function oihana\files\deleteDirectory;

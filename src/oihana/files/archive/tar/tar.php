@@ -19,7 +19,7 @@ use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use oihana\files\exceptions\UnsupportedCompressionException;
 
-use function oihana\core\reflections\getFunctionInfo;
+use function oihana\reflect\helpers\getFunctionInfo;
 use function oihana\files\phar\getPharCompressionType;
 use function oihana\files\makeDirectory;
 

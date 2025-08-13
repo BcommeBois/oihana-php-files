@@ -2,7 +2,7 @@
 
 namespace oihana\files\enums ;
 
-use oihana\reflections\exceptions\ConstantException;
+use oihana\reflect\exceptions\ConstantException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

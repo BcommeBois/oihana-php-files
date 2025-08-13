@@ -102,6 +102,7 @@
         "ext-fileinfo": "*",
         "ext-openssl": "*",
         "oihana/php-core": "dev-main",
+        "oihana/php-reflect": "dev-main",
         "devium/toml": "^1.0"
     },
     "scripts": {
