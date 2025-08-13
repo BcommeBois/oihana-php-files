@@ -3,7 +3,6 @@
 namespace oihana\files\exceptions ;
 
 use Exception;
-use oihana\exceptions\ExceptionTrait;
 
 /**
  * Thrown when an error occurred in the component File.
