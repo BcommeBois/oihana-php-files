@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\toml;
+namespace tests\oihana\files\toml;
 
 use PHPUnit\Framework\TestCase;
 
@@ -9,6 +9,7 @@ use oihana\files\exceptions\DirectoryException;
 use Devium\Toml\TomlError;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
+use function oihana\files\toml\resolveTomlConfig;
 
 class ResolveTomlConfigTest extends TestCase
 {
@@ -39,7 +40,7 @@ class ResolveTomlConfigTest extends TestCase
     public function testReturnsDefaultConfigIfFilePathNullOrEmpty(): void
     {
         $default = ['key' => 'value'];
-        $result = resolveTOMLConfig(null, $default);
+        $result = resolveTomlConfig(null, $default);
         $this->assertSame($default, $result);
 
         $result = resolveTOMLConfig('', $default);

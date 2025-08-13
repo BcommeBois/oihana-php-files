@@ -1,8 +1,9 @@
 <?php
 
-namespace oihana\files\options ;
+namespace tests\oihana\files\options ;
 
 use oihana\files\enums\OwnershipInfo;
+use oihana\files\options\OwnershipInfos;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

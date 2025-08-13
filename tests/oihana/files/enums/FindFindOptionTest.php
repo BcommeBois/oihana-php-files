@@ -1,7 +1,8 @@
 <?php
 
-namespace oihana\files\enums ;
+namespace tests\oihana\files\enums ;
 
+use oihana\files\enums\FindFileOption;
 use oihana\reflect\exceptions\ConstantException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,8 @@ class FindFindOptionTest extends TestCase
 {
     public function testConstantsExist(): void
     {
-        $expected = [
+        $expected =
+        [
             'FILTER',
             'FOLLOW_LINKS',
             'INCLUDE_DOTS',

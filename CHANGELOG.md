@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## [1.0.0] - 2025-08-13 
 
 ### Added
+
 - Adds oihana\files\assertDirectory
 - Adds oihana\files\assertFile
 - Adds oihana\files\assertWritableDirectory
@@ -70,11 +71,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\exceptions\UnsupportedCompressionException
  
 - Adds oihana\files\helpers\CanonicalizeBuffer
-- 
+
 - Adds oihana\files\openssl\OpenSSLFileEncryption
 
-- Adds oihana\files\options\Option
-- Adds oihana\files\options\Options
+- Adds oihana\options\Option
+- Adds oihana\options\Options
 
 - Adds oihana\files\path\canonicalizePath
 - Adds oihana\files\path\computeRelativePath

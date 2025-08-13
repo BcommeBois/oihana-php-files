@@ -102,7 +102,7 @@
     </ul>
 
     <article class="phpdocumentor-element -file">
-        <h2 class="phpdocumentor-content__title">makeTemporaryDirectory.php</h2>
+        <h2 class="phpdocumentor-content__title">Options.php</h2>
 
         
         
@@ -113,13 +113,20 @@
         
 <h3 id="toc">
     Table of Contents
-    <a href="files/src-oihana-files-maketemporarydirectory.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-options-options.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
 
 
 
+    <h4 id="toc-classes">
+        Classes
+        <a href="files/src-oihana-options-options.html#toc-classes" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <dl class="phpdocumentor-table-of-contents">
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/oihana-options-Options.html"><abbr title="\oihana\options\Options">Options</abbr></a></dt><dd>Abstract base class for defining configurable options.</dd>    </dl>
 
 
 
@@ -127,151 +134,16 @@
 
 
 
-<h4 id="toc-functions">
-    Functions
-    <a href="files/src-oihana-files-maketemporarydirectory.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-</h4>
-<dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a class="" href="namespaces/oihana-files.html#function_makeTemporaryDirectory">makeTemporaryDirectory()</a>
-    <span>
-                                &nbsp;: string    </span>
-</dt>
-<dd>Creates (or returns if already present) a directory inside the system temporary folder.</dd>
-
-    </dl>
 
 
         
 
-            <section class="phpdocumentor-functions">
-        <h3 class="phpdocumentor-elements__header" id="functions">
-            Functions
-            <a href="files/src-oihana-files-maketemporarydirectory.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-        </h3>
-                    <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_makeTemporaryDirectory">
-        makeTemporaryDirectory()
-        <a href="namespaces/oihana-files.html#function_makeTemporaryDirectory" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/makeTemporaryDirectory.php"><a href="files/src-oihana-files-maketemporarydirectory.html"><abbr title="src/oihana/files/makeTemporaryDirectory.php">makeTemporaryDirectory.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">41</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Creates (or returns if already present) a directory inside the system temporary folder.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">makeTemporaryDirectory</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, string&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$permission</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0755</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
-
-        <section class="phpdocumentor-description"><p>The sub‑path is appended to <code class="prettyprint">sys_get_temp_dir()</code> de la même manière que
-<a href="namespaces/oihana-files.html#function_getTemporaryDirectory"><abbr title="\oihana\files\getTemporaryDirectory()">getTemporaryDirectory()</abbr></a> :</p>
-<ul>
-<li><code class="prettyprint">null</code> → the temp dir itself</li>
-<li><code class="prettyprint">'cache'</code> → <code class="prettyprint">/tmp/cache</code></li>
-<li><code class="prettyprint">['my', 'app']</code> → <code class="prettyprint">/tmp/my/app</code></li>
-</ul>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$path</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, string&gt;|null</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Optional sub‑directory path segments.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$permission</span>
-                : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">0755</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Octal mode for <code class="prettyprint">mkdir()</code> (default: <code class="prettyprint">0755</code>).</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="namespaces/oihana-files.html#function_makeTemporaryDirectory#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-DirectoryException.html"><abbr title="\oihana\files\exceptions\DirectoryException">DirectoryException</abbr></a></span>
-                                                            
-                                                 <section class="phpdocumentor-description"><p>If creation fails or the directory is still missing afterwards.</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">example</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">// 1) Ensure /tmp/reports exists
-$reportsDir = makeTemporaryDirectory('reports');
-
-// 2) Ensure /tmp/my/app/cache exists
-$cacheDir = makeTemporaryDirectory(['my','app','cache'], 0700);
-
-// 3) Just return /tmp itself
-$tmp = makeTemporaryDirectory(null);
-</code></pre>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">author</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">since</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                            <span class="phpdocumentor-tag-link">1.0.0</span>
-                                                                                
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
-                    &mdash;
-                <section class="phpdocumentor-description"><p>Full path to the (existing or newly created) temporary directory.</p>
-</section>
-
-            </section>
-
-</article>
-            </section>
-
+        
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/makeTemporaryDirectory.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/options/Options.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -372,17 +244,11 @@ $tmp = makeTemporaryDirectory(null);
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                                                                                                        <li><a href="files/src-oihana-files-maketemporarydirectory.html#toc-functions">Functions</a></li>
-                                    </ul>
+                                                                                                        <li><a href="files/src-oihana-options-options.html#toc-classes">Classes</a></li>
+                                                                                                                    </ul>
             </li>
 
             
-                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
-                <li>
-                    <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/oihana-files.html#function_makeTemporaryDirectory">makeTemporaryDirectory()</a></li>
-                                            </ul>
-                </li>
                     </ul>
     </section>
 
@@ -400,7 +266,7 @@ $tmp = makeTemporaryDirectory(null);
     </section>
 </section>
         </div>
-        <a href="files/src-oihana-files-maketemporarydirectory.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="files/src-oihana-options-options.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

@@ -1731,6 +1731,81 @@ Search.appendIndex(
             "summary": "Validate\u0020the\u0020MIME\u0020type\u0020of\u0020a\u0020file\u0020against\u0020a\u0020list\u0020of\u0020allowed\u0020types.",
             "url": "namespaces/oihana-files.html#function_validateMimeType"
         },                {
+            "fqsen": "\\oihana\\options\\Option",
+            "name": "Option",
+            "summary": "Abstract\u0020base\u0020class\u0020for\u0020mapping\u0020property\u0020names\u0020to\u0020command\u002Dline\u0020option\u0020names.",
+            "url": "classes/oihana-options-Option.html"
+        },                {
+            "fqsen": "\\oihana\\options\\Option\u003A\u003AgetCommandOption\u0028\u0029",
+            "name": "getCommandOption",
+            "summary": "Returns\u0020the\u0020command\u0020line\u0020option\u0020expression\u0020from\u0020a\u0020specific\u0020option.",
+            "url": "classes/oihana-options-Option.html#method_getCommandOption"
+        },                {
+            "fqsen": "\\oihana\\options\\Option\u003A\u003AgetCommandPrefix\u0028\u0029",
+            "name": "getCommandPrefix",
+            "summary": "Returns\u0020the\u0020prefix\u0020from\u0020a\u0020specific\u0020option.",
+            "url": "classes/oihana-options-Option.html#method_getCommandPrefix"
+        },                {
+            "fqsen": "\\oihana\\options\\Options",
+            "name": "Options",
+            "summary": "Abstract\u0020base\u0020class\u0020for\u0020defining\u0020configurable\u0020options.",
+            "url": "classes/oihana-options-Options.html"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Initializes\u0020the\u0020object\u0020using\u0020an\u0020associative\u0020array\u0020or\u0020object.",
+            "url": "classes/oihana-options-Options.html#method___construct"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003Aclone\u0028\u0029",
+            "name": "clone",
+            "summary": "Creates\u0020a\u0020deep\u0020copy\u0020of\u0020the\u0020current\u0020instance.",
+            "url": "classes/oihana-options-Options.html#method_clone"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "Instantiates\u0020the\u0020class\u0020from\u0020an\u0020array\u0020or\u0020another\u0020Options\u0020instance.",
+            "url": "classes/oihana-options-Options.html#method_create"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003Aformat\u0028\u0029",
+            "name": "format",
+            "summary": "Formats\u0020a\u0020template\u0020string\u0020by\u0020replacing\u0020placeholders\u0020like\u0020\u0060\u007B\u007Bproperty\u007D\u007D\u0060\u0020with\nthe\u0020corresponding\u0020public\u0020property\u0020values\u0020of\u0020the\u0020current\u0020object.",
+            "url": "classes/oihana-options-Options.html#method_format"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003AformatArray\u0028\u0029",
+            "name": "formatArray",
+            "summary": "Recursively\u0020formats\u0020all\u0020string\u0020values\u0020in\u0020an\u0020array\u0020using\u0020internal\u0020or\u0020external\u0020values.",
+            "url": "classes/oihana-options-Options.html#method_formatArray"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003AformatFromDocument\u0028\u0029",
+            "name": "formatFromDocument",
+            "summary": "Formats\u0020all\u0020public\u0020string\u0020properties\u0020using\u0020external\u0020data\u0020instead\u0020of\u0020internal\u0020values.",
+            "url": "classes/oihana-options-Options.html#method_formatFromDocument"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003AgetOptions\u0028\u0029",
+            "name": "getOptions",
+            "summary": "Returns\u0020a\u0020string\u0020representing\u0020the\u0020current\u0020options\u0020formatted\u0020as\u0020CLI\u0020arguments.",
+            "url": "classes/oihana-options-Options.html#method_getOptions"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "Returns\u0020data\u0020to\u0020be\u0020serialized\u0020by\u0020json_encode\u0028\u0029.",
+            "url": "classes/oihana-options-Options.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003Aresolve\u0028\u0029",
+            "name": "resolve",
+            "summary": "Resolves\u0020options\u0020by\u0020merging\u0020multiple\u0020configuration\u0020sources.",
+            "url": "classes/oihana-options-Options.html#method_resolve"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003AtoArray\u0028\u0029",
+            "name": "toArray",
+            "summary": "Converts\u0020the\u0020current\u0020object\u0020to\u0020an\u0020associative\u0020array.",
+            "url": "classes/oihana-options-Options.html#method_toArray"
+        },                {
+            "fqsen": "\\oihana\\options\\Options\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Returns\u0020a\u0020string\u0020representation\u0020of\u0020the\u0020object.",
+            "url": "classes/oihana-options-Options.html#method___toString"
+        },                {
             "fqsen": "\\",
             "name": "\\",
             "summary": "",
@@ -1790,5 +1865,10 @@ Search.appendIndex(
             "name": "toml",
             "summary": "",
             "url": "namespaces/oihana-files-toml.html"
+        },                {
+            "fqsen": "\\oihana\\options",
+            "name": "options",
+            "summary": "",
+            "url": "namespaces/oihana-options.html"
         }            ]
 );

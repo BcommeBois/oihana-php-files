@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\phar ;
+namespace tests\oihana\files\phar ;
 
 use oihana\files\exceptions\DirectoryException;
 use PharData;
@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
+use function oihana\files\phar\getPharBasePath;
 
 #[CoversFunction('oihana\files\phar\getPharBasePath')]
 class GetPharBasePathTest extends TestCase

@@ -1,7 +1,9 @@
 <?php
 
-namespace oihana\files\enums ;
+namespace tests\oihana\files\enums ;
 
+use oihana\files\enums\FindFileOption;
+use oihana\files\enums\FindMode;
 use oihana\reflect\exceptions\ConstantException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;

@@ -1,7 +1,9 @@
 <?php
 
-namespace oihana\files\enums ;
+namespace tests\oihana\files\enums ;
 
+use oihana\files\enums\FileExtension;
+use oihana\files\enums\FileMimeType;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 

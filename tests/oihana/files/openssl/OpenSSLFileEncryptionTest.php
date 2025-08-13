@@ -1,9 +1,10 @@
 <?php
 
-namespace oihana\files\openssl;
+namespace tests\oihana\files\openssl;
 
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
+use oihana\files\openssl\OpenSSLFileEncryption;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
