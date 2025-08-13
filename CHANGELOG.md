@@ -6,12 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-## [0.0.0] - 2025-07-15 (alpha)
+## [1.0.0] - 2025-08-13 
 
 ### Added
 - Adds oihana\files\assertDirectory
 - Adds oihana\files\assertFile
-- Adds oihana\files\assertPhar
 - Adds oihana\files\assertWritableDirectory
 - Adds oihana\files\copyFilteredFiles
 - Adds oihana\files\deleteDirectory
