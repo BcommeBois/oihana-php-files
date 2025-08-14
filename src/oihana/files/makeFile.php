@@ -31,19 +31,19 @@ use oihana\files\exceptions\FileException;
  * Other keys correspond to options (see below).
  *
  * @param array{
- *     append:bool ,
- *     content:string|null ,
- *     file:string|null ,
- *     force:bool ,
- *     group:null|string ,
- *     lock:bool ,
- *     overwrite:bool ,
- *     permissions:int ,
- *     owner:string|null
+ *     append?      : bool ,
+ *     content?     : string|null ,
+ *     file?        : string|null ,
+ *     force?       : bool ,
+ *     group?       : null|string ,
+ *     lock?        : bool ,
+ *     overwrite?   : bool ,
+ *     permissions? : int ,
+ *     owner?       : string|null
  * }|string|null $fileOrOptions Either the file path as a string (classic usage),
  * or an associative array containing at least 'filePath' and optionally 'content' and other options.
  * @param string|null $content The content to write into the file. Defaults to empty string. Ignored if $filePathOrOptions is array.
- * @param array{ append:bool , force:bool , group:null|string , lock:bool , overwrite:bool , permissions:int , owner:string|null } $options An associative array of options:
+ * @param array{ append?:bool , force?:bool , group?:null|string , lock?:bool , overwrite?:bool , permissions?:int , owner?:string|null } $options An associative array of options:
  * - 'append' (bool): If true, appends content instead of overwriting. Default: false.
  * - 'force' (bool): If true, creates parent directories if they do not exist. Default: true.
  * - 'group' (string|null): Group name or ID to set as file group owner. Default: null.

@@ -21,14 +21,14 @@ use function oihana\core\strings\isRegexp;
  *
  * @param ?string $directory The target directory path. If null or invalid, a DirectoryException is thrown.
  * @param array{
- * filter       ?: (callable(SplFileInfo): mixed)|null,
- * followLinks  ?: bool|null,
- * includeDots  ?: bool|null,
- * mode         ?: string|null,
- * order        ?: string|null,
- * pattern      ?: string|array|null,
- * recursive    ?: bool|null,
- * sort         ?: callable|string|array|null
+ * filter?       : (callable(SplFileInfo): mixed)|null,
+ * followLinks? : bool|null,
+ * includeDots? : bool|null,
+ * mode?        : string|null,
+ * order?       : string|null,
+ * pattern?     : string|array|null,
+ * recursive?   : bool|null,
+ * sort?        : callable|string|array|null
  * } $options Optional settings to customize the file listing.
  * <ul>
  * <li>filter : A function to map or transform each SplFileInfo result.</li>

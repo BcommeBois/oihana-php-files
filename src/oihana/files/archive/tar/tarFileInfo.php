@@ -26,12 +26,12 @@ use function oihana\files\assertFile;
  *   Default is false for a more lenient check.
  *
  * @return array{
- *   is_valid: bool,
- *   extension: string,
- *   mime_type: string|null,
- *   compression: string|null,
- *   file_count: int|null,
- *   total_size: int|null
+ *   is_valid?    : bool,
+ *   extension?   : string,
+ *   mime_type?   : string|null,
+ *   compression? : string|null,
+ *   file_count?  : int|null,
+ *   total_size?  : int|null
  * }
  *   Returns an associative array with:
  *   - **isValid**: Whether the tar file is valid according to {@see assertTar()}.

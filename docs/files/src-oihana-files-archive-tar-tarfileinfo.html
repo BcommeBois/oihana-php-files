@@ -136,7 +136,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files-archive-tar.html#function_tarFileInfo">tarFileInfo()</a>
     <span>
-                                &nbsp;: array{is_valid: bool, extension: string, mime_type: string|null, compression: string|null, file_count: int|null, total_size: int|null}    </span>
+                                &nbsp;: array{is_valid?: bool, extension?: string, mime_type?: string|null, compression?: string|null, file_count?: int|null, total_size?: int|null}    </span>
 </dt>
 <dd>Retrieves detailed information about a tar archive file.</dd>
 
@@ -169,7 +169,7 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">tarFileInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$strictMode</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array{is_valid: bool, extension: string, mime_type: string|null, compression: string|null, file_count: int|null, total_size: int|null}</span></code>
+                    <span class="phpdocumentor-signature__name">tarFileInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$strictMode</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array{is_valid?: bool, extension?: string, mime_type?: string|null, compression?: string|null, file_count?: int|null, total_size?: int|null}</span></code>
 
         <section class="phpdocumentor-description"><p>This function inspects the given tar file to determine its validity,
 compression type, MIME type, number of contained files, and total size of the contents.</p>
@@ -265,7 +265,7 @@ $info = tarFileInfo( '/archives/sample.tar' , true );
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array{is_valid: bool, extension: string, mime_type: string|null, compression: string|null, file_count: int|null, total_size: int|null}</span>
+        <span class="phpdocumentor-signature__response_type">array{is_valid?: bool, extension?: string, mime_type?: string|null, compression?: string|null, file_count?: int|null, total_size?: int|null}</span>
                     &mdash;
                 <section class="phpdocumentor-description"><p>Returns an associative array with:</p>
 <ul>
