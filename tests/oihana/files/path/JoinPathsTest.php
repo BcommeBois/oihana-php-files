@@ -31,6 +31,11 @@ final class JoinPathsTest extends TestCase
         $this->assertSame('relative/path', joinPaths('', 'relative', '', 'path'));
     }
 
+    public function testMultipleSlash(): void
+    {
+        $this->assertSame('relative/path', joinPaths('', 'relative/', '/', '//path'));
+    }
+
     public function testAllEmptyReturnsEmpty(): void
     {
         $this->assertSame('', joinPaths('', '', ''));
