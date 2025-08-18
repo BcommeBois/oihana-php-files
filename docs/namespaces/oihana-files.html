@@ -1355,7 +1355,7 @@ deleteTemporaryDirectory('protected_dir', isWritable: true);
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/findFiles.php"><a href="files/src-oihana-files-findfiles.html"><abbr title="src/oihana/files/findFiles.php">findFiles.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">160</span>
+    <span class="phpdocumentor-element-found-in__line">161</span>
 
     </aside>
 
@@ -1558,7 +1558,7 @@ $files = findFiles('/var/www');
                     <span class="phpdocumentor-tag__name">see</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                                    <span class="phpdocumentor-tag-link"><abbr title="\oihana\files\Order::asc">Order::asc</abbr></span>
+                                                                                    <span class="phpdocumentor-tag-link"><abbr title="\oihana\enums\Order::asc">Order::asc</abbr></span>
                                         
                                              
                                     </dd>
@@ -4209,7 +4209,7 @@ $filePath = makeTimestampedFile(mustExist: true);
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/recursiveFilePaths.php"><a href="files/src-oihana-files-recursivefilepaths.html"><abbr title="src/oihana/files/recursiveFilePaths.php">recursiveFilePaths.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">77</span>
+    <span class="phpdocumentor-element-found-in__line">83</span>
 
     </aside>
 
@@ -4218,7 +4218,7 @@ $filePath = makeTimestampedFile(mustExist: true);
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">recursiveFilePaths</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$directory</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">recursiveFilePaths</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$directory</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{excludes?: array|null, extensions?: array|null, maxDepth?: int, sortable?: bool}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -4234,7 +4234,7 @@ $filePath = makeTimestampedFile(mustExist: true);
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$options</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{excludes?: array|null, extensions?: array|null, maxDepth?: int, sortable?: bool}</span>
                  = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The optional parameter to send in the function.</p>
@@ -4264,29 +4264,34 @@ $filePath = makeTimestampedFile(mustExist: true);
                                                  <section class="phpdocumentor-description"><p>Basic usage: list all PHP files in a directory (and its subdirectories).</p>
 <pre class="prettyprint"><code class="language-php">use function oihana\files\recursiveFilePaths;
 
-$files = recursiveFilePaths(__DIR__);
-foreach ($files as $file) {
-echo $file . PHP_EOL;
+$files = recursiveFilePaths( __DIR__ ) ;
+foreach ( $files as $file )
+{
+   echo $file . PHP_EOL;
 }
 </code></pre>
 <p>Include only files with certain extensions:</p>
-<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths(__DIR__, [
-'extensions' =&gt; ['php', 'inc'],
+<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths( __DIR__ ,
+[
+    RecursiveFilePathsOption::EXTENSIONS =&gt; ['php', 'inc'],
 ]);
 </code></pre>
 <p>Exclude specific filenames from the scan:</p>
-<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths(__DIR__, [
-'excludes' =&gt; ['ignore.php', 'test.php'],
+<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths(__DIR__,
+[
+    RecursiveFilePathsOption::EXCLUDES =&gt; ['ignore.php', 'test.php'],
 ]);
 </code></pre>
 <p>Limit maximum depth of traversal:</p>
-<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths(__DIR__, [
-'maxDepth' =&gt; 1, // Only scan current directory and its direct children
+<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths( __DIR__ ,
+[
+    RecursiveFilePathsOption::MAX_DEPTH =&gt; 1, // Only scan current directory and its direct children
 ]);
 </code></pre>
 <p>Disable sorting of the resulting file list:</p>
-<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths(__DIR__, [
-'sortable' =&gt; false,
+<pre class="prettyprint"><code class="language-php">$files = recursiveFilePaths( __DIR__,
+[
+    RecursiveFilePathsOption::SORTABLE =&gt; false,
 ]);
 </code></pre>
 <p>Error handling when scanning an invalid directory:</p>

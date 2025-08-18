@@ -3,6 +3,7 @@
 namespace oihana\files ;
 
 use FilesystemIterator;
+use oihana\files\enums\RecursiveFilePathsOption;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -13,7 +14,7 @@ use SplFileInfo;
  * Recursively retrieves all .php files in a folder (and its subfolders).
  *
  * @param string $directory The base path of the file to be scanned.
- * @param array $options The optional parameter to send in the function.
+ * @param array{ excludes? : array|null , extensions? : array|null , maxDepth?: int , sortable?: bool } $options The optional parameter to send in the function.
  *  - excludes (array) : The enumeration of all files to excludes
  *  - extensions (array) : The optional list of the extensions to use to scan the folder(s).
  *  - maxDepth (int) : The maximum allowed depth. Default -1 is used
@@ -27,37 +28,42 @@ use SplFileInfo;
  * ```php
  * use function oihana\files\recursiveFilePaths;
  *
- * $files = recursiveFilePaths(__DIR__);
- * foreach ($files as $file) {
- * echo $file . PHP_EOL;
+ * $files = recursiveFilePaths( __DIR__ ) ;
+ * foreach ( $files as $file )
+ * {
+ *    echo $file . PHP_EOL;
  * }
  * ```
  *
  * Include only files with certain extensions:
  * ```php
- * $files = recursiveFilePaths(__DIR__, [
- * 'extensions' => ['php', 'inc'],
+ * $files = recursiveFilePaths( __DIR__ ,
+ * [
+ *     RecursiveFilePathsOption::EXTENSIONS => ['php', 'inc'],
  * ]);
  * ```
  *
  * Exclude specific filenames from the scan:
  * ```php
- * $files = recursiveFilePaths(__DIR__, [
- * 'excludes' => ['ignore.php', 'test.php'],
+ * $files = recursiveFilePaths(__DIR__,
+ * [
+ *     RecursiveFilePathsOption::EXCLUDES => ['ignore.php', 'test.php'],
  * ]);
  * ```
  *
  * Limit maximum depth of traversal:
  * ```php
- * $files = recursiveFilePaths(__DIR__, [
- * 'maxDepth' => 1, // Only scan current directory and its direct children
+ * $files = recursiveFilePaths( __DIR__ ,
+ * [
+ *     RecursiveFilePathsOption::MAX_DEPTH => 1, // Only scan current directory and its direct children
  * ]);
  * ```
  *
  * Disable sorting of the resulting file list:
  * ```php
- * $files = recursiveFilePaths(__DIR__, [
- * 'sortable' => false,
+ * $files = recursiveFilePaths( __DIR__,
+ * [
+ *     RecursiveFilePathsOption::SORTABLE => false,
  * ]);
  * ```
  *
@@ -81,10 +87,10 @@ function recursiveFilePaths( string $directory , array $options = [] ): array
         throw new RuntimeException( sprintf('The directory "%s" does not exist or is not a valid directory.', $directory ) );
     }
 
-    $excludes   = $options[ 'excludes'   ] ?? [] ;
-    $extensions = $options[ 'extensions' ] ?? null ;
-    $maxDepth   = $options[ 'maxDepth'   ] ?? -1 ;
-    $sortable   = $options[ 'sortable'   ] ?? true ;
+    $excludes   = $options[ RecursiveFilePathsOption::EXCLUDES   ] ?? [] ;
+    $extensions = $options[ RecursiveFilePathsOption::EXTENSIONS ] ?? null ;
+    $maxDepth   = $options[ RecursiveFilePathsOption::MAX_DEPTH  ] ?? -1 ;
+    $sortable   = $options[ RecursiveFilePathsOption::SORTABLE   ] ?? true ;
 
     $extensions        = is_array( $extensions ) ? array_map('strtolower' , array_filter( $extensions ) ) : [] ;
     $filterByExtension = !empty( $extensions ) ;

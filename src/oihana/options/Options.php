@@ -28,7 +28,7 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
 {
     /**
      * Initializes the object using an associative array or object.
- *
+     *
      * Only public properties declared on the class will be set.
      * Unknown or non-public properties are silently ignored.
      *

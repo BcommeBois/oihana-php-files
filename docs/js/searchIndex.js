@@ -1076,6 +1076,51 @@ Search.appendIndex(
             "summary": "The\u0020optional\u0020sort\u0020option\u0020to\u0020sort\u0020all\u0020files.",
             "url": "classes/oihana-files-enums-FindFileOption.html#constant_SORT"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption",
+            "name": "FindFilesOption",
+            "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020fileFiles\u0020function.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003AFILTER",
+            "name": "FILTER",
+            "summary": "A\u0020function\u0020to\u0020map\u0020or\u0020transform\u0020each\u0020SplFileInfo\u0020result.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_FILTER"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003AFOLLOW_LINKS",
+            "name": "FOLLOW_LINKS",
+            "summary": "Whether\u0020to\u0020follow\u0020symbolic\u0020links\u0020\u0028default\u003A\u0020false\u0029.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_FOLLOW_LINKS"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003AINCLUDE_DOTS",
+            "name": "INCLUDE_DOTS",
+            "summary": "Whether\u0020to\u0020include\u0020dot\u0020files\u0020\u0028default\u003A\u0020false\u0029.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_INCLUDE_DOTS"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003AMODE",
+            "name": "MODE",
+            "summary": "Filter\u0020by\u0020type\u003A\u0020\u0027files\u0027,\u0020\u0027dirs\u0027,\u0020or\u0020\u0027both\u0027\u0020\u0028default\u003A\u0020\u0027files\u0027\u0029.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_MODE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003AORDER",
+            "name": "ORDER",
+            "summary": "Sort\u0020order\u003A\u0020\u0027asc\u0027\u0020\u0028default\u0029\u0020or\u0020\u0027desc\u0027.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_ORDER"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003APATTERN",
+            "name": "PATTERN",
+            "summary": "A\u0020glob\u0020pattern,\u0020regex,\u0020or\u0020list\u0020of\u0020patterns\u0020to\u0020match\u0020file\u0020names.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_PATTERN"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003ARECURSIVE",
+            "name": "RECURSIVE",
+            "summary": "Whether\u0020to\u0020search\u0020recursively\u0020\u0028default\u003A\u0020false\u0029.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_RECURSIVE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FindFilesOption\u003A\u003ASORT",
+            "name": "SORT",
+            "summary": "A\u0020sort\u0020option,\u0020eg\u003A\u0020callback,\u0020predefined\u0020string,\u0020or\u0020array\u0020of\u0020keys.",
+            "url": "classes/oihana-files-enums-FindFilesOption.html#constant_SORT"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FindMode",
             "name": "FindMode",
             "summary": "FileExtension",
@@ -1200,6 +1245,31 @@ Search.appendIndex(
             "name": "UID",
             "summary": "",
             "url": "classes/oihana-files-enums-OwnershipInfo.html#constant_UID"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\RecursiveFilePathsOption",
+            "name": "RecursiveFilePathsOption",
+            "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020recursiveFilePaths\u0020function.",
+            "url": "classes/oihana-files-enums-RecursiveFilePathsOption.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\RecursiveFilePathsOption\u003A\u003AEXCLUDES",
+            "name": "EXCLUDES",
+            "summary": "The\u0020enumeration\u0020of\u0020all\u0020files\u0020to\u0020excludes.",
+            "url": "classes/oihana-files-enums-RecursiveFilePathsOption.html#constant_EXCLUDES"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\RecursiveFilePathsOption\u003A\u003AEXTENSIONS",
+            "name": "EXTENSIONS",
+            "summary": "The\u0020optional\u0020list\u0020of\u0020the\u0020extensions\u0020to\u0020use\u0020to\u0020scan\u0020the\u0020folder\u0028s\u0029.",
+            "url": "classes/oihana-files-enums-RecursiveFilePathsOption.html#constant_EXTENSIONS"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\RecursiveFilePathsOption\u003A\u003AMAX_DEPTH",
+            "name": "MAX_DEPTH",
+            "summary": "The\u0020maximum\u0020allowed\u0020depth.\u0020Default\u0020\u002D1\u0020is\u0020used.",
+            "url": "classes/oihana-files-enums-RecursiveFilePathsOption.html#constant_MAX_DEPTH"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\RecursiveFilePathsOption\u003A\u003ASORTABLE",
+            "name": "SORTABLE",
+            "summary": "Indicates\u0020if\u0020the\u0020list\u0020of\u0020file\u0020paths\u0020is\u0020sorted\u0020before\u0020returned.",
+            "url": "classes/oihana-files-enums-RecursiveFilePathsOption.html#constant_SORTABLE"
         },                {
             "fqsen": "\\oihana\\files\\enums\\TarExtension",
             "name": "TarExtension",

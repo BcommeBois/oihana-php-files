@@ -4,6 +4,8 @@ namespace oihana\files ;
 
 use DirectoryIterator;
 use FilesystemIterator;
+use oihana\enums\Order;
+use oihana\files\enums\FindFilesOption;
 use oihana\files\enums\FindMode;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -21,25 +23,24 @@ use function oihana\core\strings\isRegexp;
  *
  * @param ?string $directory The target directory path. If null or invalid, a DirectoryException is thrown.
  * @param array{
- * filter?       : (callable(SplFileInfo): mixed)|null,
- * followLinks? : bool|null,
- * includeDots? : bool|null,
- * mode?        : string|null,
- * order?       : string|null,
- * pattern?     : string|array|null,
- * recursive?   : bool|null,
- * sort?        : callable|string|array|null
+ *    filter?      : (callable(SplFileInfo): mixed)|null,
+ *    followLinks? : bool|null,
+ *    includeDots? : bool|null,
+ *    mode?        : string|null,
+ *    order?       : string|null,
+ *    pattern?     : string|array|null,
+ *    recursive?   : bool|null,
+ *    sort?        : callable|string|array|null
  * } $options Optional settings to customize the file listing.
- * <ul>
- * <li>filter : A function to map or transform each SplFileInfo result.</li>
- * <li>followLinks : Whether to follow symbolic links (default: false).</li>
- * <li>includeDots : Whether to include dot files (default: false).</li>
- * <li>mode : Filter by type: 'files', 'dirs', or 'both' (default: 'files').</li>
- * <li>order : Sort order: 'asc' (default) or 'desc'.</li>
- * <li>pattern : A glob pattern, regex, or list of patterns to match file names.</li>
- * <li>recursive : Whether to search recursively (default: false).</li>
- * <li>sort : A sort option, eg: callback, predefined string, or array of keys.</li>
- * </ul>
+ *
+ * - filter : A function to map or transform each SplFileInfo result.
+ * - followLinks : Whether to follow symbolic links (default: false).
+ * - includeDots : Whether to include dot files (default: false).
+ * - mode : Filter by type: 'files', 'dirs', or 'both' (default: 'files').
+ * - order : Sort order: 'asc' (default) or 'desc'.
+ * - pattern : A glob pattern, regex, or list of patterns to match file names.
+ * - recursive : Whether to search recursively (default: false).
+ * - sort : A sort option, eg: callback, predefined string, or array of keys.
  *
  * @return SplFileInfo[]
  *
@@ -161,14 +162,14 @@ function findFiles( ?string $directory , array $options = [] ): array
 {
     assertDirectory( $directory );
 
-    $filter      = $options[ 'filter'      ] ?? null  ;
-    $followLinks = $options[ 'followLinks' ] ?? false ;
-    $includeDots = $options[ 'includeDots' ] ?? false ;
-    $order       = $options[ 'order'       ] ?? 'asc' ;
-    $mode        = $options[ 'mode'        ] ?? FindMode::FILES ;
-    $patterns    = $options[ 'pattern'     ] ?? null  ;
-    $recursive   = $options[ 'recursive'   ] ?? false ;
-    $sort        = $options[ 'sort'        ] ?? false ;
+    $filter      = $options[ FindFilesOption::FILTER       ] ?? null  ;
+    $followLinks = $options[ FindFilesOption::FOLLOW_LINKS ] ?? false ;
+    $includeDots = $options[ FindFilesOption::INCLUDE_DOTS ] ?? false ;
+    $mode        = $options[ FindFilesOption::MODE         ] ?? FindMode::FILES ;
+    $order       = $options[ FindFilesOption::ORDER        ] ?? Order::asc ;
+    $patterns    = $options[ FindFilesOption::PATTERN      ] ?? null  ;
+    $recursive   = $options[ FindFilesOption::RECURSIVE    ] ?? false ;
+    $sort        = $options[ FindFilesOption::SORT         ] ?? false ;
 
     $files = [];
 
