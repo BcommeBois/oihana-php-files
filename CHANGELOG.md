@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- Adds oihana\files\enums\FindFilesOption
+- Adds oihana\files\enums\RecursiveFilePathsOption
+
 ## [1.0.0] - 2025-08-13 
 
 ### Added
