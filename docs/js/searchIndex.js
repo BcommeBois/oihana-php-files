@@ -1803,22 +1803,22 @@ Search.appendIndex(
         },                {
             "fqsen": "\\oihana\\options\\Option",
             "name": "Option",
-            "summary": "Abstract\u0020base\u0020class\u0020for\u0020mapping\u0020property\u0020names\u0020to\u0020command\u002Dline\u0020option\u0020names.",
+            "summary": "Abstract\u0020base\u0020class\u0020that\u0020maps\u0020public\u0020property\u0020names\u0020to\u0020command\u002Dline\u0020option\u0020names.",
             "url": "classes/oihana-options-Option.html"
         },                {
             "fqsen": "\\oihana\\options\\Option\u003A\u003AgetCommandOption\u0028\u0029",
             "name": "getCommandOption",
-            "summary": "Returns\u0020the\u0020command\u0020line\u0020option\u0020expression\u0020from\u0020a\u0020specific\u0020option.",
+            "summary": "Returns\u0020the\u0020option\u0020keyword\u0020derived\u0020from\u0020a\u0020property\u0020name.",
             "url": "classes/oihana-options-Option.html#method_getCommandOption"
         },                {
             "fqsen": "\\oihana\\options\\Option\u003A\u003AgetCommandPrefix\u0028\u0029",
             "name": "getCommandPrefix",
-            "summary": "Returns\u0020the\u0020prefix\u0020from\u0020a\u0020specific\u0020option.",
+            "summary": "Returns\u0020the\u0020prefix\u0020to\u0020use\u0020for\u0020a\u0020given\u0020option.",
             "url": "classes/oihana-options-Option.html#method_getCommandPrefix"
         },                {
             "fqsen": "\\oihana\\options\\Options",
             "name": "Options",
-            "summary": "Abstract\u0020base\u0020class\u0020for\u0020defining\u0020configurable\u0020options.",
+            "summary": "Abstract\u0020base\u0020class\u0020for\u0020defining\u0020strongly\u002Dtyped,\u0020serializable\u0020configuration\u0020objects.",
             "url": "classes/oihana-options-Options.html"
         },                {
             "fqsen": "\\oihana\\options\\Options\u003A\u003A__construct\u0028\u0029",

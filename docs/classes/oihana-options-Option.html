@@ -125,15 +125,54 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Option.php"><a href="files/src-oihana-options-option.html"><abbr title="src/oihana/options/Option.php">Option.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">56</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Abstract base class for mapping property names to command-line option names.</p>
+            <p class="phpdocumentor-summary">Abstract base class that maps public property names to command-line option names.</p>
 
 
-    <section class="phpdocumentor-description"><p>Typically used with <a href="classes/oihana-options-Options.html#method_getOptions"><abbr title="\oihana\options\Options::getOptions()">Options::getOptions()</abbr></a> to convert property keys
-into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&quot;).</p>
+    <section class="phpdocumentor-description"><p>This class is used by <a href="classes/oihana-options-Options.html#method_getOptions"><abbr title="\oihana\options\Options::getOptions()">Options::getOptions()</abbr></a> to transform the keys of the public
+properties of a class extending <a href="classes/oihana-options-Options.html"><abbr title="\oihana\options\Options">Options</abbr></a> into CLI flags. By default, names are
+hyphenated via <abbr title="\oihana\options\hyphenate()">hyphenate()</abbr> (e.g., &quot;dryRun&quot; → &quot;dry-run&quot;).</p>
+<p>Typical customization:</p>
+<ul>
+<li>Override <a href="classes/oihana-options-Option.html#method_getCommandOption"><abbr title="\oihana\options\Option::getCommandOption()">Option::getCommandOption()</abbr></a> to customize the option name.</li>
+<li>Override <a href="classes/oihana-options-Option.html#method_getCommandPrefix"><abbr title="\oihana\options\Option::getCommandPrefix()">Option::getCommandPrefix()</abbr></a> to provide a per-option prefix
+(e.g., &quot;--&quot;, &quot;-&quot;, &quot;/opt:&quot;, etc.).</li>
+</ul>
+<p>Minimal usage example with Options::getOptions():</p>
+<pre class="prettyprint"><code class="language-php">use oihana\options\Option;
+use oihana\options\Options;
+
+class MyOption extends Option
+{
+    // Optional: customize the name transformation
+    public static function getCommandOption(string $option): string
+    {
+        return parent::getCommandOption($option); // default: hyphenate
+    }
+
+    // Optional: set a prefix depending on the option name
+    public static function getCommandPrefix(string $option): ?string
+    {
+        return match ($option) {
+            'verbose' =&gt; '-',
+            default   =&gt; '--',
+        };
+    }
+}
+
+class MyOptions extends Options
+{
+    public string $host = 'localhost';
+    public bool   $verbose = true;
+}
+
+$o = new MyOptions();
+echo $o-&gt;getOptions(MyOption::class);
+// → --host &quot;localhost&quot; -verbose
+</code></pre>
 </section>
 
 
@@ -168,14 +207,14 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
     <span>
                                 &nbsp;: string    </span>
 </dt>
-<dd>Returns the command line option expression from a specific option.</dd>
+<dd>Returns the option keyword derived from a property name.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/oihana-options-Option.html#method_getCommandPrefix">getCommandPrefix()</a>
     <span>
                                 &nbsp;: string|null    </span>
 </dt>
-<dd>Returns the prefix from a specific option.</dd>
+<dd>Returns the prefix to use for a given option.</dd>
 
     </dl>
 
@@ -205,11 +244,11 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Option.php"><a href="files/src-oihana-options-option.html"><abbr title="src/oihana/options/Option.php">Option.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">72</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Returns the command line option expression from a specific option.</p>
+        <p class="phpdocumentor-summary">Returns the option keyword derived from a property name.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -218,7 +257,12 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Default implementation: <abbr title="\oihana\options\hyphenate()">hyphenate()</abbr> which converts to kebab-case
+(e.g., &quot;dryRun&quot; → &quot;dry-run&quot;).</p>
+<p>By overriding this method in a subclass, you can apply a different format
+depending on the option name.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -226,7 +270,7 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The name of the option to modify.</p>
+                    <section class="phpdocumentor-description"><p>Property name (e.g., &quot;dryRun&quot;).</p>
 </section>
 
             </dd>
@@ -239,6 +283,10 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>By default, transformed option name (e.g., &quot;dry-run&quot;).</p>
+</section>
+
             </section>
 
 </article>
@@ -256,11 +304,11 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Option.php"><a href="files/src-oihana-options-option.html"><abbr title="src/oihana/options/Option.php">Option.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">91</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Returns the prefix from a specific option.</p>
+        <p class="phpdocumentor-summary">Returns the prefix to use for a given option.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -269,7 +317,16 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>This value is used by <a href="classes/oihana-options-Options.html#method_getOptions"><abbr title="\oihana\options\Options::getOptions()">Options::getOptions()</abbr></a> and can be:</p>
+<ul>
+<li>a string (e.g., &quot;--&quot;, &quot;-&quot;, &quot;/opt:&quot;);</li>
+<li>null to indicate not to override the prefix passed to <a href="classes/oihana-options-Options.html#method_getOptions"><abbr title="\oihana\options\Options::getOptions()">Options::getOptions()</abbr></a>
+(which can be a string or a callable).</li>
+</ul>
+<p>By overriding this method in a subclass, you can apply a different prefix
+depending on the option name.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -277,7 +334,7 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The name of the option.</p>
+                    <section class="phpdocumentor-description"><p>Property/option name.</p>
 </section>
 
             </dd>
@@ -291,7 +348,7 @@ into hyphenated command-line flags (e.g. &quot;dryRun&quot; → &quot;dry-run&qu
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">string|null</span>
                     &mdash;
-                <section class="phpdocumentor-description"><p>The prefix of the given option.</p>
+                <section class="phpdocumentor-description"><p>Prefix to use, or null to avoid overriding.</p>
 </section>
 
             </section>

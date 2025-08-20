@@ -498,7 +498,7 @@ the corresponding public property values of the current object.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">74</span>
 
     </aside>
 
@@ -591,7 +591,7 @@ Unknown or non-public properties are silently ignored.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
     </aside>
 
@@ -637,7 +637,7 @@ Useful when duplicating options to avoid shared references.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">76</span>
+    <span class="phpdocumentor-element-found-in__line">113</span>
 
     </aside>
 
@@ -756,7 +756,7 @@ owner name, and group name of both objects.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">117</span>
+    <span class="phpdocumentor-element-found-in__line">154</span>
 
     </aside>
 
@@ -878,7 +878,7 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">141</span>
+    <span class="phpdocumentor-element-found-in__line">208</span>
 
     </aside>
 
@@ -956,6 +956,48 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/oihana-options-Options.html#method_formatArray#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">$opts = new class(['host' =&gt; 'example.com', 'apiVersion' =&gt; 'v1']) extends Options
+{
+    public string $host;
+    public string $apiVersion;
+};
+
+$payload = [
+    'base' =&gt; 'https://{{host}}/api/{{apiVersion}}',
+    'endpoints' =&gt; [
+        'users' =&gt; 'https://{{host}}/api/{{apiVersion}}/users',
+        'auth'  =&gt; 'https://{{host}}/api/{{apiVersion}}/auth'
+    ],
+    'unchanged' =&gt; 42
+];
+
+$opts-&gt;formatArray($payload);
+
+// $payload now equals:
+// [
+//   'base' =&gt; 'https://example.com/api/v1',
+//   'endpoints' =&gt; [
+//       'users' =&gt; 'https://example.com/api/v1/users',
+//       'auth'  =&gt; 'https://example.com/api/v1/auth'
+//   ],
+//   'unchanged' =&gt; 42
+// ]
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
 
     
 
@@ -983,7 +1025,7 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">184</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 
     </aside>
 
@@ -1075,7 +1117,7 @@ echo $opts-&gt;url; // → https://example.com/docs
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">274</span>
+    <span class="phpdocumentor-element-found-in__line">341</span>
 
     </aside>
 
@@ -1254,7 +1296,7 @@ echo $result;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">398</span>
+    <span class="phpdocumentor-element-found-in__line">465</span>
 
     </aside>
 
@@ -1345,7 +1387,7 @@ echo json_encode($options); // → }
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">441</span>
+    <span class="phpdocumentor-element-found-in__line">508</span>
 
     </aside>
 
@@ -1451,7 +1493,7 @@ $finalOptions = MyOptions::resolve( $defaultOptions , $userOptions , $overrides 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">512</span>
+    <span class="phpdocumentor-element-found-in__line">579</span>
 
     </aside>
 

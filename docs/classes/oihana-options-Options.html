@@ -128,20 +128,55 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">64</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Abstract base class for defining configurable options.</p>
+            <p class="phpdocumentor-summary">Abstract base class for defining strongly-typed, serializable configuration objects.</p>
 
 
-    <section class="phpdocumentor-description"><p>Features:</p>
+    <section class="phpdocumentor-description"><p>What it provides out of the box:</p>
 <ul>
-<li>Automatic hydration from arrays or objects.</li>
-<li>Reflection-based listing of public properties.</li>
-<li>Template string formatting with placeholders.</li>
-<li>CLI-compatible string generation from object state.</li>
+<li>Automatic hydration from arrays/objects into public properties (constructor).</li>
+<li>Reflection-based access to public properties for conversions and formatting.</li>
+<li>Template string formatting with placeholders from the current object.</li>
+<li>Generation of CLI-compatible options strings from the object state.</li>
+<li>Easy JSON serialization that always yields a JSON object.</li>
 </ul>
+<p>Core methods you may want to use/override:</p>
+<ul>
+<li><a href="classes/oihana-options-Options.html#method_create"><abbr title="\oihana\options\Options::create()">Options::create()</abbr></a> Static constructor from array or existing Options instance.</li>
+<li><a href="classes/oihana-options-Options.html#method_format"><abbr title="\oihana\options\Options::format()">Options::format()</abbr></a> Replace placeholders in a string using this object's values.</li>
+<li><a href="classes/oihana-options-Options.html#method_formatArray"><abbr title="\oihana\options\Options::formatArray()">Options::formatArray()</abbr></a> Recursively format values inside an array.</li>
+<li><a href="classes/oihana-options-Options.html#method_formatFromDocument"><abbr title="\oihana\options\Options::formatFromDocument()">Options::formatFromDocument()</abbr></a> Format public string properties from an external document.</li>
+<li><a href="classes/oihana-options-Options.html#method_getOptions"><abbr title="\oihana\options\Options::getOptions()">Options::getOptions()</abbr></a> Compose a CLI string using an <a href="classes/oihana-options-Option.html"><abbr title="\oihana\options\Option">Option</abbr></a> subclass for mapping.</li>
+<li><a href="classes/oihana-options-Options.html#method_toArray"><abbr title="\oihana\options\Options::toArray()">Options::toArray()</abbr></a> Export public properties as an associative array.</li>
+<li><a href="classes/oihana-options-Options.html#method_jsonSerialize"><abbr title="\oihana\options\Options::jsonSerialize()">Options::jsonSerialize()</abbr></a> JSON-encode the object cleanly via public properties.</li>
+<li><a href="classes/oihana-options-Options.html#method_resolve"><abbr title="\oihana\options\Options::resolve()">Options::resolve()</abbr></a> Merge several sources to produce a final Options instance.</li>
+</ul>
+<p>Minimal usage example:</p>
+<pre class="prettyprint"><code class="language-php">use oihana\options\Option;
+use oihana\options\Options;
+
+class CliMap extends Option }
+
+class ServerOptions extends Options
+{
+    public string $host = 'localhost';
+    public int    $port = 8080;
+    public bool   $debug = false;
+}
+
+$opts = new ServerOptions(['debug' =&gt; true]);
+echo $opts-&gt;format('http://{{host}}:{{port}}');
+// → http://localhost:8080
+
+echo $opts-&gt;getOptions(CliMap::class);
+// → --host &quot;localhost&quot; --port 8080 --debug
+
+echo json_encode($opts);
+// → {&quot;host&quot;:&quot;localhost&quot;,&quot;port&quot;:8080,&quot;debug&quot;:true}
+</code></pre>
 </section>
 
 
@@ -284,7 +319,7 @@ the corresponding public property values of the current object.</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">74</span>
 
     </aside>
 
@@ -334,7 +369,7 @@ Unknown or non-public properties are silently ignored.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">540</span>
+    <span class="phpdocumentor-element-found-in__line">607</span>
 
     </aside>
 
@@ -379,7 +414,7 @@ Unknown or non-public properties are silently ignored.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
     </aside>
 
@@ -425,7 +460,7 @@ Useful when duplicating options to avoid shared references.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">76</span>
+    <span class="phpdocumentor-element-found-in__line">113</span>
 
     </aside>
 
@@ -486,7 +521,7 @@ Useful when duplicating options to avoid shared references.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">117</span>
+    <span class="phpdocumentor-element-found-in__line">154</span>
 
     </aside>
 
@@ -608,7 +643,7 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">141</span>
+    <span class="phpdocumentor-element-found-in__line">208</span>
 
     </aside>
 
@@ -686,6 +721,48 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/oihana-options-Options.html#method_formatArray#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">$opts = new class(['host' =&gt; 'example.com', 'apiVersion' =&gt; 'v1']) extends Options
+{
+    public string $host;
+    public string $apiVersion;
+};
+
+$payload = [
+    'base' =&gt; 'https://{{host}}/api/{{apiVersion}}',
+    'endpoints' =&gt; [
+        'users' =&gt; 'https://{{host}}/api/{{apiVersion}}/users',
+        'auth'  =&gt; 'https://{{host}}/api/{{apiVersion}}/auth'
+    ],
+    'unchanged' =&gt; 42
+];
+
+$opts-&gt;formatArray($payload);
+
+// $payload now equals:
+// [
+//   'base' =&gt; 'https://example.com/api/v1',
+//   'endpoints' =&gt; [
+//       'users' =&gt; 'https://example.com/api/v1/users',
+//       'auth'  =&gt; 'https://example.com/api/v1/auth'
+//   ],
+//   'unchanged' =&gt; 42
+// ]
+</code></pre>
+</section>
+
+                                    </dd>
+                                            </dl>
 
     
 
@@ -713,7 +790,7 @@ echo $opts-&gt;format('Missing: {{nonexistent}}');
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">184</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 
     </aside>
 
@@ -805,7 +882,7 @@ echo $opts-&gt;url; // → https://example.com/docs
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">274</span>
+    <span class="phpdocumentor-element-found-in__line">341</span>
 
     </aside>
 
@@ -984,7 +1061,7 @@ echo $result;
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">398</span>
+    <span class="phpdocumentor-element-found-in__line">465</span>
 
     </aside>
 
@@ -1075,7 +1152,7 @@ echo json_encode($options); // → }
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">441</span>
+    <span class="phpdocumentor-element-found-in__line">508</span>
 
     </aside>
 
@@ -1181,7 +1258,7 @@ $finalOptions = MyOptions::resolve( $defaultOptions , $userOptions , $overrides 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/options/Options.php"><a href="files/src-oihana-options-options.html"><abbr title="src/oihana/options/Options.php">Options.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">512</span>
+    <span class="phpdocumentor-element-found-in__line">579</span>
 
     </aside>
 

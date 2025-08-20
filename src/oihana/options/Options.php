@@ -16,13 +16,50 @@ use function oihana\core\documents\formatDocument;
 use function oihana\core\strings\formatFromDocument;
 
 /**
- * Abstract base class for defining configurable options.
+ * Abstract base class for defining strongly-typed, serializable configuration objects.
  *
- * Features:
- * - Automatic hydration from arrays or objects.
- * - Reflection-based listing of public properties.
- * - Template string formatting with placeholders.
- * - CLI-compatible string generation from object state.
+ * What it provides out of the box:
+ * - Automatic hydration from arrays/objects into public properties (constructor).
+ * - Reflection-based access to public properties for conversions and formatting.
+ * - Template string formatting with placeholders from the current object.
+ * - Generation of CLI-compatible options strings from the object state.
+ * - Easy JSON serialization that always yields a JSON object.
+ *
+ * Core methods you may want to use/override:
+ * - {@see Options::create()} Static constructor from array or existing Options instance.
+ * - {@see Options::format()} Replace placeholders in a string using this object's values.
+ * - {@see Options::formatArray()} Recursively format values inside an array.
+ * - {@see Options::formatFromDocument()} Format public string properties from an external document.
+ * - {@see Options::getOptions()} Compose a CLI string using an {@see Option} subclass for mapping.
+ * - {@see Options::toArray()} Export public properties as an associative array.
+ * - {@see Options::jsonSerialize()} JSON-encode the object cleanly via public properties.
+ * - {@see Options::resolve()} Merge several sources to produce a final Options instance.
+ *
+ * Minimal usage example:
+ *
+ * ```php
+ * use oihana\options\Option;
+ * use oihana\options\Options;
+ *
+ * class CliMap extends Option {}
+ *
+ * class ServerOptions extends Options
+ * {
+ *     public string $host = 'localhost';
+ *     public int    $port = 8080;
+ *     public bool   $debug = false;
+ * }
+ *
+ * $opts = new ServerOptions(['debug' => true]);
+ * echo $opts->format('http://{{host}}:{{port}}');
+ * // → http://localhost:8080
+ *
+ * echo $opts->getOptions(CliMap::class);
+ * // → --host "localhost" --port 8080 --debug
+ *
+ * echo json_encode($opts);
+ * // → {"host":"localhost","port":8080,"debug":true}
+ * ```
  */
 abstract class Options implements ClearableArrayable , Cloneable , JsonSerializable
 {
@@ -137,6 +174,36 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
      * @param string|null       $pattern   Optional custom placeholder regex.
      *
      * @return array The formatted array.
+     *
+     * @example
+     * ```php
+     * $opts = new class(['host' => 'example.com', 'apiVersion' => 'v1']) extends Options
+     * {
+     *     public string $host;
+     *     public string $apiVersion;
+     * };
+     *
+     * $payload = [
+     *     'base' => 'https://{{host}}/api/{{apiVersion}}',
+     *     'endpoints' => [
+     *         'users' => 'https://{{host}}/api/{{apiVersion}}/users',
+     *         'auth'  => 'https://{{host}}/api/{{apiVersion}}/auth'
+     *     ],
+     *     'unchanged' => 42
+     * ];
+     *
+     * $opts->formatArray($payload);
+     *
+     * // $payload now equals:
+     * // [
+     * //   'base' => 'https://example.com/api/v1',
+     * //   'endpoints' => [
+     * //       'users' => 'https://example.com/api/v1/users',
+     * //       'auth'  => 'https://example.com/api/v1/auth'
+     * //   ],
+     * //   'unchanged' => 42
+     * // ]
+     * ```
      */
     public function formatArray
     (
