@@ -34,10 +34,9 @@ class ClearFileTest extends TestCase
 
         $this->assertNotEmpty(file_get_contents($file));
 
-        // Appelle la fonction pour vider le fichier
-        clearFile($file);
+        $result = clearFile($file);
 
-        // Vérifie que le fichier est maintenant vide
+        $this->assertTrue($result, "clearFile should return true for a writable file.");
         $this->assertSame('', file_get_contents($file));
     }
 
@@ -49,8 +48,9 @@ class ClearFileTest extends TestCase
         $emptyFile = vfsStream::newFile('empty.txt')->at($this->root)->setContent('');
         $file = $emptyFile->url();
 
-        clearFile($file);
+        $result = clearFile($file);
 
+        $this->assertTrue($result, "clearFile should return true even if file was already empty.");
         $this->assertSame('', file_get_contents($file));
     }
 
@@ -65,5 +65,15 @@ class ClearFileTest extends TestCase
         $file = $this->root->getChild('readonly.txt')->url();
         $this->expectException(FileException::class);
         clearFile($file);
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testClearReadOnlyFileReturnsFalseWhenNotAssertable(): void
+    {
+        $file = $this->root->getChild('readonly.txt')->url();
+        $success = clearFile($file, assertable: false);
+        $this->assertFalse($success);
     }
 }

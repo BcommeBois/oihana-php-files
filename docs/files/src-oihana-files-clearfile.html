@@ -136,7 +136,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_clearFile">clearFile()</a>
     <span>
-                                &nbsp;: void    </span>
+                                &nbsp;: bool    </span>
 </dt>
 <dd>Clears the content of a file while keeping the file itself.</dd>
 
@@ -160,7 +160,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/clearFile.php"><a href="files/src-oihana-files-clearfile.html"><abbr title="src/oihana/files/clearFile.php">clearFile.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">42</span>
 
     </aside>
 
@@ -169,9 +169,18 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">clearFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">clearFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$assertable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
-    
+        <section class="phpdocumentor-description"><p>This function empties the given file. Returns true if the file was successfully cleared,
+false otherwise.</p>
+<p>The behavior on failure depends on the <code class="prettyprint">$assertable</code> parameter:</p>
+<ul>
+<li>If <code class="prettyprint">$assertable</code> is true (default), a FileException is thrown if the file does not exist
+or is not writable.</li>
+<li>If <code class="prettyprint">$assertable</code> is false, no exception is thrown; the function simply returns false on failure.</li>
+</ul>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -180,6 +189,15 @@
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The full path to the file to clear.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$assertable</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Whether to throw exceptions on failure (default: true).</p>
 </section>
 
             </dd>
@@ -198,7 +216,25 @@
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
                                                             
-                                                 <section class="phpdocumentor-description"><p>If the file does not exist or is not writable.</p>
+                                                 <section class="phpdocumentor-description"><p>If <code class="prettyprint">$assertable</code> is true and the file does not exist or is not writable.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">use function oihana\files\clearFile;
+
+$file = '/path/to/file.txt';
+
+// Clear the file, throwing exception on failure
+$success = clearFile($file);
+
+// Clear the file, returning false instead of throwing an exception
+$success = clearFile($file, assertable: false);
+</code></pre>
 </section>
 
                                     </dd>
@@ -221,7 +257,15 @@
                                     </dd>
                                             </dl>
 
-    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>True if the file was cleared successfully, false otherwise.</p>
+</section>
+
+            </section>
+
 </article>
             </section>
 
