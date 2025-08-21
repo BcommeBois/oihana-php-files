@@ -63,7 +63,7 @@ abstract class Option
      * Default implementation: {@see hyphenate()} which converts to kebab-case
      * (e.g., "dryRun" → "dry-run").
      *
-     * By overriding this method in a subclass, you can apply a different format 
+     * By overriding this method in a subclass, you can apply a different format
      * depending on the option name.
      *
      * @param string $option Property name (e.g., "dryRun").

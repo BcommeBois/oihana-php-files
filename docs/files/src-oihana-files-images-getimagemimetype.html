@@ -102,7 +102,7 @@
     </ul>
 
     <article class="phpdocumentor-element -file">
-        <h2 class="phpdocumentor-content__title">assertFile.php</h2>
+        <h2 class="phpdocumentor-content__title">getImageMimeType.php</h2>
 
         
         
@@ -113,7 +113,7 @@
         
 <h3 id="toc">
     Table of Contents
-    <a href="files/src-oihana-files-assertfile.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-files-images-getimagemimetype.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -129,16 +129,16 @@
 
 <h4 id="toc-functions">
     Functions
-    <a href="files/src-oihana-files-assertfile.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/src-oihana-files-images-getimagemimetype.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a class="" href="namespaces/oihana-files.html#function_assertFile">assertFile()</a>
+    <a class="" href="namespaces/default.html#function_getImageMimeType">getImageMimeType()</a>
     <span>
-                                &nbsp;: void    </span>
+                                &nbsp;: string    </span>
 </dt>
-<dd>Asserts that a file exists and meets specified accessibility and MIME type requirements.</dd>
+<dd>Resolves and validates the MIME type of a file, typically an image.</dd>
 
     </dl>
 
@@ -148,36 +148,42 @@
             <section class="phpdocumentor-functions">
         <h3 class="phpdocumentor-elements__header" id="functions">
             Functions
-            <a href="files/src-oihana-files-assertfile.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="files/src-oihana-files-images-getimagemimetype.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_assertFile">
-        assertFile()
-        <a href="namespaces/oihana-files.html#function_assertFile" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="function_getImageMimeType">
+        getImageMimeType()
+        <a href="namespaces/default.html#function_getImageMimeType" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/assertFile.php"><a href="files/src-oihana-files-assertfile.html"><abbr title="src/oihana/files/assertFile.php">assertFile.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/images/getImageMimeType.php"><a href="files/src-oihana-files-images-getimagemimetype.html"><abbr title="src/oihana/files/images/getImageMimeType.php">getImageMimeType.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">81</span>
+    <span class="phpdocumentor-element-found-in__line">55</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Asserts that a file exists and meets specified accessibility and MIME type requirements.</p>
+        <p class="phpdocumentor-summary">Resolves and validates the MIME type of a file, typically an image.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">assertFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expectedMimeTypes</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isReadable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isWritable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">getImageMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allowedFormats</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
-        <section class="phpdocumentor-description"><p>This function performs a series of checks on a given file:</p>
+        <section class="phpdocumentor-description"><p>This function ensures that the returned MIME type is safe and consistent.
+Optionally, it can validate a provided <code class="prettyprint">$format</code> (file extension) against a whitelist
+of allowed formats and ensure that it matches the actual MIME type of the file.</p>
+<p>Behavior:</p>
 <ol>
-<li>Ensures the file path is not null or empty.</li>
-<li>Confirms that the path points to a valid file.</li>
-<li>Optionally checks if the file is readable.</li>
-<li>Optionally checks if the file is writable.</li>
-<li>Optionally validates the file's MIME type against a provided list.</li>
+<li>If <code class="prettyprint">$format</code> is provided and exists in <code class="prettyprint">$allowedFormats</code>:</li>
+</ol>
+<ul>
+<li>Returns the corresponding MIME type if it matches the detected MIME.</li>
+<li>Otherwise, falls back to the actual detected MIME type.</li>
+</ul>
+<ol start="2">
+<li>If <code class="prettyprint">$format</code> is null or not in <code class="prettyprint">$allowedFormats</code>, the detected MIME is returned.</li>
 </ol>
 </section>
 
@@ -185,37 +191,40 @@
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$file</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The path of the file to check. Cannot be null or empty.</p>
+                    <section class="phpdocumentor-description"><p>Absolute path to the file to check.</p>
 </section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$expectedMimeTypes</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null</span>
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Optional array of allowed MIME types. If provided, the file's MIME type must match one of these.</p>
+                    <section class="phpdocumentor-description"><p>Optional desired format (file extension without dot),
+e.g., &quot;jpg&quot;, &quot;png&quot;, &quot;webp&quot;.</p>
 </section>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$isReadable</span>
-                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+                <span class="phpdocumentor-signature__argument__name">$allowedFormats</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the file is readable. Default: true.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$isWritable</span>
-                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the file is writable. Default: false.</p>
+                    <section class="phpdocumentor-description"><p>Optional whitelist mapping file extensions to MIME types.
+Defaults to common image formats:</p>
+<pre class="prettyprint"><code class="language-php">[
+    'jpg'  =&gt; 'image/jpeg',
+    'jpeg' =&gt; 'image/jpeg',
+    'png'  =&gt; 'image/png',
+    'gif'  =&gt; 'image/gif',
+    'webp' =&gt; 'image/webp',
+    'svg'  =&gt; 'image/svg+xml',
+    'avif' =&gt; 'image/avif',
+]
+</code></pre>
 </section>
 
             </dd>
@@ -224,7 +233,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="namespaces/oihana-files.html#function_assertFile#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="namespaces/default.html#function_getImageMimeType#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -232,9 +241,19 @@
                     <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
-                                                 <section class="phpdocumentor-description"><p>If the file path is null, empty, or if the file does not exist or is not accessible.</p>
+                                                 <section class="phpdocumentor-description"><p>If the file does not exist or is not readable.</p>
+</section>
+
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\FileException">FileException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file cannot be validated.</p>
 </section>
 
                                     </dd>
@@ -243,47 +262,8 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                 
-                                                 <section class="phpdocumentor-description"><p>Basic usage: check if a file exists and is readable.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'test.txt';
-file_put_contents($file, 'data');
-try
-{
-   assertFile($file);
-    // Continue ...
-}
-catch (FileException $e)
-{
-    // Handle error...
-}
-unlink($file);
-</code></pre>
-<p>Check for specific MIME types.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'document.txt';
-file_put_contents($file, 'some text');
-try
-{
-     // Will pass because a .txt file is typically 'text/plain'.
-     assertFile( $file , ['text/plain', 'application/pdf'] );
-}
-catch ( FileException $e )
-{
-    // Throws an exception if MIME type is not in the allowed list.
-}
-unlink($file);
-</code></pre>
-<p>Check if a file is writable.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'config.ini';
-file_put_contents($file, '[settings]');
-try
-{
-    // Asserts the file exists, is readable, and is writable.
-    assertFile($file, null, true, true);
-}
-catch (FileException $e)
-{
-    // Throws an exception if file is not writable.
-}
-unlink($file);
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">$mime = getImageMimeType('/path/to/image.png'); // returns 'image/png'
+$mime = getImageMimeType('/path/to/image.jpg', 'jpg'); // returns 'image/jpeg'
 </code></pre>
 </section>
 
@@ -307,7 +287,15 @@ unlink($file);
                                     </dd>
                                             </dl>
 
-    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The resolved MIME type of the file.</p>
+</section>
+
+            </section>
+
 </article>
             </section>
 
@@ -315,7 +303,7 @@ unlink($file);
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/assertFile.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/images/getImageMimeType.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -416,7 +404,7 @@ unlink($file);
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                                                                                                        <li><a href="files/src-oihana-files-assertfile.html#toc-functions">Functions</a></li>
+                                                                                                                                                                                        <li><a href="files/src-oihana-files-images-getimagemimetype.html#toc-functions">Functions</a></li>
                                     </ul>
             </li>
 
@@ -424,7 +412,7 @@ unlink($file);
                             <li class="phpdocumentor-on-this-page-section__title">Functions</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/oihana-files.html#function_assertFile">assertFile()</a></li>
+                                                    <li class=""><a href="namespaces/default.html#function_getImageMimeType">getImageMimeType()</a></li>
                                             </ul>
                 </li>
                     </ul>
@@ -444,7 +432,7 @@ unlink($file);
     </section>
 </section>
         </div>
-        <a href="files/src-oihana-files-assertfile.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="files/src-oihana-files-images-getimagemimetype.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

@@ -53,7 +53,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\oihana\\files\\assertFile\u0028\u0029",
             "name": "assertFile",
-            "summary": "Asserts\u0020that\u0020a\u0020file\u0020exists\u0020and\u0020is\u0020accessible.",
+            "summary": "Asserts\u0020that\u0020a\u0020file\u0020exists\u0020and\u0020meets\u0020specified\u0020accessibility\u0020and\u0020MIME\u0020type\u0020requirements.",
             "url": "namespaces/oihana-files.html#function_assertFile"
         },                {
             "fqsen": "\\oihana\\files\\assertWritableDirectory\u0028\u0029",
@@ -80,6 +80,11 @@ Search.appendIndex(
             "name": "deleteTemporaryDirectory",
             "summary": "Deletes\u0020a\u0020directory\u0020located\u0020in\u0020the\u0020system\u0020temporary\u0020folder\u0020\u0028recursively\u0029.",
             "url": "namespaces/oihana-files.html#function_deleteTemporaryDirectory"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\AudioMimeType",
+            "name": "AudioMimeType",
+            "summary": "Enumeration\u0020that\u0020defines\u0020various\u0020audio\u0020mime\u002Dtypes\u0020supported\u0020by\u0020the\u0020application.",
+            "url": "classes/oihana-files-enums-AudioMimeType.html"
         },                {
             "fqsen": "\\oihana\\files\\enums\\CanonicalizeBuffer",
             "name": "CanonicalizeBuffer",
@@ -231,15 +236,35 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_AI"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003AAVIF",
+            "name": "AVIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_AVIF"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ABMP",
             "name": "BMP",
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_BMP"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACUR",
+            "name": "CUR",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_CUR"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003AGIF",
             "name": "GIF",
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_GIF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003AHEIC",
+            "name": "HEIC",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_HEIC"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003AHEIF",
+            "name": "HEIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_HEIF"
         },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003AICO",
             "name": "ICO",
@@ -626,150 +651,15 @@ Search.appendIndex(
             "summary": "Reset\u0020the\u0020internal\u0020cache\u0020of\u0020the\u0020static\u0020methods.",
             "url": "classes/oihana-files-enums-FileMimeType.html#method_resetCaches"
         },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AAAC",
-            "name": "AAC",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_AAC"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AFLAC",
-            "name": "FLAC",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_FLAC"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AM4A",
-            "name": "M4A",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_M4A"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMP3",
-            "name": "MP3",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MP3"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AOGG",
-            "name": "OGG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_OGG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AWAV",
-            "name": "WAV",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_WAV"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AWMA",
-            "name": "WMA",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_WMA"
-        },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AAI",
             "name": "AI",
             "summary": "",
             "url": "classes/oihana-files-enums-FileMimeType.html#constant_AI"
         },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ABMP",
-            "name": "BMP",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_BMP"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AGIF",
-            "name": "GIF",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_GIF"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AICO",
-            "name": "ICO",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_ICO"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AJPEG",
-            "name": "JPEG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_JPEG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AJPG",
-            "name": "JPG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_JPG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003APNG",
-            "name": "PNG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_PNG"
-        },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003APSD",
             "name": "PSD",
             "summary": "",
             "url": "classes/oihana-files-enums-FileMimeType.html#constant_PSD"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ASVG",
-            "name": "SVG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_SVG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ATIF",
-            "name": "TIF",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_TIF"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ATIFF",
-            "name": "TIFF",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_TIFF"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AWEBP",
-            "name": "WEBP",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_WEBP"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AAVI",
-            "name": "AVI",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_AVI"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AFLV",
-            "name": "FLV",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_FLV"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AM4V",
-            "name": "M4V",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_M4V"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMKV",
-            "name": "MKV",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MKV"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMOV",
-            "name": "MOV",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MOV"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMP4",
-            "name": "MP4",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MP4"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMPG",
-            "name": "MPG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MPG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AMPEG",
-            "name": "MPEG",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_MPEG"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AWEBM",
-            "name": "WEBM",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_WEBM"
-        },                {
-            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003AWMV",
-            "name": "WMV",
-            "summary": "",
-            "url": "classes/oihana-files-enums-FileMimeType.html#constant_WMV"
         },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACSV",
             "name": "CSV",
@@ -1141,6 +1031,86 @@ Search.appendIndex(
             "summary": "List\u0020directories\u0020only.",
             "url": "classes/oihana-files-enums-FindMode.html#constant_DIRS"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat",
+            "name": "ImageFormat",
+            "summary": "Enumeration\u0020that\u0020defines\u0020various\u0020image\u0020formats\u0020supported\u0020by\u0020the\u0020application.",
+            "url": "classes/oihana-files-enums-ImageFormat.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AAVIF",
+            "name": "AVIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_AVIF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003ABMP",
+            "name": "BMP",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_BMP"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003ACUR",
+            "name": "CUR",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_CUR"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AGIF",
+            "name": "GIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_GIF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AHEIC",
+            "name": "HEIC",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_HEIC"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AHEIF",
+            "name": "HEIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_HEIF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AICO",
+            "name": "ICO",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_ICO"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AJPEG",
+            "name": "JPEG",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_JPEG"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AJPG",
+            "name": "JPG",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_JPG"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003APNG",
+            "name": "PNG",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_PNG"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003ASVG",
+            "name": "SVG",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_SVG"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003ATIF",
+            "name": "TIF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_TIF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003ATIFF",
+            "name": "TIFF",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_TIFF"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageFormat\u003A\u003AWEBP",
+            "name": "WEBP",
+            "summary": "",
+            "url": "classes/oihana-files-enums-ImageFormat.html#constant_WEBP"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\ImageMimeType",
+            "name": "ImageMimeType",
+            "summary": "Enumeration\u0020that\u0020defines\u0020various\u0020image\u0020mime\u002Dtypes\u0020supported\u0020by\u0020the\u0020application.",
+            "url": "classes/oihana-files-enums-ImageMimeType.html"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\MakeDirectoryOption",
             "name": "MakeDirectoryOption",
             "summary": "Enumeration\u0020class\u0020that\u0020defines\u0020various\u0020options\u0020to\u0020use\u0020in\u0020the\u0020makeFile\u0020function.",
@@ -1416,6 +1386,26 @@ Search.appendIndex(
             "summary": "Additional\u0020metadata\u0020to\u0020include\u0020in\u0020\u0060.metadata.json\u0060",
             "url": "classes/oihana-files-enums-TarOption.html#constant_METADATA"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\traits\\AudioMimeTypeTrait",
+            "name": "AudioMimeTypeTrait",
+            "summary": "The\u0020trait\u0020to\u0020register\u0020all\u0020audio\u0020mime\u0020types.",
+            "url": "classes/oihana-files-enums-traits-AudioMimeTypeTrait.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\traits\\ImageMimeTypeTrait",
+            "name": "ImageMimeTypeTrait",
+            "summary": "The\u0020trait\u0020to\u0020register\u0020all\u0020image\u0020mime\u0020types.",
+            "url": "classes/oihana-files-enums-traits-ImageMimeTypeTrait.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\traits\\VideoMimeTypeTrait",
+            "name": "VideoMimeTypeTrait",
+            "summary": "The\u0020trait\u0020to\u0020register\u0020all\u0020video\u0020mime\u0020types.",
+            "url": "classes/oihana-files-enums-traits-VideoMimeTypeTrait.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\VideoMimeType",
+            "name": "VideoMimeType",
+            "summary": "Enumeration\u0020that\u0020defines\u0020various\u0020video\u0020mime\u002Dtypes\u0020supported\u0020by\u0020the\u0020application.",
+            "url": "classes/oihana-files-enums-VideoMimeType.html"
+        },                {
             "fqsen": "\\oihana\\files\\exceptions\\DirectoryException",
             "name": "DirectoryException",
             "summary": "Thrown\u0020when\u0020an\u0020error\u0020occurred\u0020in\u0020the\u0020component\u0020Directory.",
@@ -1495,6 +1485,11 @@ Search.appendIndex(
             "name": "hasFiles",
             "summary": "Checks\u0020if\u0020a\u0020directory\u0020contains\u0020at\u0020least\u0020one\u0020file,\nor\u0020only\u0020files\u0020if\u0020strict\u0020mode\u0020is\u0020enabled.",
             "url": "namespaces/oihana-files.html#function_hasFiles"
+        },                {
+            "fqsen": "\\getImageMimeType\u0028\u0029",
+            "name": "getImageMimeType",
+            "summary": "Resolves\u0020and\u0020validates\u0020the\u0020MIME\u0020type\u0020of\u0020a\u0020file,\u0020typically\u0020an\u0020image.",
+            "url": "namespaces/default.html#function_getImageMimeType"
         },                {
             "fqsen": "\\oihana\\files\\isLinux\u0028\u0029",
             "name": "isLinux",
@@ -1905,6 +1900,11 @@ Search.appendIndex(
             "name": "enums",
             "summary": "",
             "url": "namespaces/oihana-files-enums.html"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\traits",
+            "name": "traits",
+            "summary": "",
+            "url": "namespaces/oihana-files-enums-traits.html"
         },                {
             "fqsen": "\\oihana\\files\\exceptions",
             "name": "exceptions",

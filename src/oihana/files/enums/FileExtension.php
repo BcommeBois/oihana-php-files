@@ -31,11 +31,18 @@ class FileExtension
     public const string WAV  = '.wav';
     public const string WMA  = '.wma';
 
+    // --- Applications ---
+
+    public const string AI = '.ai';
+
     // --- Images ---
 
-    public const string AI   = '.ai';
+    public const string AVIF = '.avif';
     public const string BMP  = '.bmp';
+    public const string CUR  = '.cur';
     public const string GIF  = '.gif';
+    public const string HEIC = '.heic';
+    public const string HEIF = '.heif';
     public const string ICO  = '.ico';
     public const string JPEG = '.jpeg';
     public const string JPG  = '.jpg';

@@ -99,21 +99,18 @@
             <div class="phpdocumentor-column -nine phpdocumentor-content">
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana.html">oihana</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files.html">files</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/oihana-files-enums.html">enums</a></li>
     </ul>
 
-    <article class="phpdocumentor-element -file">
-        <h2 class="phpdocumentor-content__title">assertFile.php</h2>
-
-        
-        
-        
-        
-
+    <article class="phpdocumentor-element -namespace">
+        <h2 class="phpdocumentor-content__title">traits</h2>
 
         
 <h3 id="toc">
     Table of Contents
-    <a href="files/src-oihana-files-assertfile.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="namespaces/oihana-files-enums-traits.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -121,201 +118,28 @@
 
 
 
+    <h4 id="toc-traits">
+        Traits
+        <a href="namespaces/oihana-files-enums-traits.html#toc-traits" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/oihana-files-enums-traits-AudioMimeTypeTrait.html"><abbr title="\oihana\files\enums\traits\AudioMimeTypeTrait">AudioMimeTypeTrait</abbr></a></dt><dd>The trait to register all audio mime types.</dd>        <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/oihana-files-enums-traits-ImageMimeTypeTrait.html"><abbr title="\oihana\files\enums\traits\ImageMimeTypeTrait">ImageMimeTypeTrait</abbr></a></dt><dd>The trait to register all image mime types.</dd>        <dt class="phpdocumentor-table-of-contents__entry -trait"><a href="classes/oihana-files-enums-traits-VideoMimeTypeTrait.html"><abbr title="\oihana\files\enums\traits\VideoMimeTypeTrait">VideoMimeTypeTrait</abbr></a></dt><dd>The trait to register all video mime types.</dd>    </dl>
 
 
 
 
 
-
-<h4 id="toc-functions">
-    Functions
-    <a href="files/src-oihana-files-assertfile.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-</h4>
-<dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a class="" href="namespaces/oihana-files.html#function_assertFile">assertFile()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Asserts that a file exists and meets specified accessibility and MIME type requirements.</dd>
-
-    </dl>
 
 
         
 
-            <section class="phpdocumentor-functions">
-        <h3 class="phpdocumentor-elements__header" id="functions">
-            Functions
-            <a href="files/src-oihana-files-assertfile.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-        </h3>
-                    <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_assertFile">
-        assertFile()
-        <a href="namespaces/oihana-files.html#function_assertFile" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/assertFile.php"><a href="files/src-oihana-files-assertfile.html"><abbr title="src/oihana/files/assertFile.php">assertFile.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">81</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Asserts that a file exists and meets specified accessibility and MIME type requirements.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">assertFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expectedMimeTypes</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isReadable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isWritable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-        <section class="phpdocumentor-description"><p>This function performs a series of checks on a given file:</p>
-<ol>
-<li>Ensures the file path is not null or empty.</li>
-<li>Confirms that the path points to a valid file.</li>
-<li>Optionally checks if the file is readable.</li>
-<li>Optionally checks if the file is writable.</li>
-<li>Optionally validates the file's MIME type against a provided list.</li>
-</ol>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$file</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The path of the file to check. Cannot be null or empty.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$expectedMimeTypes</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Optional array of allowed MIME types. If provided, the file's MIME type must match one of these.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$isReadable</span>
-                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the file is readable. Default: true.</p>
-</section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$isWritable</span>
-                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the file is writable. Default: false.</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="namespaces/oihana-files.html#function_assertFile#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
-                                                            
-                                                 <section class="phpdocumentor-description"><p>If the file path is null, empty, or if the file does not exist or is not accessible.</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">example</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>Basic usage: check if a file exists and is readable.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'test.txt';
-file_put_contents($file, 'data');
-try
-{
-   assertFile($file);
-    // Continue ...
-}
-catch (FileException $e)
-{
-    // Handle error...
-}
-unlink($file);
-</code></pre>
-<p>Check for specific MIME types.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'document.txt';
-file_put_contents($file, 'some text');
-try
-{
-     // Will pass because a .txt file is typically 'text/plain'.
-     assertFile( $file , ['text/plain', 'application/pdf'] );
-}
-catch ( FileException $e )
-{
-    // Throws an exception if MIME type is not in the allowed list.
-}
-unlink($file);
-</code></pre>
-<p>Check if a file is writable.</p>
-<pre class="prettyprint"><code class="language-php">$file = 'config.ini';
-file_put_contents($file, '[settings]');
-try
-{
-    // Asserts the file exists, is readable, and is writable.
-    assertFile($file, null, true, true);
-}
-catch (FileException $e)
-{
-    // Throws an exception if file is not writable.
-}
-unlink($file);
-</code></pre>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">author</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">since</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                            <span class="phpdocumentor-tag-link">1.0.0</span>
-                                                                                
-                                             
-                                    </dd>
-                                            </dl>
-
-    
-</article>
-            </section>
-
+        
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/oihana/files/assertFile.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -416,17 +240,11 @@ unlink($file);
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                                                                                                        <li><a href="files/src-oihana-files-assertfile.html#toc-functions">Functions</a></li>
-                                    </ul>
+                                                                                                                        <li><a href="namespaces/oihana-files-enums-traits.html#toc-traits">Traits</a></li>
+                                                                                                </ul>
             </li>
 
             
-                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
-                <li>
-                    <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/oihana-files.html#function_assertFile">assertFile()</a></li>
-                                            </ul>
-                </li>
                     </ul>
     </section>
 
@@ -444,7 +262,7 @@ unlink($file);
     </section>
 </section>
         </div>
-        <a href="files/src-oihana-files-assertfile.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="namespaces/oihana-files-enums-traits.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

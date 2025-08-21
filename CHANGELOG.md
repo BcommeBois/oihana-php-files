@@ -8,8 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
+- Adds oihana\files\enums\AudioMimeType
 - Adds oihana\files\enums\FindFilesOption
+- Adds oihana\files\enums\ImageMimeType
 - Adds oihana\files\enums\RecursiveFilePathsOption
+- Adds oihana\files\enums\VideoMimeType
 
 ## [1.0.0] - 2025-08-13 
 

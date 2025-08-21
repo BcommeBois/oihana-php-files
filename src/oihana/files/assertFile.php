@@ -6,12 +6,19 @@ use oihana\enums\Char;
 use oihana\files\exceptions\FileException;
 
 /**
- * Asserts that a file exists and is accessible.
+ * Asserts that a file exists and meets specified accessibility and MIME type requirements.
  *
- * @param string|null $file The path of the file to check.
- * @param array|null $expectedMimeTypes
- * @param bool $isReadable Whether to assert that the directory is readable. Default: true.
- * @param bool $isWritable Whether to assert that the directory is writable. Default: false.
+ * This function performs a series of checks on a given file:
+ * 1. Ensures the file path is not null or empty.
+ * 2. Confirms that the path points to a valid file.
+ * 3. Optionally checks if the file is readable.
+ * 4. Optionally checks if the file is writable.
+ * 5. Optionally validates the file's MIME type against a provided list.
+ *
+ * @param string|null $file              The path of the file to check. Cannot be null or empty.
+ * @param array|null  $expectedMimeTypes Optional array of allowed MIME types. If provided, the file's MIME type must match one of these.
+ * @param bool        $isReadable        Whether to assert that the file is readable. Default: true.
+ * @param bool        $isWritable        Whether to assert that the file is writable. Default: false.
  *
  * @return void
  *

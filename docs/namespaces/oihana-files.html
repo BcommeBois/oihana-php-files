@@ -155,7 +155,7 @@
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Asserts that a file exists and is accessible.</dd>
+<dd>Asserts that a file exists and meets specified accessibility and MIME type requirements.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_assertWritableDirectory">assertWritableDirectory()</a>
@@ -522,18 +522,27 @@ catch ( DirectoryException $e )
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/assertFile.php"><a href="files/src-oihana-files-assertfile.html"><abbr title="src/oihana/files/assertFile.php">assertFile.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">74</span>
+    <span class="phpdocumentor-element-found-in__line">81</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Asserts that a file exists and is accessible.</p>
+        <p class="phpdocumentor-summary">Asserts that a file exists and meets specified accessibility and MIME type requirements.</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
                     <span class="phpdocumentor-signature__name">assertFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expectedMimeTypes</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isReadable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isWritable</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-    
+        <section class="phpdocumentor-description"><p>This function performs a series of checks on a given file:</p>
+<ol>
+<li>Ensures the file path is not null or empty.</li>
+<li>Confirms that the path points to a valid file.</li>
+<li>Optionally checks if the file is readable.</li>
+<li>Optionally checks if the file is writable.</li>
+<li>Optionally validates the file's MIME type against a provided list.</li>
+</ol>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -541,7 +550,7 @@ catch ( DirectoryException $e )
                 : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The path of the file to check.</p>
+                    <section class="phpdocumentor-description"><p>The path of the file to check. Cannot be null or empty.</p>
 </section>
 
             </dd>
@@ -550,14 +559,16 @@ catch ( DirectoryException $e )
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;|null</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><p>Optional array of allowed MIME types. If provided, the file's MIME type must match one of these.</p>
+</section>
+
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$isReadable</span>
                 : <span class="phpdocumentor-signature__argument__return-type">bool</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the directory is readable. Default: true.</p>
+                    <section class="phpdocumentor-description"><p>Whether to assert that the file is readable. Default: true.</p>
 </section>
 
             </dd>
@@ -566,7 +577,7 @@ catch ( DirectoryException $e )
                 : <span class="phpdocumentor-signature__argument__return-type">bool</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Whether to assert that the directory is writable. Default: false.</p>
+                    <section class="phpdocumentor-description"><p>Whether to assert that the file is writable. Default: false.</p>
 </section>
 
             </dd>

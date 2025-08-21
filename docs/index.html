@@ -160,10 +160,177 @@
 
 
 
+<h4 id="toc-functions">
+    Functions
+    <a href="namespaces/default.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/default.html#function_getImageMimeType">getImageMimeType()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Resolves and validates the MIME type of a file, typically an image.</dd>
+
+    </dl>
 
 
 
 
+    <section class="phpdocumentor-functions">
+        <h3 class="phpdocumentor-elements__header" id="functions">
+            Functions
+            <a href="namespaces/default.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_getImageMimeType">
+        getImageMimeType()
+        <a href="namespaces/default.html#function_getImageMimeType" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/images/getImageMimeType.php"><a href="files/src-oihana-files-images-getimagemimetype.html"><abbr title="src/oihana/files/images/getImageMimeType.php">getImageMimeType.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">55</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Resolves and validates the MIME type of a file, typically an image.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">getImageMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allowedFormats</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+        <section class="phpdocumentor-description"><p>This function ensures that the returned MIME type is safe and consistent.
+Optionally, it can validate a provided <code class="prettyprint">$format</code> (file extension) against a whitelist
+of allowed formats and ensure that it matches the actual MIME type of the file.</p>
+<p>Behavior:</p>
+<ol>
+<li>If <code class="prettyprint">$format</code> is provided and exists in <code class="prettyprint">$allowedFormats</code>:</li>
+</ol>
+<ul>
+<li>Returns the corresponding MIME type if it matches the detected MIME.</li>
+<li>Otherwise, falls back to the actual detected MIME type.</li>
+</ul>
+<ol start="2">
+<li>If <code class="prettyprint">$format</code> is null or not in <code class="prettyprint">$allowedFormats</code>, the detected MIME is returned.</li>
+</ol>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$file</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Absolute path to the file to check.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$format</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Optional desired format (file extension without dot),
+e.g., &quot;jpg&quot;, &quot;png&quot;, &quot;webp&quot;.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$allowedFormats</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Optional whitelist mapping file extensions to MIME types.
+Defaults to common image formats:</p>
+<pre class="prettyprint"><code class="language-php">[
+    'jpg'  =&gt; 'image/jpeg',
+    'jpeg' =&gt; 'image/jpeg',
+    'png'  =&gt; 'image/png',
+    'gif'  =&gt; 'image/gif',
+    'webp' =&gt; 'image/webp',
+    'svg'  =&gt; 'image/svg+xml',
+    'avif' =&gt; 'image/avif',
+]
+</code></pre>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/default.html#function_getImageMimeType#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file does not exist or is not readable.</p>
+</section>
+
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\FileException">FileException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file cannot be validated.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">example</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><pre class="prettyprint"><code class="language-php">$mime = getImageMimeType('/path/to/image.png'); // returns 'image/png'
+$mime = getImageMimeType('/path/to/image.jpg', 'jpg'); // returns 'image/jpeg'
+</code></pre>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The resolved MIME type of the file.</p>
+</section>
+
+            </section>
+
+</article>
+            </section>
 
 
 </section>

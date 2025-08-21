@@ -2,6 +2,9 @@
 
 namespace oihana\files\enums;
 
+use oihana\files\enums\traits\AudioMimeTypeTrait;
+use oihana\files\enums\traits\ImageMimeTypeTrait;
+use oihana\files\enums\traits\VideoMimeTypeTrait;
 use oihana\reflect\traits\ConstantsTrait;
 
 /**
@@ -15,48 +18,18 @@ use oihana\reflect\traits\ConstantsTrait;
  */
 class FileMimeType
 {
-    use ConstantsTrait
-    {
-        resetCaches as internalResetCaches ;
-    }
+    use AudioMimeTypeTrait ,
+        ImageMimeTypeTrait ,
+        VideoMimeTypeTrait ,
+        ConstantsTrait
+        {
+            resetCaches as internalResetCaches ;
+        }
 
-    // --- Audio ---
+    // --- Images (extras) ---
 
-    public const string AAC  = 'audio/aac' ;
-    public const string FLAC = 'audio/flac' ;
-    public const array  M4A  = [ 'audio/mp4', 'audio/x-m4a' ] ;
-    public const string MP3  = 'audio/mpeg' ;
-    public const string OGG  = 'audio/ogg' ;
-    public const string WAV  = 'audio/wav' ;
-    public const string WMA  = 'audio/x-ms-wma' ;
-
-    // --- Images ---
-
-    public const array  AI   = [ 'application/postscript', 'application/illustrator' ];
-    public const string BMP  = 'image/bmp' ;
-    public const string GIF  = 'image/gif' ;
-    public const string ICO  = 'image/vnd.microsoft.icon' ;
-    public const string JPEG = 'image/jpeg' ;
-    public const string JPG  = 'image/jpeg' ;
-    public const string PNG  = 'image/png' ;
-    public const string PSD  = 'image/vnd.adobe.photoshop' ;
-    public const string SVG  = 'image/svg+xml' ;
-    public const string TIF  = 'image/tiff' ;
-    public const string TIFF = 'image/tiff' ;
-    public const string WEBP = 'image/webp' ;
-
-    // --- Video ---
-
-    public const string AVI  = 'video/x-msvideo' ;
-    public const string FLV  = 'video/x-flv' ;
-    public const array  M4V  = [ 'video/x-m4' , 'video/mp4v' ];
-    public const string MKV  = 'video/x-matroska' ;
-    public const string MOV  = 'video/quicktime' ;
-    public const string MP4  = 'video/mp4' ;
-    public const string MPG  = 'video/mpeg' ;
-    public const string MPEG = 'video/mpeg' ;
-    public const string WEBM = 'video/webm' ;
-    public const string WMV  = 'video/x-ms-wmv' ;
+    public const array  AI  = [ 'application/postscript', 'application/illustrator' ];
+    public const string PSD = 'image/vnd.adobe.photoshop';
 
     // --- Documents ---
 
@@ -87,7 +60,6 @@ class FileMimeType
     public const string TAR_GZ           = 'application/gzip' ;
     public const string TAR_GZ_ENCRYPTED = 'application/octet-stream' ;
     public const string TGZ              = 'application/gzip' ;
-
 
     // --- Text and Code
 
