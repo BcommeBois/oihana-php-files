@@ -221,6 +221,20 @@
 <dd>Retrieves the file extension (including multipart extensions) from a given file path.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_getFileLines">getFileLines()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;|null    </span>
+</dt>
+<dd>Retrieves all lines from a file as an array, optionally transforming each line with a callback.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_getFileLinesGenerator">getFileLinesGenerator()</a>
+    <span>
+                                &nbsp;: <abbr title="\Generator">Generator</abbr>    </span>
+</dt>
+<dd>Reads a file line by line and yields each line as a generator.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_getHomeDirectory">getHomeDirectory()</a>
     <span>
                                 &nbsp;: string    </span>
@@ -2017,6 +2031,215 @@ echo getFileExtension('.env');                       // null
                     &mdash;
                 <section class="phpdocumentor-description"><p>The file extension including the leading dot (e.g. <code class="prettyprint">.tar.gz</code>),
 or null if the file has no extension.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_getFileLines">
+        getFileLines()
+        <a href="namespaces/oihana-files.html#function_getFileLines" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/getFileLines.php"><a href="files/src-oihana-files-getfilelines.html"><abbr title="src/oihana/files/getFileLines.php">getFileLines.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retrieves all lines from a file as an array, optionally transforming each line with a callback.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">getFileLines</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">callable|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$map</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|null</span></code>
+
+        <section class="phpdocumentor-description"><p>This function uses a generator internally (<code class="prettyprint">getFileLinesGenerator</code>) to read the file line by line,
+which allows efficient processing of large files. Each line can optionally be mapped using the
+provided callable.</p>
+<p>Example usage:</p>
+<pre class="prettyprint"><code class="language-php">use function oihana\files\getFileLines;
+
+$lines = getFileLines('/path/to/file.log');
+
+// Using a mapping function to parse CSV lines
+$csvLines = getFileLines('/path/to/data.csv', fn($line) =&gt; str_getcsv($line));
+</code></pre>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$file</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The full path to the file to read.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$map</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Optional mapping function applied to each line. Signature: fn(string $line): mixed</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_getFileLines#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file does not exist, is not readable, or cannot be opened.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|null</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns an array of lines (or mapped values). Returns an empty array if the file is empty.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_getFileLinesGenerator">
+        getFileLinesGenerator()
+        <a href="namespaces/oihana-files.html#function_getFileLinesGenerator" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/getFileLinesGenerator.php"><a href="files/src-oihana-files-getfilelinesgenerator.html"><abbr title="src/oihana/files/getFileLinesGenerator.php">getFileLinesGenerator.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">43</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Reads a file line by line and yields each line as a generator.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">getFileLinesGenerator</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">callable|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$map</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr></span></code>
+
+        <section class="phpdocumentor-description"><p>Each line can optionally be transformed using a callback function.
+This is particularly useful for processing large files efficiently without
+loading the entire file into memory at once.</p>
+<p>Example usage:</p>
+<pre class="prettyprint"><code class="language-php">use function oihana\files\getFileLinesGenerator;
+
+// Simply iterate over each line
+foreach (getFileLinesGenerator('/path/to/file.log') as $line)
+{
+    echo $line, PHP_EOL;
+}
+
+// Using a mapping function to parse CSV lines
+foreach (getFileLinesGenerator('/path/to/data.csv', fn($line) =&gt; str_getcsv($line)) as $csvRow)
+{
+    print_r($csvRow);
+}
+</code></pre>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$file</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Full path to the file to read.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$map</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Optional mapping function applied to each line. Signature: fn(string $line): mixed</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_getFileLinesGenerator#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file does not exist, is not readable, or cannot be opened.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Yields each line of the file, optionally transformed by the mapping function.</p>
 </section>
 
             </section>
@@ -4974,6 +5197,8 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getBaseFileName">getBaseFileName()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getDirectory">getDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getFileExtension">getFileExtension()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_getFileLines">getFileLines()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_getFileLinesGenerator">getFileLinesGenerator()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getHomeDirectory">getHomeDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getOwnershipInfos">getOwnershipInfos()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_getRoot">getRoot()</a></li>

@@ -1441,6 +1441,16 @@ Search.appendIndex(
             "summary": "Retrieves\u0020the\u0020file\u0020extension\u0020\u0028including\u0020multipart\u0020extensions\u0029\u0020from\u0020a\u0020given\u0020file\u0020path.",
             "url": "namespaces/oihana-files.html#function_getFileExtension"
         },                {
+            "fqsen": "\\oihana\\files\\getFileLines\u0028\u0029",
+            "name": "getFileLines",
+            "summary": "Retrieves\u0020all\u0020lines\u0020from\u0020a\u0020file\u0020as\u0020an\u0020array,\u0020optionally\u0020transforming\u0020each\u0020line\u0020with\u0020a\u0020callback.",
+            "url": "namespaces/oihana-files.html#function_getFileLines"
+        },                {
+            "fqsen": "\\oihana\\files\\getFileLinesGenerator\u0028\u0029",
+            "name": "getFileLinesGenerator",
+            "summary": "Reads\u0020a\u0020file\u0020line\u0020by\u0020line\u0020and\u0020yields\u0020each\u0020line\u0020as\u0020a\u0020generator.",
+            "url": "namespaces/oihana-files.html#function_getFileLinesGenerator"
+        },                {
             "fqsen": "\\oihana\\files\\getHomeDirectory\u0028\u0029",
             "name": "getHomeDirectory",
             "summary": "Returns\u0020the\u0020current\u0020user\u2019s\u0020home\u0020directory\u0020as\u0020a\u0020\u002A\u002Acanonical\u002A\u002A\u0020path.",

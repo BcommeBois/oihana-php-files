@@ -178,7 +178,7 @@ class AssertFileTest extends TestCase
         chmod($tempFile, 0444); // Lecture seule
 
         $this->expectException(FileException::class);
-        $this->expectExceptionMessageMatches('/is not readable/');
+        $this->expectExceptionMessageMatches('/is not writable/');
 
         try
         {

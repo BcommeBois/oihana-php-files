@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\enums\ImageMimeType
 - Adds oihana\files\enums\RecursiveFilePathsOption
 - Adds oihana\files\enums\VideoMimeType
+- Adds oihana\files\getFileLines
+- Adds oihana\files\getFileLinesGenerator
 
 ## [1.0.0] - 2025-08-13 
 

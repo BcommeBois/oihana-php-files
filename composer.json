@@ -74,6 +74,8 @@
             "src/oihana/files/getBaseFileName.php",
             "src/oihana/files/getDirectory.php",
             "src/oihana/files/getFileExtension.php",
+            "src/oihana/files/getFileLines.php",
+            "src/oihana/files/getFileLinesGenerator.php",
             "src/oihana/files/getHomeDirectory.php",
             "src/oihana/files/getOwnershipInfos.php" ,
             "src/oihana/files/getRoot.php",

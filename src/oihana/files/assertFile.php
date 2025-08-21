@@ -104,7 +104,7 @@ function assertFile( ?string $file , ?array $expectedMimeTypes = null , bool $is
 
     if ( $isWritable && !is_writable( $file ) )
     {
-        throw new FileException( sprintf('The file "%s" is not readable.' , $file ) ) ;
+        throw new FileException( sprintf('The file "%s" is not writable.' , $file ) ) ;
     }
 
     // If MIME types are provided, validate them
