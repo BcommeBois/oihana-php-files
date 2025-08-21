@@ -66,6 +66,7 @@
             "src/oihana/files/assertDirectory.php",
             "src/oihana/files/assertWritableDirectory.php",
             "src/oihana/files/assertFile.php",
+            "src/oihana/files/clearFile.php",
             "src/oihana/files/countFileLines.php",
             "src/oihana/files/copyFilteredFiles.php",
             "src/oihana/files/deleteDirectory.php",

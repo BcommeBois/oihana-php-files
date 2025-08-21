@@ -61,6 +61,11 @@ Search.appendIndex(
             "summary": "Asserts\u0020that\u0020a\u0020directory\u0020exists\u0020and\u0020is\u0020readable\u0020and\u0020writable.",
             "url": "namespaces/oihana-files.html#function_assertWritableDirectory"
         },                {
+            "fqsen": "\\oihana\\files\\clearFile\u0028\u0029",
+            "name": "clearFile",
+            "summary": "Clears\u0020the\u0020content\u0020of\u0020a\u0020file\u0020while\u0020keeping\u0020the\u0020file\u0020itself.",
+            "url": "namespaces/oihana-files.html#function_clearFile"
+        },                {
             "fqsen": "\\oihana\\files\\copyFilteredFiles\u0028\u0029",
             "name": "copyFilteredFiles",
             "summary": "Recursively\u0020copies\u0020files\u0020and\u0020directories\u0020from\u0020a\u0020source\u0020to\u0020a\u0020destination\u0020with\u0020filtering.",
