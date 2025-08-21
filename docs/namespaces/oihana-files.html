@@ -172,6 +172,13 @@
 <dd>Recursively copies files and directories from a source to a destination with filtering.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/oihana-files.html#function_countFileLines">countFileLines()</a>
+    <span>
+                                &nbsp;: int    </span>
+</dt>
+<dd>Counts the number of lines in a file.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
     <a class="" href="namespaces/oihana-files.html#function_deleteDirectory">deleteDirectory()</a>
     <span>
                                 &nbsp;: bool    </span>
@@ -948,6 +955,94 @@ copyFilteredFiles($source, $destination, $exclude, $filter);
         <span class="phpdocumentor-signature__response_type">bool</span>
                     &mdash;
                 <section class="phpdocumentor-description"><p>Returns <code class="prettyprint">true</code> if at least one file or directory was copied, <code class="prettyprint">false</code> otherwise.</p>
+</section>
+
+            </section>
+
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_countFileLines">
+        countFileLines()
+        <a href="namespaces/oihana-files.html#function_countFileLines" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/oihana/files/countFileLines.php"><a href="files/src-oihana-files-countfilelines.html"><abbr title="src/oihana/files/countFileLines.php">countFileLines.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">30</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Counts the number of lines in a file.</p>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">countFileLines</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+        <section class="phpdocumentor-description"><p>This function efficiently counts lines by reading the file in chunks,
+making it suitable even for very large files.</p>
+<p>Example usage:</p>
+<pre class="prettyprint"><code class="language-php">use function oihana\files\countFileLines;
+
+$count = countFileLines('/path/to/file.log');
+</code></pre>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$file</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The full path to the file.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="namespaces/oihana-files.html#function_countFileLines#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/oihana-files-exceptions-FileException.html"><abbr title="\oihana\files\exceptions\FileException">FileException</abbr></a></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>If the file does not exist, is not readable, or cannot be opened.</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">author</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>Marc Alcaraz (ekameleon)</p>
+</section>
+
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">since</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                            <span class="phpdocumentor-tag-link">1.0.0</span>
+                                                                                
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The total number of lines in the file.</p>
 </section>
 
             </section>
@@ -5190,6 +5285,7 @@ catch (FileException $e)
                                                     <li class=""><a href="namespaces/oihana-files.html#function_assertFile">assertFile()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_assertWritableDirectory">assertWritableDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_copyFilteredFiles">copyFilteredFiles()</a></li>
+                                                    <li class=""><a href="namespaces/oihana-files.html#function_countFileLines">countFileLines()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_deleteDirectory">deleteDirectory()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_deleteFile">deleteFile()</a></li>
                                                     <li class=""><a href="namespaces/oihana-files.html#function_deleteTemporaryDirectory">deleteTemporaryDirectory()</a></li>

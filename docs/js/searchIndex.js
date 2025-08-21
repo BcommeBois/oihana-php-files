@@ -66,6 +66,11 @@ Search.appendIndex(
             "summary": "Recursively\u0020copies\u0020files\u0020and\u0020directories\u0020from\u0020a\u0020source\u0020to\u0020a\u0020destination\u0020with\u0020filtering.",
             "url": "namespaces/oihana-files.html#function_copyFilteredFiles"
         },                {
+            "fqsen": "\\oihana\\files\\countFileLines\u0028\u0029",
+            "name": "countFileLines",
+            "summary": "Counts\u0020the\u0020number\u0020of\u0020lines\u0020in\u0020a\u0020file.",
+            "url": "namespaces/oihana-files.html#function_countFileLines"
+        },                {
             "fqsen": "\\oihana\\files\\deleteDirectory\u0028\u0029",
             "name": "deleteDirectory",
             "summary": "Deletes\u0020a\u0020directory\u0020recursively.",
