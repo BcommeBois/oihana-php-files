@@ -71,15 +71,13 @@ class MakeTimestampedDirectoryTest extends TestCase
     public function testDoesNotThrowErrorIfDirectoryExists(): void
     {
         $basePath = $this->root->url();
-        // On génère le nom attendu en utilisant la VRAIE fonction formatDateTime
-        $expectedDirName = formatDateTime();
+        $expectedDirName = formatDateTime( timezone:'Europe/Paris' , format:'Y-m-d\TH:i:s' );
         $expectedPath = $basePath . DIRECTORY_SEPARATOR . $expectedDirName;
 
-        // Crée le répertoire manuellement avant l'appel
         mkdir($expectedPath);
         $this->assertTrue($this->root->hasChild($expectedDirName));
 
-        $resultPath = makeTimestampedDirectory(null, $basePath);
+        $resultPath = makeTimestampedDirectory( basePath: $basePath ) ;
 
         $this->assertSame($expectedPath, $resultPath);
     }

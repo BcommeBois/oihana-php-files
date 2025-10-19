@@ -88,7 +88,7 @@ function makeTimestampedDirectory
 
         if ( !is_dir( $directory ) && !mkdir( $directory , 0755 , true ) )
         {
-            throw new DirectoryException("Unable to create directory: {$directory}" ) ;
+            throw new DirectoryException("Unable to create directory: $directory" ) ;
         }
 
         return $directory ;
