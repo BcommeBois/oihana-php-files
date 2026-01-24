@@ -491,6 +491,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_ZIP"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACBOR",
+            "name": "CBOR",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_CBOR"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACSS",
             "name": "CSS",
             "summary": "",
@@ -785,6 +790,11 @@ Search.appendIndex(
             "name": "TGZ",
             "summary": "",
             "url": "classes/oihana-files-enums-FileMimeType.html#constant_TGZ"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACBOR",
+            "name": "CBOR",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileMimeType.html#constant_CBOR"
         },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACSS",
             "name": "CSS",

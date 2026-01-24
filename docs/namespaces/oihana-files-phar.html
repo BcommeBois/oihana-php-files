@@ -268,7 +268,7 @@ catch (\RuntimeException $e)
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">getPharBasePath</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PharData">PharData</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$phar</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getPharBasePath</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\PharData">PharData</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$phar</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
         <section class="phpdocumentor-description"><p>This function constructs a base URI by prefixing the archive's real path with <code class="prettyprint">phar://</code>.
 This URI can be used to access or manipulate the internal files of the archive via PHP's stream wrapper.</p>
@@ -279,8 +279,8 @@ paths to the internal files (e.g., <code class="prettyprint">phar:///path/to/arc
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$phar</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\PharData">PharData</abbr></span>
+                <span class="phpdocumentor-argument-list__argument__name">$phar</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\PharData">PharData</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The archive's <code class="prettyprint">PharData</code> instance.</p>
@@ -375,7 +375,7 @@ $content = file_get_contents($baseUri . '/docs/readme.txt');
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">getPharCompressionType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$compression</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+                    <span class="phpdocumentor-signature__name">getPharCompressionType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$compression</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
         <section class="phpdocumentor-description"><p>This function maps a compression type (e.g., <code class="prettyprint">gzip</code>, <code class="prettyprint">bzip2</code>, or <code class="prettyprint">none</code>) to
 the appropriate Phar compression constant (e.g., <code class="prettyprint">Phar::GZ</code>, <code class="prettyprint">Phar::BZ2</code>, <code class="prettyprint">Phar::NONE</code>).</p>
@@ -385,8 +385,8 @@ the appropriate Phar compression constant (e.g., <code class="prettyprint">Phar:
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$compression</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-argument-list__argument__name">$compression</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The compression type to resolve.
@@ -476,7 +476,7 @@ echo $pharConstant; // Outputs: 4096 (Phar::GZ)
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">preservePharFilePermissions</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\PharData">PharData</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$phar</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputPath</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">preservePharFilePermissions</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type"><abbr title="\PharData">PharData</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$phar</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputPath</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
         <section class="phpdocumentor-description"><p>This function iterates over the contents of a <code class="prettyprint">PharData</code> archive and applies
 the original file permissions (as stored in the archive) to the corresponding
@@ -489,8 +489,8 @@ file modes (e.g., executable bits) should be retained.</p>
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$phar</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\PharData">PharData</abbr></span>
+                <span class="phpdocumentor-argument-list__argument__name">$phar</span>
+                : <span class="phpdocumentor-argument-list__argument__type"><abbr title="\PharData">PharData</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The PharData archive instance.</p>
@@ -498,8 +498,8 @@ file modes (e.g., executable bits) should be retained.</p>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$outputPath</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-argument-list__argument__name">$outputPath</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The absolute path to the directory where files were extracted.</p>

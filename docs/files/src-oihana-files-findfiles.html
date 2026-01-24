@@ -169,7 +169,7 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">findFiles</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$directory</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array{filter?: callable|null, followLinks?: bool|null, includeDots?: bool|null, mode?: string|null, order?: string|null, pattern?: string|array|null, recursive?: bool|null, sort?: callable|string|array|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\SplFileInfo">SplFileInfo</abbr>&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">findFiles</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$directory</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">array{filter?: callable|null, followLinks?: bool|null, includeDots?: bool|null, mode?: string|null, order?: string|null, pattern?: string|array|null, recursive?: bool|null, sort?: callable|string|array|null}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <abbr title="\SplFileInfo">SplFileInfo</abbr>&gt;</span></code>
 
         <section class="phpdocumentor-description"><p>This function provides flexible options for retrieving files and directories from a given path.
 It supports recursive search, glob and regex pattern matching, sorting, symbolic link following, and custom filters.</p>
@@ -178,8 +178,8 @@ It supports recursive search, glob and regex pattern matching, sorting, symbolic
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$directory</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                <span class="phpdocumentor-argument-list__argument__name">$directory</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|null</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The target directory path. If null or invalid, a DirectoryException is thrown.</p>
@@ -187,9 +187,9 @@ It supports recursive search, glob and regex pattern matching, sorting, symbolic
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$options</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array{filter?: callable|null, followLinks?: bool|null, includeDots?: bool|null, mode?: string|null, order?: string|null, pattern?: string|array|null, recursive?: bool|null, sort?: callable|string|array|null}</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$options</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array{filter?: callable|null, followLinks?: bool|null, includeDots?: bool|null, mode?: string|null, order?: string|null, pattern?: string|array|null, recursive?: bool|null, sort?: callable|string|array|null}</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">[]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Optional settings to customize the file listing.</p>
 <ul>

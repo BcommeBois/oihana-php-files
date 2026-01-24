@@ -169,7 +169,7 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">tar</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$paths</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputPath</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$compression</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">CompressionType::GZIP</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$preserveRoot</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">tar</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string|array&lt;string|int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$paths</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputPath</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$compression</span><span> = </span><span class="phpdocumentor-signature__argument__default-value"><a href="classes/oihana-files-enums-CompressionType.html#constant_GZIP"><abbr title="\oihana\files\enums\CompressionType::GZIP">CompressionType::GZIP</abbr></a></span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$preserveRoot</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
         <section class="phpdocumentor-description"><p>This function supports adding multiple paths (files or directories) to a tar archive,
 with optional compression (gzip, bzip2, or none).
@@ -181,8 +181,8 @@ and generates a unique temporary archive if no output path is specified.</p>
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$paths</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, string&gt;</span>
+                <span class="phpdocumentor-argument-list__argument__name">$paths</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|array&lt;string|int, string&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Absolute path(s) to file(s) or directory(ies) to include in the archive.</p>
@@ -190,9 +190,9 @@ and generates a unique temporary archive if no output path is specified.</p>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$outputPath</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$outputPath</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|null</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Optional full path to the final archive file to create.
 If null, an automatic unique filename with timestamp is generated in the system temp directory.</p>
@@ -200,9 +200,9 @@ If null, an automatic unique filename with timestamp is generated in the system 
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$compression</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">CompressionType::GZIP</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$compression</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|null</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value"><a href="classes/oihana-files-enums-CompressionType.html#constant_GZIP"><abbr title="\oihana\files\enums\CompressionType::GZIP">CompressionType::GZIP</abbr></a></span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Compression type to use on the tar archive.
 Supported values are defined in <a href="classes/oihana-files-enums-CompressionType.html"><abbr title="\oihana\files\enums\CompressionType">CompressionType</abbr></a>, defaults to <a href="classes/oihana-files-enums-CompressionType.html#constant_GZIP"><abbr title="\oihana\files\enums\CompressionType::GZIP">CompressionType::GZIP</abbr></a>.</p>
@@ -210,9 +210,9 @@ Supported values are defined in <a href="classes/oihana-files-enums-CompressionT
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$preserveRoot</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$preserveRoot</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|null</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>If set, paths inside the archive will be stored relative to this directory,
 allowing to preserve directory structure when extracting.

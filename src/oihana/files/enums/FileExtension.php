@@ -98,6 +98,7 @@ class FileExtension
 
     // --- Text and Code
 
+    public const string CBOR = '.cbor' ;
     public const string CSS  = '.css';
     public const string HTM  = '.htm';
     public const string HTML = '.html';
@@ -119,6 +120,7 @@ class FileExtension
     public const string WOFF2 = '.woff2';
 
     // --- System
+
     public const string APP = '.app';
     public const string BAT = '.bat';
     public const string COM = '.com';
@@ -129,6 +131,7 @@ class FileExtension
     public const string SH  = '.sh';
 
     // --- Databases
+
     public const string ACCDB  = '.accdb';
     public const string DB     = '.db';
     public const string MDB    = '.mdb';

@@ -169,7 +169,7 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">getImageMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allowedFormats</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getImageMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$format</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$allowedFormats</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[<abbr title="\ImageMimeType::AVIF">ImageMimeType::AVIF</abbr> =><abbr title="\ImageMimeType::AVIF">ImageMimeType::AVIF</abbr>, <abbr title="\ImageMimeType::JPG">ImageMimeType::JPG</abbr> =><abbr title="\ImageMimeType::JPG">ImageMimeType::JPG</abbr>, <abbr title="\ImageMimeType::JPEG">ImageMimeType::JPEG</abbr> =><abbr title="\ImageMimeType::JPEG">ImageMimeType::JPEG</abbr>, <abbr title="\ImageMimeType::PNG">ImageMimeType::PNG</abbr> =><abbr title="\ImageMimeType::PNG">ImageMimeType::PNG</abbr>, <abbr title="\ImageMimeType::GIF">ImageMimeType::GIF</abbr> =><abbr title="\ImageMimeType::GIF">ImageMimeType::GIF</abbr>, <abbr title="\ImageMimeType::SVG">ImageMimeType::SVG</abbr> =><abbr title="\ImageMimeType::SVG">ImageMimeType::SVG</abbr>, <abbr title="\ImageMimeType::WEBP">ImageMimeType::WEBP</abbr> =><abbr title="\ImageMimeType::WEBP">ImageMimeType::WEBP</abbr>]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
         <section class="phpdocumentor-description"><p>This function ensures that the returned MIME type is safe and consistent.
 Optionally, it can validate a provided <code class="prettyprint">$format</code> (file extension) against a whitelist
@@ -190,8 +190,8 @@ of allowed formats and ensure that it matches the actual MIME type of the file.<
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$file</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-argument-list__argument__name">$file</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Absolute path to the file to check.</p>
@@ -199,9 +199,9 @@ of allowed formats and ensure that it matches the actual MIME type of the file.<
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$format</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$format</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string|null</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Optional desired format (file extension without dot),
 e.g., &quot;jpg&quot;, &quot;png&quot;, &quot;webp&quot;.</p>
@@ -209,9 +209,9 @@ e.g., &quot;jpg&quot;, &quot;png&quot;, &quot;webp&quot;.</p>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$allowedFormats</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">[ImageFormat::AVIF =&gt; ImageMimeType::AVIF, ImageFormat::JPG =&gt; ImageMimeType::JPG, ImageFormat::JPEG =&gt; ImageMimeType::JPEG, ImageFormat::PNG =&gt; ImageMimeType::PNG, ImageFormat::GIF =&gt; ImageMimeType::GIF, ImageFormat::SVG =&gt; ImageMimeType::SVG, ImageFormat::WEBP =&gt; ImageMimeType::WEBP]</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$allowedFormats</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">[<abbr title="\ImageMimeType::AVIF">ImageMimeType::AVIF</abbr> => <abbr title="\ImageMimeType::AVIF">ImageMimeType::AVIF</abbr>, <abbr title="\ImageMimeType::JPG">ImageMimeType::JPG</abbr> => <abbr title="\ImageMimeType::JPG">ImageMimeType::JPG</abbr>, <abbr title="\ImageMimeType::JPEG">ImageMimeType::JPEG</abbr> => <abbr title="\ImageMimeType::JPEG">ImageMimeType::JPEG</abbr>, <abbr title="\ImageMimeType::PNG">ImageMimeType::PNG</abbr> => <abbr title="\ImageMimeType::PNG">ImageMimeType::PNG</abbr>, <abbr title="\ImageMimeType::GIF">ImageMimeType::GIF</abbr> => <abbr title="\ImageMimeType::GIF">ImageMimeType::GIF</abbr>, <abbr title="\ImageMimeType::SVG">ImageMimeType::SVG</abbr> => <abbr title="\ImageMimeType::SVG">ImageMimeType::SVG</abbr>, <abbr title="\ImageMimeType::WEBP">ImageMimeType::WEBP</abbr> => <abbr title="\ImageMimeType::WEBP">ImageMimeType::WEBP</abbr>]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Optional whitelist mapping file extensions to MIME types.
 Defaults to common image formats:</p>

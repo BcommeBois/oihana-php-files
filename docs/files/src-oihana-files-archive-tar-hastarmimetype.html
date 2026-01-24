@@ -169,7 +169,7 @@
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">hasTarMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$mimeTypes</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[&#039;application/x-tar&#039;, &#039;application/tar&#039;, &#039;application/gzip&#039;, &#039;application/x-gzip&#039;, &#039;application/x-bzip2&#039;, &#039;application/bzip2&#039;, &#039;application/x-compressed-tar&#039;]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">hasTarMimeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__type">array&lt;string|int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$mimeTypes</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">['application/x-tar', 'application/tar', 'application/gzip', 'application/x-gzip', 'application/x-bzip2', 'application/bzip2', 'application/x-compressed-tar']</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
         <section class="phpdocumentor-description"><p>This function inspects the MIME type of the given file against a list
 of valid tar-related MIME types to determine if the file is a tar archive.</p>
@@ -178,8 +178,8 @@ of valid tar-related MIME types to determine if the file is a tar archive.</p>
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$filePath</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-argument-list__argument__name">$filePath</span>
+                : <span class="phpdocumentor-argument-list__argument__type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Path to the file.</p>
@@ -187,9 +187,9 @@ of valid tar-related MIME types to determine if the file is a tar archive.</p>
 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$mimeTypes</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, string&gt;</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">[&#039;application/x-tar&#039;, &#039;application/tar&#039;, &#039;application/gzip&#039;, &#039;application/x-gzip&#039;, &#039;application/x-bzip2&#039;, &#039;application/bzip2&#039;, &#039;application/x-compressed-tar&#039;]</span>            </dt>
+                <span class="phpdocumentor-argument-list__argument__name">$mimeTypes</span>
+                : <span class="phpdocumentor-argument-list__argument__type">array&lt;string|int, string&gt;</span>
+                 = <span class="phpdocumentor-argument-list__argument__default-value">['application/x-tar', 'application/tar', 'application/gzip', 'application/x-gzip', 'application/x-bzip2', 'application/bzip2', 'application/x-compressed-tar']</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>Optional list of valid tar MIME types.
 Defaults to common tar and compressed tar types:</p>

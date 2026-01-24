@@ -63,10 +63,11 @@ class FileMimeType
 
     // --- Text and Code
 
+    public const array  CBOR = [ 'application/cbor', 'application/cbor-seq' ] ;
     public const string CSS  = 'text/css' ;
     public const string HTM  = 'text/html' ;
     public const string HTML = 'text/html' ;
-    public const array  JS   = [ 'application/javascript', 'text/javascript' ] ; 
+    public const array  JS   = [ 'application/javascript', 'text/javascript' ] ;
     public const string JSON = 'application/json' ;
     public const string MD   = 'text/markdown' ;  // RFC 7763
     public const array  PHP  = [ 'application/x-php' , 'application/x-httpd-php' , 'application/x-httpd-php-source' , 'text/php' , 'text/x-php' , 'application/php' ];
