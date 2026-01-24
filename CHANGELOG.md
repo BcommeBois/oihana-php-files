@@ -17,7 +17,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds oihana\files\countFileLines
 - Adds oihana\files\getFileLines
 - Adds oihana\files\getFileLinesGenerator
-- Adds the .cbor 'application/cbor' file mime type and file extension constants.
+- Adds the '.cbor' extension + 'application/cbor' mime type.
+- Adds the '.cose' extension + 'application/cose' and 'application/cose.enc' mime types. 
 
 ## [1.0.0] - 2025-08-13 
 

@@ -100,6 +100,10 @@ class FileMimeType
     public const string SQL    = 'application/sql' ;
     public const string SQLITE = 'application/vnd.sqlite3'  ;
 
+    // --- Security / Crypto
+
+    public const string COSE = 'application/cose' ;
+
     // ------------------------------------ Methods
 
     /**

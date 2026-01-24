@@ -636,6 +636,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_SQLITE"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACOSE",
+            "name": "COSE",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_COSE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACOSE_ENCRYPTED",
+            "name": "COSE_ENCRYPTED",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_COSE_ENCRYPTED"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003A\u0024MIME_TYPES",
             "name": "MIME_TYPES",
             "summary": "",
@@ -935,6 +945,11 @@ Search.appendIndex(
             "name": "SQLITE",
             "summary": "",
             "url": "classes/oihana-files-enums-FileMimeType.html#constant_SQLITE"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACOSE",
+            "name": "COSE",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileMimeType.html#constant_COSE"
         },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003A\u0024EXTENSIONS",
             "name": "EXTENSIONS",

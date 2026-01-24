@@ -137,6 +137,11 @@ class FileExtension
     public const string MDB    = '.mdb';
     public const string SQLITE = '.sqlite';
 
+    // --- Security / Crypto
+
+    public const string COSE           = '.cose' ;
+    public const string COSE_ENCRYPTED = '.cose.enc' ;
+
     // ------------------------------------ Methods
 
     /**
