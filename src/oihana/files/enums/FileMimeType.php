@@ -84,6 +84,7 @@ class FileMimeType
     public const string WOFF2 = 'font/woff2' ;
 
     // --- System
+
     public const string APP = 'application/octet-stream' ;
     public const string BAT = 'application/x-bat' ;
     public const string COM = 'application/x-msdownload' ;
@@ -94,6 +95,7 @@ class FileMimeType
     public const string SH  = 'application/x-sh' ;
 
     // --- Databases
+
     public const string ACCDB  = 'application/msaccess'     ;
     public const string DB     = 'application/octet-stream' ;
     public const string MDB    = 'application/x-msaccess'   ;
