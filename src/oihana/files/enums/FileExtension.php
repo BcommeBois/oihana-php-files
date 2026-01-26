@@ -98,19 +98,20 @@ class FileExtension
 
     // --- Text and Code
 
-    public const string CBOR = '.cbor' ;
-    public const string CSS  = '.css';
-    public const string HTM  = '.htm';
-    public const string HTML = '.html';
-    public const string JS   = '.js';
-    public const string JSON = '.json';
-    public const string MD   = '.md';
-    public const string PHP  = '.php';
-    public const string SQL  = '.sql';
-    public const string TOML = '.toml';
-    public const string XML  = '.xml';
-    public const string YAML = '.yaml';
-    public const string YML  = '.yml';
+    public const string CBOR     = '.cbor' ;
+    public const string CBOR_SEQ = '.cbor.seq' ;
+    public const string CSS      = '.css';
+    public const string HTM      = '.htm';
+    public const string HTML     = '.html';
+    public const string JS       = '.js';
+    public const string JSON     = '.json';
+    public const string MD       = '.md';
+    public const string PHP      = '.php';
+    public const string SQL      = '.sql';
+    public const string TOML     = '.toml';
+    public const string XML      = '.xml';
+    public const string YAML     = '.yaml';
+    public const string YML      = '.yml';
 
     // --- Fonts
 

@@ -496,6 +496,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/oihana-files-enums-FileExtension.html#constant_CBOR"
         },                {
+            "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACBOR_SEQ",
+            "name": "CBOR_SEQ",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileExtension.html#constant_CBOR_SEQ"
+        },                {
             "fqsen": "\\oihana\\files\\enums\\FileExtension\u003A\u003ACSS",
             "name": "CSS",
             "summary": "",
@@ -805,6 +810,11 @@ Search.appendIndex(
             "name": "CBOR",
             "summary": "",
             "url": "classes/oihana-files-enums-FileMimeType.html#constant_CBOR"
+        },                {
+            "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACBOR_SEQ",
+            "name": "CBOR_SEQ",
+            "summary": "",
+            "url": "classes/oihana-files-enums-FileMimeType.html#constant_CBOR_SEQ"
         },                {
             "fqsen": "\\oihana\\files\\enums\\FileMimeType\u003A\u003ACSS",
             "name": "CSS",
