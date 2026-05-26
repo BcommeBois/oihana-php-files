@@ -85,7 +85,15 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
         }
     }
 
-    use ReflectionTrait ;
+    use ReflectionTrait
+    {
+        // Hide the trait's rich toArray(array $options) so it does not conflict — by
+        // signature and by named-argument routing — with the ClearableArrayable
+        // contract `toArray(bool $clear)` that this class implements below.
+        // The reflection-based variant remains available privately under a distinct
+        // name for subclasses that need the extra knobs (INCLUDE/EXCLUDE/REDUCE…).
+        toArray as private toArrayFromReflection ;
+    }
 
     /**
      * Creates a deep copy of the current instance.
@@ -94,6 +102,20 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
      * Useful when duplicating options to avoid shared references.
      *
      * @return static A new cloned instance.
+     *
+     * @internal **Note (security, low priority).** `unserialize()` is a known PHP
+     * attack surface (Object Injection via `__wakeup` / `__destruct` gadgets).
+     * In practice this implementation is safe because:
+     * 1. The serialized data is produced in-process by `serialize($this)`, so an
+     *    external attacker would need to control the live object state first.
+     * 2. `Options` defines neither `__wakeup()` nor `__destruct()` — there is no
+     *    gadget chain to exploit.
+     *
+     * A reflection-based deep copy (no `unserialize`) was evaluated and **deferred**
+     * (see the security backlog). Reconsider if a subclass of `Options` ever
+     * introduces `__wakeup()` or `__destruct()`, or if a Packagist alternative
+     * lands in `oihana/php-core` (today's `core\objects\set()` uses the same
+     * pattern at vendor level, so any fix should be done there first).
      */
     public function clone(): static
     {
