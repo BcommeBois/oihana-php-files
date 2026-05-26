@@ -296,4 +296,129 @@ class OpenSSLFileEncryptionTest extends TestCase
         @unlink( $result );
     }
 
+    // ---------------------------------------------------------------------
+    // V2 format-specific tests
+    // ---------------------------------------------------------------------
+
+    public function testEncryptProducesV2MagicHeader(): void
+    {
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+        $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $data = file_get_contents( $this->encryptedFile ) ;
+        $this->assertSame( 'OPHE' , substr( $data , 0 , 4 ) , 'V2 file must start with OPHE magic' ) ;
+        $this->assertSame( 2 , ord( $data[ 4 ] ) , 'Version byte must be 2' ) ;
+
+        // KDF byte must be one of the known algorithms
+        $kdf = ord( $data[ 5 ] ) ;
+        $this->assertContains( $kdf , [ 1 , 2 ] , 'KDF byte must be Argon2id (1) or PBKDF2 (2)' ) ;
+    }
+
+    public function testEncryptIsNonDeterministic(): void
+    {
+        // Same input + same passphrase must produce different ciphertexts
+        // (fresh random salt + IV per encryption)
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+
+        $out1 = $this->testDir . '/one.enc' ;
+        $out2 = $this->testDir . '/two.enc' ;
+
+        $crypto->encrypt( $this->inputFile , $out1 ) ;
+        $crypto->encrypt( $this->inputFile , $out2 ) ;
+
+        $this->assertNotEquals
+        (
+            file_get_contents( $out1 ) ,
+            file_get_contents( $out2 ) ,
+            'Two encryptions of the same content must produce different ciphertexts'
+        ) ;
+
+        @unlink( $out1 ) ;
+        @unlink( $out2 ) ;
+    }
+
+    public function testTamperingInCiphertextIsDetected(): void
+    {
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+        $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        // Flip one byte in the ciphertext region (after the 34-byte V2 header,
+        // before the last 16 bytes which hold the tag).
+        $data = file_get_contents( $this->encryptedFile ) ;
+        $tamperOffset = 34 ; // first byte of ciphertext
+        $data[ $tamperOffset ] = chr( ord( $data[ $tamperOffset ] ) ^ 0xFF ) ;
+        file_put_contents( $this->encryptedFile , $data ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
+
+    public function testTamperingInAuthTagIsDetected(): void
+    {
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+        $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        // Flip the last byte (part of the auth tag).
+        $data = file_get_contents( $this->encryptedFile ) ;
+        $lastByte = strlen( $data ) - 1 ;
+        $data[ $lastByte ] = chr( ord( $data[ $lastByte ] ) ^ 0xFF ) ;
+        file_put_contents( $this->encryptedFile , $data ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed' ) ;
+
+        $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
+
+    public function testTruncatedV2PayloadIsRejected(): void
+    {
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+        $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        // Truncate to half its size
+        $data = file_get_contents( $this->encryptedFile ) ;
+        file_put_contents( $this->encryptedFile , substr( $data , 0 , 30 ) ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'V2 payload is shorter' ) ;
+
+        $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
+
+    public function testDecryptLegacyV1FileStillWorks(): void
+    {
+        // Manually craft a legacy V1 file (no magic, IV + AES-256-CBC ciphertext, raw passphrase)
+        $passphrase = $this->passphrase ;
+        $cipher     = 'aes-256-cbc' ;
+        $plain      = 'Legacy content for backward-compat test' ;
+        $iv         = random_bytes( openssl_cipher_iv_length( $cipher ) ) ;
+        $ct         = openssl_encrypt( $plain , $cipher , $passphrase , OPENSSL_RAW_DATA , $iv ) ;
+        $this->assertNotFalse( $ct ) ;
+
+        $legacyFile = $this->testDir . '/legacy.enc' ;
+        file_put_contents( $legacyFile , $iv . $ct ) ;
+
+        $crypto = new OpenSSLFileEncryption( $passphrase , $cipher ) ;
+        $result = $crypto->decrypt( $legacyFile , $this->decryptedFile ) ;
+
+        $this->assertSame( $plain , file_get_contents( $result ) , 'Legacy V1 file must decrypt to original plaintext' ) ;
+
+        @unlink( $legacyFile ) ;
+    }
+
+    public function testConstructorRejectsEmptyPassphrase(): void
+    {
+        $this->expectException( \InvalidArgumentException::class ) ;
+        $this->expectExceptionMessage( 'Passphrase cannot be empty' ) ;
+        new OpenSSLFileEncryption('') ;
+    }
+
+    public function testConstructorRejectsUnknownCipher(): void
+    {
+        $this->expectException( \InvalidArgumentException::class ) ;
+        $this->expectExceptionMessage( "Cipher method 'not-a-cipher' is not available" ) ;
+        new OpenSSLFileEncryption( $this->passphrase , 'not-a-cipher' ) ;
+    }
 }

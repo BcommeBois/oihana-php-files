@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Security
 
 - Hardens oihana\files\requireAndMergeArrays with a per-file validation pipeline (string non-empty, realpath-resolved file, `.php` extension case-insensitive) and an optional `$allowedBase` parameter to constrain paths under a trusted root. Mitigates arbitrary file inclusion (RCE) when paths come from untrusted sources. Backward-compatible for legitimate usages.
+- Refactors oihana\files\openssl\OpenSSLFileEncryption to the V2 on-disk format: AES-256-GCM (AEAD) with built-in integrity tag, KDF (Argon2id via ext-sodium, fallback PBKDF2-SHA256 with 600 000 iterations), per-file random salt + IV, `random_bytes` randomness, magic header (`OPHE\x02`). Backward-compatible: legacy V1 files (CBC, no MAC) are still readable by `decrypt()` via auto-detection. New helpers `deriveKey()`, `bestAvailableKdf()`, `isAeadCipher()` and constants class `EncryptionFormat` extracted under oihana\files\openssl. Tampering on V2 ciphertext is now detected and reported as `RuntimeException`. `hasEncryptedFileSize()` switched to `filesize()` (no longer loads whole file).
+- Adds wiki/{fr,en}/security.md as the global security rubric (covered/not-covered threats, user best practices, vulnerability reporting policy).
 
 ## [1.0.0] - 2025-08-13 
 

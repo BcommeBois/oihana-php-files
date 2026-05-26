@@ -1,24 +1,74 @@
 # OpenSSL — `oihana\files\openssl`
 
-The **`oihana\files\openssl`** module exposes a single class — [`OpenSSLFileEncryption`](#openssl­fileencryption) — to **encrypt and decrypt files** via OpenSSL, with automatic **IV (Initialization Vector)** handling.
+The **`oihana\files\openssl`** module exposes a class and **functional helpers** to **encrypt and decrypt files** via OpenSSL:
 
-> 💡 Requires the PHP **`ext-openssl`** extension (enabled by default). See [Installation](../getting-started/installation.md) for verification.
+- [`OpenSSLFileEncryption`](#openssl­fileencryption) — the main class.
+- [`deriveKey()`](#derivekey) / [`bestAvailableKdf()`](#bestavailablekdf) — key derivation.
+- [`isAeadCipher()`](#isaeadcipher) — AEAD mode detection.
+- [`EncryptionFormat`](#encryptionformat) — V2 file format constants.
 
-## Principle in one sentence
+> 💡 Requires the PHP **`ext-openssl`** extension (enabled by default). The `ext-sodium` extension is used when available to benefit from **Argon2id** (automatic fallback to PBKDF2-SHA256 otherwise).
 
-An `OpenSSLFileEncryption($passphrase, $cipher)` object produces **self-contained** encrypted files: the IV is prepended in the output file, so decryption only requires the same passphrase and cipher — no need to store the IV separately.
+## Security properties
+
+> 📖 See also the [global security rubric](../security.md) for the security perimeter of the whole library.
+
+### What the library guarantees (for files written by `encrypt()`)
+
+| Property | How it is achieved |
+|---|---|
+| **Confidentiality** | AES-256-GCM. Without the passphrase, the plaintext is computationally infeasible to recover. |
+| **Integrity / authenticity** | GCM authentication tag (16 bytes). Any tampering with the encrypted file makes `decrypt()` throw `RuntimeException` instead of returning corrupted plaintext. |
+| **Brute-force resistance on the passphrase** | KDF Argon2id (with `ext-sodium`) or PBKDF2-SHA256 with 600 000 iterations. Random salt **per file** → no rainbow tables possible. |
+| **Per-file uniqueness** | Salt (16B) + IV (12B) regenerated on each `encrypt()`. Two encryptions of the same content produce **independent** encrypted files. |
+
+### What the library does **not** guarantee
+
+- **No forward secrecy**: no per-session ephemeral key. Anyone who obtains the passphrase can decrypt **all** past files.
+- **No key revocation**: changing the passphrase does not invalidate old files — you must re-encrypt them.
+- **No protection against a compromised endpoint**: if an attacker can read PHP memory while the passphrase is in use, they recover it. The `__destruct()` is best-effort.
+- **No protection against a weak passphrase**: KDF slows brute-force, it does not prevent it. Use long random passphrases for sensitive data.
+
+## V2 file format
+
+All files written by `encrypt()` use the **V2** format.
 
 ```
-┌────────────────────────────────────────────┐
-│  IV (16 bytes for AES)  │  encrypted data │
-└────────────────────────────────────────────┘
+┌─────────┬─────────┬─────────┬──────────┬──────────┬──────────────────────┐
+│ MAGIC   │ VERSION │ KDF     │ SALT     │ IV       │ ciphertext + TAG     │
+│ 4 bytes │ 1 byte  │ 1 byte  │ 16 bytes │ 12 bytes │ variable + 16 bytes  │
+└─────────┴─────────┴─────────┴──────────┴──────────┴──────────────────────┘
 ```
 
-## Default cipher
+| Field | Size | Role |
+|---|---|---|
+| `MAGIC` | 4 bytes | `"OPHE"` — identifies a library file. |
+| `VERSION` | 1 byte | `0x02` — format version. |
+| `KDF` | 1 byte | `0x01` = Argon2id, `0x02` = PBKDF2-SHA256. |
+| `SALT` | 16 bytes | Random salt used by the KDF to derive the key. |
+| `IV` | 12 bytes | Random IV for AES-GCM (12 bytes = NIST recommendation). |
+| `ciphertext + TAG` | variable + 16 bytes | Ciphertext followed by the GCM authentication tag. |
 
-**`aes-256-cbc`** (Advanced Encryption Standard, 256-bit key, Cipher Block Chaining mode). Solid cryptographic recommendation for general use.
+The KDF byte is stored so a different environment (e.g. PHP without `ext-sodium`) knows which KDF to use to decrypt. If a file was encrypted with Argon2id and is read on an environment without `ext-sodium`, the library throws a clear `RuntimeException`.
 
-Any algorithm listed by `openssl_get_cipher_methods()` is accepted — the constructor validates via `in_array`.
+## Backward compatibility (legacy V1)
+
+Files written by `oihana/php-files` ≤ 1.0 use the **legacy V1 format**: no magic header, `IV (16B) + AES-CBC ciphertext`, passphrase used directly as key, **no integrity check**.
+
+`decrypt()` **automatically detects** the absence of the `OPHE\x02` magic and reads V1 files with the old logic (CBC, raw passphrase). Your old files remain readable.
+
+**`encrypt()` always produces V2.** No more V1 files are created.
+
+### Migrating a V1 file to V2
+
+No forced migration. To re-encrypt an old file in the modern format:
+
+```php
+$crypto = new OpenSSLFileEncryption( $passphrase ) ;
+$crypto->decrypt( '/old/file.enc' , '/tmp/plain.txt' ) ;   // reads V1 (auto-detected)
+$crypto->encrypt( '/tmp/plain.txt' , '/new/file.enc' ) ;   // writes V2
+deleteFile( '/tmp/plain.txt' ) ;                            // cleanup
+```
 
 ## `OpenSSLFileEncryption`
 
@@ -27,28 +77,19 @@ Any algorithm listed by `openssl_get_cipher_methods()` is accepted — the const
 ```php
 public function __construct(
     string $passphrase ,
-    string $cipher = 'aes-256-cbc'
+    string $cipher = EncryptionFormat::LEGACY_CIPHER  // 'aes-256-cbc'
 )
 ```
 
+- `$passphrase` — secret used to derive the key. Must be non-empty.
+- `$cipher` — only used for **decrypting legacy V1 files**. For V2, AES-256-GCM is always used. Historical default preserved.
+
 **Throws `InvalidArgumentException`** if:
+- the passphrase is empty;
 - the requested cipher is not in `openssl_get_cipher_methods()`;
-- the passphrase is empty.
+- AES-256-GCM (V2 cipher) is not available in the local OpenSSL build (rare in 2026).
 
-**Safe destructor**: the passphrase is **wiped from memory** (`str_repeat("\0", ...)`) when the object is destroyed — good practice to limit memory exposure.
-
-```php
-use oihana\files\openssl\OpenSSLFileEncryption;
-
-$crypto = new OpenSSLFileEncryption( 'my-secret-passphrase' ) ;
-
-// Custom cipher
-$crypto = new OpenSSLFileEncryption( $passphrase , 'aes-128-gcm' ) ;
-
-// Unknown cipher
-$crypto = new OpenSSLFileEncryption( $passphrase , 'foo' ) ;
-// → InvalidArgumentException: Cipher method 'foo' is not available
-```
+**Destructor**: attempts `sodium_memzero($this->passphrase)` if available, falls back to string overwrite (best-effort, see limitations).
 
 ### Public property: `ivLength`
 
@@ -56,131 +97,111 @@ $crypto = new OpenSSLFileEncryption( $passphrase , 'foo' ) ;
 public int $ivLength ;
 ```
 
-IV length in bytes for the chosen cipher (determined via `openssl_cipher_iv_length`). Read-only (PHP 8.4 property hook).
+IV length of the **legacy cipher** (16 for CBC). Preserved for compatibility — the detection helpers `hasEncryptedFileSize` / `isEncryptedFile` use it for V1 files.
 
-```php
-$crypto = new OpenSSLFileEncryption( $passphrase ) ; // aes-256-cbc
-echo $crypto->ivLength ; // 16 (for AES in CBC)
-```
-
----
-
-### `encrypt`
+### `encrypt()` — V2 encryption
 
 ```php
 public function encrypt( string $inputFile , ?string $outputFile = null ) : string
 ```
 
-Encrypts a file. Returns the output file path.
+Internal pipeline:
 
-**Steps:**
-
-1. `assertFile` on the input.
-2. Determine output path: `$outputFile` if provided, otherwise `$inputFile . '.enc'` (extension via `FileExtension::ENCRYPTED`).
-3. Read content.
-4. **Generate a secure IV** via `openssl_random_pseudo_bytes($this->ivLength, $cryptoStrong)`. If `$cryptoStrong` is `false` → `RuntimeException` (non-cryptographically-strong randomness source).
-5. `openssl_encrypt` in `OPENSSL_RAW_DATA` mode.
-6. Validation: output directory writable (`assertDirectory(..., isWritable: true)`), output file writable if it exists.
-7. Write: **IV concatenated at the start + encrypted data**.
-
-**Exceptions:**
-
-| Exception | Case |
-|---|---|
-| `FileException` | Invalid input (via `assertFile`). |
-| `DirectoryException` | Output directory not writable. |
-| `RuntimeException` | Read failure, non-crypto-strong IV, encryption failure, write failure. |
+1. `random_bytes(16)` → salt;
+2. `random_bytes(12)` → IV;
+3. KDF (Argon2id or PBKDF2 depending on availability) → 32-byte key;
+4. `openssl_encrypt(..., 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag, '', 16)`;
+5. Write: `MAGIC | VERSION | KDF | salt | IV | ciphertext | tag`.
 
 ```php
-use oihana\files\openssl\OpenSSLFileEncryption;
-
-$crypto = new OpenSSLFileEncryption( 'secret' ) ;
-
-// Auto output: appends .enc
+$crypto = new OpenSSLFileEncryption( 'my-passphrase' ) ;
 $encrypted = $crypto->encrypt( '/path/to/file.txt' ) ;
-// → '/path/to/file.txt.enc'
-
-// Custom output
-$encrypted = $crypto->encrypt( '/path/to/file.txt' , '/secure/file.enc' ) ;
-// → '/secure/file.enc'
+// → '/path/to/file.txt.enc' (V2 format)
 ```
 
----
-
-### `decrypt`
+### `decrypt()` — V2 or legacy V1 decryption
 
 ```php
 public function decrypt( string $inputFile , ?string $outputFile = null ) : string
 ```
 
-Decrypts a previously encrypted file.
+**Automatic detection:**
 
-**Steps:**
+- If the first 5 bytes are `OPHE\x02` → V2 path (reads salt, IV, ciphertext, tag; KDF identified by byte 6; verifies the tag).
+- Otherwise → legacy V1 path (IV + CBC ciphertext, raw passphrase).
 
-1. `assertFile` on the input.
-2. Determine output path: `$outputFile` if provided, otherwise `$inputFile` with `.enc` stripped (`str_replace`).
-3. Read.
-4. Size check: the file must be at least `$ivLength` bytes (`RuntimeException` otherwise).
-5. **Extract IV** from the first `$ivLength` bytes, **encrypted data** from the rest.
-6. `openssl_decrypt`. Failure → `RuntimeException("Decryption failed due to incorrect passphrase or corrupted data.")` (no distinction between wrong passphrase and corruption — standard practice to avoid leaking the info).
-7. Validation: existing + writable output directory, writable file if exists.
-8. Write decrypted data.
+**Uniform error message** regardless of format:
 
-```php
-$crypto = new OpenSSLFileEncryption( 'secret' ) ;
-
-// Auto output: strips .enc
-$decrypted = $crypto->decrypt( '/path/to/file.txt.enc' ) ;
-// → '/path/to/file.txt'
-
-// Custom output
-$decrypted = $crypto->decrypt( '/path/to/file.txt.enc' , '/restored/file.txt' ) ;
 ```
+RuntimeException: Decryption failed due to incorrect passphrase or corrupted data.
+```
+
+→ No oracle between "wrong passphrase" and "tampered file" — intentional.
+
+### `hasEncryptedFileSize()` / `isEncryptedFile()`
+
+Unchanged in API, improved internally:
+
+- `hasEncryptedFileSize()` now uses `filesize()` (instead of loading the whole file).
+- `isEncryptedFile()` detects V2 magic on a fast path + verifies minimum viable size, falls back to V1 heuristic.
 
 ---
 
-### `hasEncryptedFileSize`
+## Functional helpers
+
+### `deriveKey()`
 
 ```php
-public function hasEncryptedFileSize( string $filePath ) : bool
+deriveKey(
+    string $passphrase ,
+    string $salt ,
+    int    $algorithm  // EncryptionFormat::KDF_ARGON2ID or KDF_PBKDF2_SHA256
+) : string
 ```
 
-**Quick size test**: true if the file exists AND is at least `$ivLength` bytes. **Does not validate the content**, just the minimum size required to contain an IV.
+Derives a 32-byte key via Argon2id or PBKDF2-SHA256 (explicit choice).
+
+**Security conditions covered:**
+- Mandatory 16-byte salt (otherwise `RuntimeException`).
+- Non-empty passphrase.
+- Argon2id: `INTERACTIVE` parameters (≈ 64 MB, ≈ 350 ms on modern CPU).
+- PBKDF2: 600 000 SHA-256 iterations (OWASP 2023+ recommendation).
+
+**Conditions not covered:**
+- Re-using the same salt across multiple files → rainbow table possible. Always `random_bytes(16)`.
+
+**Use directly** for advanced cases (custom encryption outside file flow). Otherwise `OpenSSLFileEncryption` calls it internally.
+
+### `bestAvailableKdf()`
 
 ```php
-if ( $crypto->hasEncryptedFileSize( '/path/to/file' ) ) {
-    echo "Size compatible with an encrypted file." ;
-}
-// Not a certainty — just a necessary precondition.
+bestAvailableKdf() : int
 ```
+
+Returns `EncryptionFormat::KDF_ARGON2ID` if `ext-sodium` is loaded, otherwise `KDF_PBKDF2_SHA256`. Auto-selection helper.
+
+### `isAeadCipher()`
+
+```php
+isAeadCipher( string $cipher ) : bool
+```
+
+Returns `true` if the cipher name designates an AEAD mode (GCM, CCM, OCB). Purely textual detection, case-insensitive.
+
+```php
+isAeadCipher('aes-256-gcm') ;  // true
+isAeadCipher('aes-256-cbc') ;  // false
+```
+
+### `EncryptionFormat`
+
+Constants class for V2 format — magic, version, lengths, KDF identifiers, default cipher. See [enums.md](../enums.md) for the detailed catalogue.
 
 ---
 
-### `isEncryptedFile`
+## Use cases
 
-```php
-public function isEncryptedFile( string $filePath ) : bool
-```
-
-**Heuristic** check that guesses whether a file looks like it was encrypted by this class.
-
-**Three criteria:**
-
-1. **Size** ≥ `$ivLength` (same as `hasEncryptedFileSize`).
-2. **The IV (first bytes) is not all `\0`** — a null IV likely indicates an unencrypted or corrupted file.
-3. **The IV does not contain too many printable ASCII characters** (> 80% of bytes in range 32-126) — probably indicates plain text rather than a random IV.
-
-```php
-if ( $crypto->isEncryptedFile( '/path/to/file' ) ) {
-    echo "Likely encrypted." ;
-}
-```
-
-> ⚠ **It's a heuristic, not a proof.** An unencrypted binary file (a JPEG image, for instance) starts with non-printable bytes and will pass this test. Conversely, some encryptions may incidentally produce mostly-printable IVs. Combine with other signals (`.enc` extension, application context).
-
----
-
-## Use case: encrypt a backup file
+### Encrypt a backup
 
 ```php
 use oihana\files\openssl\OpenSSLFileEncryption;
@@ -188,50 +209,45 @@ use function oihana\files\archive\tar\tarDirectory;
 use function oihana\files\deleteFile;
 use oihana\files\enums\CompressionType;
 
-// 1. Create a tar.gz of the site
-$archive = tarDirectory( '/var/www/site' , CompressionType::GZIP , '/tmp/site.tar.gz' ) ;
-
-// 2. Encrypt
+$archive   = tarDirectory( '/var/www/site' , CompressionType::GZIP , '/tmp/site.tar.gz' ) ;
 $crypto    = new OpenSSLFileEncryption( $secretPassphrase ) ;
 $encrypted = $crypto->encrypt( $archive , '/backups/site.tar.gz.enc' ) ;
-
-// 3. Wipe the plaintext archive
-deleteFile( $archive ) ;
-
-// → /backups/site.tar.gz.enc contains the encrypted archive
-//   To restore: decrypt() then untar()
+deleteFile( $archive ) ; // wipe the plaintext
 ```
 
-## Use case: store an application secret
+### Store an application secret
 
 ```php
 $crypto = new OpenSSLFileEncryption( $masterKey ) ;
-
-// Encrypt once at deployment
 $crypto->encrypt( '/etc/myapp/credentials.json' , '/etc/myapp/credentials.json.enc' ) ;
 deleteFile( '/etc/myapp/credentials.json' ) ;
 
-// At runtime
+// At runtime:
 $crypto = new OpenSSLFileEncryption( $masterKeyFromVault ) ;
-$crypto->decrypt( '/etc/myapp/credentials.json.enc' , '/dev/shm/credentials.json' ) ;
-// → tmpfs: wiped on reboot, never written to disk
+$crypto->decrypt( '/etc/myapp/credentials.json.enc' , '/dev/shm/credentials.json' ) ; // tmpfs
 $config = json_decode( file_get_contents( '/dev/shm/credentials.json' ) , true ) ;
 deleteFile( '/dev/shm/credentials.json' ) ;
 ```
 
-> 💡 **Passphrase storage**: NEVER put it in plain text in code or in a versioned file. Recommended sources: env variables (`getenv`), HashiCorp Vault, AWS Secrets Manager, or a `0400` file outside version control.
+> 💡 **Passphrase storage**: NEVER put it in plain text in code or a versioned file. Recommended sources: env variables, HashiCorp Vault, AWS Secrets Manager, `0400` file outside version control.
 
-## ⚠ Limitations and precautions
+---
 
-- **No authentication (HMAC)**: `aes-256-cbc` encrypts but does not protect **integrity**. An attacker can tamper with the ciphertext and decryption will return invalid data — without an explicit error. For authenticated encryption, use a GCM cipher (`aes-256-gcm`).
-- **No format versioning**: if you change the cipher between `encrypt` and `decrypt`, it breaks silently. Encode it in your workflow.
-- **No streaming**: `file_get_contents` loads everything in memory. For very large files (> available RAM), use a block-based approach with `openssl_encrypt_init` / `update` / `final` (not provided by this class).
-- **The destructor is not an absolute guarantee**: the `passphrase` string is overwritten in `__destruct`, but temporary copies may persist in RAM (PHP allocations, GC). For maximum security, consider Sodium or HSM extensions.
+## ⚠ Residual limitations
+
+The V2 format fixes the main gaps, but some areas remain **by design**:
+
+- **No streaming**: `file_get_contents` loads everything into RAM. For files > available RAM, use a block-based approach (not provided here — the native API `openssl_encrypt_init` / `update` / `final` allows this in pure PHP).
+- **No metadata signing**: if you rename `important.enc` to `unimportant.enc`, decryption succeeds — authentication protects the **content**, not the **name**. To authenticate metadata (filename, timestamps), use the AAD parameter of `openssl_encrypt` (not exposed by this class).
+- **Best-effort destructor**: see explanation in the `__destruct()` doc.
+
+For those cases, see the [security best practices](../security.md#user-best-practices).
 
 ## See also
 
-- [Enums](../enums.md) — `FileExtension::ENCRYPTED` (`.enc` suffix).
-- [Exceptions](../exceptions.md) — `FileException`, `DirectoryException`.
-- [Assertions](../files/assertions.md) — `assertFile`, `assertDirectory` used internally.
+- [Global security rubric](../security.md) — security perimeter of the library.
+- [Enums](../enums.md) — `EncryptionFormat`, `FileExtension::ENCRYPTED`.
+- [Exceptions](../exceptions.md) — `FileException`, `DirectoryException`, `RuntimeException`.
+- [Assertions](../files/assertions.md) — used internally.
 - Glossary: [IV](../getting-started/glossary.md#iv-initialization-vector), [Cipher](../getting-started/glossary.md#cipher-symmetric-encryption).
 - [English TOC](../README.md).

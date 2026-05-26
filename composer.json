@@ -44,6 +44,8 @@
             "src/oihana/files/archive/tar/untar.php",
             "src/oihana/files/archive/tar/validateTarStructure.php",
             "src/oihana/files/images/getImageMimeType.php",
+            "src/oihana/files/openssl/deriveKey.php",
+            "src/oihana/files/openssl/isAeadCipher.php",
             "src/oihana/files/path/canonicalizePath.php",
             "src/oihana/files/path/computeRelativePath.php",
             "src/oihana/files/path/extractCanonicalParts.php",
