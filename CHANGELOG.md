@@ -20,6 +20,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Adds the '.cbor' extension + 'application/cbor' mime type.
 - Adds the '.cose' extension + 'application/cose' and 'application/cose.enc' mime types. 
 
+### Security
+
+- Hardens oihana\files\requireAndMergeArrays with a per-file validation pipeline (string non-empty, realpath-resolved file, `.php` extension case-insensitive) and an optional `$allowedBase` parameter to constrain paths under a trusted root. Mitigates arbitrary file inclusion (RCE) when paths come from untrusted sources. Backward-compatible for legitimate usages.
+
 ## [1.0.0] - 2025-08-13 
 
 ### Added

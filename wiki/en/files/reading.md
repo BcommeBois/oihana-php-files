@@ -134,19 +134,53 @@ if ( countFileLines( '/var/log/errors.log' ) > 100 ) {
 
 ```php
 requireAndMergeArrays(
-    array $filePaths ,
-    bool  $recursive = true
+    array   $filePaths ,
+    bool    $recursive   = true ,
+    ?string $allowedBase = null
 ) : array
 ```
 
 Loads several PHP files via `require`, **each must return an `array`**, then merges them in order.
 
-**Details:**
+### Validation pipeline (per file)
 
-- If a file does not exist → `RuntimeException`.
-- If a file does not return an `array` → `RuntimeException`.
-- `$recursive: true` (default) → `deepMerge` from [`oihana\core\arrays`](../getting-started/dependencies.md#oihanaphp-core) (recursive merge of nested arrays).
-- `$recursive: false` → standard `array_merge` (numeric keys renumbered, string keys overwritten).
+Each path goes through a defensive validation pipeline before `require`:
+
+1. Must be a **non-empty** `string` (otherwise `RuntimeException`).
+2. Must resolve via `realpath()` to an **existing regular file** (otherwise `RuntimeException`).
+3. Extension must be `.php` **case-insensitive** (otherwise `RuntimeException`).
+4. If `$allowedBase` is provided: the resolved file must be **inside** that directory (otherwise `RuntimeException`).
+
+This is **defense in depth**: even when you pass dynamically discovered paths (e.g. via [`recursiveFilePaths`](discovery.md#recursivefilepaths)), an escaped symlink or a maliciously renamed file is rejected.
+
+> ⚠ **`require` executes PHP code.** This function only protects against **unexpected paths** — not against malicious code **inside** a legitimate `.php` file located in `$allowedBase`. The content remains the caller's responsibility.
+
+### Parameters
+
+| Parameter        | Type        | Default | Effect |
+|------------------|-------------|---------|--------|
+| `$filePaths`     | `array`     | —       | List of paths to load. |
+| `$recursive`     | `bool`      | `true`  | `true` → `deepMerge` (recursive). `false` → `array_merge` (flat, top-level overwrite). |
+| `$allowedBase`   | `?string`   | `null`  | If provided, every file must be under this root. **Strongly recommended** when paths are not 100% trusted. Throws `InvalidArgumentException` if it is not a valid directory. |
+
+### Recommended pattern: with `$allowedBase`
+
+When loading dynamically discovered files (DI definitions, plugins, etc.):
+
+```php
+use function oihana\files\{ requireAndMergeArrays , recursiveFilePaths } ;
+use oihana\files\enums\RecursiveFilePathsOption;
+
+$baseDir = __DIR__ . '/definitions' ;
+
+$definitions = requireAndMergeArrays(
+    recursiveFilePaths( $baseDir , [ RecursiveFilePathsOption::EXTENSIONS => [ 'php' ] ] ) ,
+    true ,
+    $baseDir ,  // ← allowed root: any file outside is refused
+) ;
+```
+
+Benefit: if an attacker manages to drop a file or create a symlink outside `$baseDir`, the function refuses to include it.
 
 ### Typical usage: layered config
 
