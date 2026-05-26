@@ -2,7 +2,7 @@
 
 Cette page décrit **ce que la library garantit**, **ce qu'elle ne garantit pas**, et les **bonnes pratiques utilisateur**. C'est le contrat de sécurité de `oihana/php-files`.
 
-## TL;DR par module
+## Aperçu rapide par module
 
 | Module | Garanties de sécurité | À surveiller côté caller |
 |---|---|---|

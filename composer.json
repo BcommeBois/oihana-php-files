@@ -114,6 +114,9 @@
         "oihana/php-enums": "dev-main",
         "devium/toml": "^1.0"
     },
+    "suggest": {
+        "ext-sodium": "Recommended for OpenSSLFileEncryption: enables Argon2id (stronger, GPU-resistant KDF) and sodium_memzero() (reliable in-memory passphrase wiping). Without it, the library transparently falls back to PBKDF2-SHA256 600 000 iterations."
+    },
     "scripts": {
         "test": "./vendor/bin/phpunit",
         "doc": "rm -rf docs && mkdir docs && cp -r .phpdoc/template/assets docs/assets && ./vendor/bin/phpdoc -c phpdoc.xml -v" ,
