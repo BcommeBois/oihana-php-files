@@ -7,7 +7,7 @@ This page describes **what the library guarantees**, **what it does not guarante
 | Module | Security guarantees | What to watch on the caller side |
 |---|---|---|
 | [`openssl/`](openssl/README.md) | AES-256-GCM + KDF (Argon2id/PBKDF2) + GCM tag integrity; auto-detect tampering | Passphrase storage; manual rotation |
-| [`archive/tar/`](archive/README.md) | Path-traversal detection (`..`) in safe mode (`overwrite: false` or `dryRun: true`) | Always pre-scan in `dryRun` for untrusted archives |
+| [`archive/tar/`](archive/README.md) | Path-traversal detection (`..`) in safe mode; opt-in decompression-bomb protection via `TarOption::MAX_EXTRACTED_SIZE` | Always pre-scan in `dryRun` and cap `maxExtractedSize` for untrusted archives |
 | [`path/`](path/README.md) | `isBasePath` enables anti path-traversal | **Always** canonicalise user paths before comparison |
 | [`files/`](files/README.md) | Typed assertions (`assertFile`, `assertDirectory`) | Regex patterns in `findFiles`/`shouldExcludeFile`: do not accept untrusted patterns (ReDoS) |
 | [`files/requireAndMergeArrays`](files/reading.md#requireandmergearrays) | Path validation + `.php` extension + optional `$allowedBase` | Always provide `$allowedBase` when paths are not 100% trusted |
@@ -28,6 +28,7 @@ This section describes the **threat model** the library was designed against, an
 | **Rainbow tables** on common passphrases | `openssl/` | Random 16B salt per file |
 | **Format identification** of an encrypted file | `openssl/` | Magic header `OPHE\x02` for V2; auto-detect legacy |
 | **IV reuse** (catastrophic for GCM) | `openssl/` | `random_bytes(12)` on every `encrypt()` |
+| **Decompression bombs** (tar bomb) — opt-in | `archive/tar/` | `TarOption::MAX_EXTRACTED_SIZE`: pre-scan + abort before any write if exceeded |
 
 ### ❌ **Not** covered threats
 
@@ -39,7 +40,7 @@ This section describes the **threat model** the library was designed against, an
 | **Weak passphrase** | KDF slows brute-force, does not prevent it | Long passphrases (≥ 16 random chars) |
 | **Side channels** (timing attacks on OpenSSL) | Depends on the underlying OpenSSL implementation | Up-to-date OpenSSL build, CPU with AES-NI |
 | **File metadata** (name, timestamps, size) | GCM tag authenticates content, not name | Non-semantic naming, external signature |
-| **Decompression bombs** (tar bomb) | No size limit at extraction by default | Compute size via `dryRun` before real `untar()` (cf. [tips](tips.md#tar-decompression-bombs)) |
+| **Decompression bombs** by default | Without `TarOption::MAX_EXTRACTED_SIZE`, no cap — opt-in left to the caller | Always set `TarOption::MAX_EXTRACTED_SIZE` for untrusted archives (cf. [tips](tips.md#tar-decompression-bombs)) |
 | **ReDoS** on user-supplied regex patterns | PHP `preg_match` has no timeout | Never accept regex from direct user input; validate patterns upstream |
 | **Polyglot files** (valid as both PDF and image) | `mime_content_type` reads first bytes | Combine MIME detection + extension + business validation |
 
@@ -80,15 +81,21 @@ if ( !isBasePath( $base , $userPath ) ) {
 use function oihana\files\archive\tar\untar ;
 use oihana\files\enums\TarOption;
 
-// ✅ Good: dryRun pre-scan to compute size and detect traversal
-$preview = untar( $uploaded , $dest , [ TarOption::DRY_RUN => true ] ) ;
+// ✅ Good: dryRun pre-scan + size cap for decompression bombs + traversal detection
+$preview = untar( $uploaded , $dest , [
+    TarOption::DRY_RUN            => true ,
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 , // 100 MiB max uncompressed
+] ) ;
 
 if ( count( $preview ) > 10_000 ) {
     throw new \RuntimeException( "Archive too large (> 10k files)" ) ;
 }
 
-// Safe extraction: refuse to overwrite an existing file
-untar( $uploaded , $dest , [ TarOption::OVERWRITE => false ] ) ;
+// Safe extraction: refuse to overwrite, re-cap the size
+untar( $uploaded , $dest , [
+    TarOption::OVERWRITE          => false ,
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 ,
+] ) ;
 ```
 
 ### 4. For dynamic loading of PHP files

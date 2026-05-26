@@ -100,6 +100,88 @@ class UntarTest extends TestCase
      * @throws DirectoryException
      * @throws FileException
      */
+    public function testUntarMaxExtractedSizeNullKeepsLegacyBehaviour(): void
+    {
+        $extractDir = $this->outputDir . '/extract_no_limit';
+
+        $result = untar( $this->tarFile , $extractDir , [ 'maxExtractedSize' => null ] ) ;
+
+        $this->assertTrue( $result ) ;
+        $this->assertFileExists( $extractDir . '/hello.txt' ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarMaxExtractedSizeBelowLimitAllowsExtraction(): void
+    {
+        $extractDir = $this->outputDir . '/extract_under_limit';
+
+        // 'Hello world' is 11 bytes; allow up to 1 KiB
+        $result = untar( $this->tarFile , $extractDir , [ 'maxExtractedSize' => 1024 ] ) ;
+
+        $this->assertTrue( $result ) ;
+        $this->assertFileExists( $extractDir . '/hello.txt' ) ;
+        $this->assertSame( 'Hello world' , file_get_contents( $extractDir . '/hello.txt' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarMaxExtractedSizeExceededThrowsAndDoesNotWrite(): void
+    {
+        $extractDir = $this->outputDir . '/extract_bomb';
+
+        $thrown = false ;
+        try
+        {
+            // 'Hello world' is 11 bytes; cap at 5 → must abort.
+            untar( $this->tarFile , $extractDir , [ 'maxExtractedSize' => 5 ] ) ;
+        }
+        catch ( RuntimeException $e )
+        {
+            $thrown = true ;
+            $this->assertMatchesRegularExpression( '/decompression bomb|exceeds maximum/i' , $e->getMessage() ) ;
+        }
+
+        $this->assertTrue( $thrown , 'untar() must throw when total size exceeds maxExtractedSize.' ) ;
+        $this->assertFileDoesNotExist( $extractDir . '/hello.txt' , 'No file must be written when the size cap is exceeded.' ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarMaxExtractedSizeExceededInDryRun(): void
+    {
+        $extractDir = $this->outputDir . '/extract_bomb_dryrun';
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/decompression bomb|exceeds maximum/i' ) ;
+
+        untar( $this->tarFile , $extractDir , [ 'dryRun' => true , 'maxExtractedSize' => 5 ] ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarMaxExtractedSizeZeroRejectsAnyContent(): void
+    {
+        $extractDir = $this->outputDir . '/extract_zero_limit';
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/decompression bomb|exceeds maximum/i' ) ;
+
+        untar( $this->tarFile , $extractDir , [ 'maxExtractedSize' => 0 ] ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
     public function testUntarWithKeepPermissions(): void
     {
         if ( DIRECTORY_SEPARATOR === '\\' )

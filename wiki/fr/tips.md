@@ -114,6 +114,23 @@ untar( $archive , $dest , [ TarOption::DRY_RUN => true ] ) ;
 untar( $archive , $dest , [ TarOption::OVERWRITE => false ] ) ;
 ```
 
+### Bombes de décompression tar
+
+Une archive tar peut être forgée pour exploser à l'extraction (quelques kilo-octets → plusieurs gigaoctets décompressés). Par défaut, `untar()` **n'impose aucun plafond** sur la taille décompressée — c'est un choix opt-in pour préserver la compatibilité historique.
+
+**Recommandation** : pour toute archive d'origine externe, définir `TarOption::MAX_EXTRACTED_SIZE` (en octets). Le pré-scan accumule la taille de chaque entrée et lève `RuntimeException` **avant** toute écriture si le cumul dépasse la limite.
+
+```php
+use function oihana\files\archive\tar\untar ;
+use oihana\files\enums\TarOption ;
+
+untar( $uploaded , $dest , [
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 , // plafond 100 Mio
+] ) ;
+```
+
+Détails complets : [archive/untar.md § Protection contre les bombes de décompression](archive/untar.md#protection-contre-les-bombes-de-décompression).
+
 ### Tar : symlinks et `chmod`
 
 - `tar` **sérialise les symlinks comme symlinks** (pas leur cible). À l'extraction, ils sont recréés tels quels.

@@ -26,13 +26,18 @@ use function oihana\files\phar\preservePharFilePermissions;
  * @param string $tarFile Path to the tar archive file to extract.
  * @param string $outputPath Path to the directory where files will be extracted.
  *                           The directory will be created if it does not exist.
- * @param array{dryRun?: bool, keepPermissions?: bool, overwrite?: bool} $options Optional flags:
+ * @param array{dryRun?: bool, keepPermissions?: bool, overwrite?: bool, maxExtractedSize?: int|null} $options Optional flags:
  *   - **dryRun**: If true, the function does not extract files but returns the list of files
  *     that would be extracted. Default: false.
  *   - **keepPermissions**: If true, preserves the original file permissions from the archive.
  *     Default: false.
  *   - **overwrite**: If false, prevents overwriting existing files during extraction.
  *     Extraction will fail if a file already exists. Default: true.
+ *   - **maxExtractedSize**: If set to a positive integer, defines the maximum total uncompressed
+ *     size (in bytes) accepted during extraction. The archive is pre-scanned and a
+ *     {@see RuntimeException} is thrown **before** any file is written if the sum of the entries'
+ *     uncompressed sizes exceeds this limit. Guards against decompression-bomb attacks. Default:
+ *     `null` (no limit).
  *
  * @return true|string[] Returns true on successful extraction,
  *                       or an array of file paths (relative to archive root) if dryRun is enabled.
@@ -42,6 +47,7 @@ use function oihana\files\phar\preservePharFilePermissions;
  * @throws RuntimeException For extraction errors such as:
  *         - Path traversal attempts detected inside archive entries.
  *         - Attempt to overwrite existing files when overwrite is disabled.
+ *         - Total uncompressed size exceeds `maxExtractedSize` (decompression-bomb protection).
  *         - Other errors during decompression or extraction.
  *
  * @throws Exception Propagates unexpected exceptions during extraction wrapped as RuntimeException.
@@ -76,9 +82,10 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
 
     try
     {
-        $dryRun              = $options[ TarOption::DRY_RUN          ] ?? false ;
-        $overwrite           = $options[ TarOption::OVERWRITE        ] ?? true  ;
-        $preservePermissions = $options[ TarOption::KEEP_PERMISSIONS ] ?? false ;
+        $dryRun              = $options[ TarOption::DRY_RUN            ] ?? false ;
+        $overwrite           = $options[ TarOption::OVERWRITE          ] ?? true  ;
+        $preservePermissions = $options[ TarOption::KEEP_PERMISSIONS   ] ?? false ;
+        $maxExtractedSize    = $options[ TarOption::MAX_EXTRACTED_SIZE ] ?? null  ;
 
         $isCompressed = tarIsCompressed( $tarFile ) ;
 
@@ -96,10 +103,14 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
 
         $fileList = [] ;
 
-        if ( !$overwrite || $dryRun )
+        $sizeLimited = is_int( $maxExtractedSize ) && $maxExtractedSize >= 0 ;
+
+        if ( !$overwrite || $dryRun || $sizeLimited )
         {
             $iterator     = new RecursiveIteratorIterator( $phar ) ;
             $basePharPath = getPharBasePath( $phar ) ;
+
+            $totalSize = 0 ;
 
             foreach ( $iterator as $file )
             {
@@ -123,6 +134,22 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
                     if ( file_exists( $targetPath ) )
                     {
                         throw new RuntimeException( sprintf( 'untar() failed, the file %s already exists and overwrite is disabled.', $targetPath ) ) ;
+                    }
+                }
+
+                if ( $sizeLimited )
+                {
+                    $totalSize += (int) $file->getSize() ;
+                    if ( $totalSize > $maxExtractedSize )
+                    {
+                        throw new RuntimeException
+                        (
+                            sprintf
+                            (
+                                'untar() aborted: extracted size exceeds maximum %d bytes (potential decompression bomb).',
+                                $maxExtractedSize
+                            )
+                        ) ;
                     }
                 }
             }

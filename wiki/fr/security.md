@@ -7,7 +7,7 @@ Cette page décrit **ce que la library garantit**, **ce qu'elle ne garantit pas*
 | Module | Garanties de sécurité | À surveiller côté caller |
 |---|---|---|
 | [`openssl/`](openssl/README.md) | AES-256-GCM + KDF (Argon2id/PBKDF2) + intégrité par tag GCM ; détection auto de l'altération | Stockage de la passphrase ; rotation manuelle |
-| [`archive/tar/`](archive/README.md) | Détection path-traversal (`..`) en mode safe (`overwrite: false` ou `dryRun: true`) | Toujours pre-scan en `dryRun` pour les archives non fiables |
+| [`archive/tar/`](archive/README.md) | Détection path-traversal (`..`) en mode safe ; protection bombes de décompression opt-in via `TarOption::MAX_EXTRACTED_SIZE` | Toujours pre-scan en `dryRun` et plafonner `maxExtractedSize` pour les archives non fiables |
 | [`path/`](path/README.md) | `isBasePath` permet l'anti path-traversal | Canonicaliser **toujours** les chemins user avant comparaison |
 | [`files/`](files/README.md) | Assertions typées (`assertFile`, `assertDirectory`) | Patterns regex `findFiles`/`shouldExcludeFile` : ne pas accepter de patterns non fiables (ReDoS) |
 | [`files/requireAndMergeArrays`](files/reading.md#requireandmergearrays) | Validation chemin + extension `.php` + optionnel `$allowedBase` | Toujours fournir `$allowedBase` quand les chemins ne sont pas 100% fiables |
@@ -28,6 +28,7 @@ Cette section décrit le **modèle de menace** auquel la library a été conçue
 | **Rainbow tables** sur passphrases courantes | `openssl/` | Sel aléatoire 16B par fichier |
 | **Identification format** d'un fichier chiffré | `openssl/` | Magic header `OPHE\x02` pour V2 ; détection legacy auto |
 | **Réutilisation IV** (catastrophe en GCM) | `openssl/` | `random_bytes(12)` à chaque `encrypt()` |
+| **Decompression bombs** (tar bomb) — opt-in | `archive/tar/` | `TarOption::MAX_EXTRACTED_SIZE` : pré-scan + abandon avant écriture si dépassement |
 
 ### ❌ Menaces **non** couvertes
 
@@ -39,7 +40,7 @@ Cette section décrit le **modèle de menace** auquel la library a été conçue
 | **Passphrase faible** | KDF ralentit le brute-force, ne l'empêche pas | Passphrases longues (≥ 16 caractères aléatoires) |
 | **Side channels** (timing attacks sur OpenSSL) | Dépendant de l'implémentation OpenSSL sous-jacente | Build OpenSSL à jour, CPU avec AES-NI |
 | **Métadonnées de fichier** (nom, timestamps, taille) | Le tag GCM authentifie le contenu, pas le nom | Conventions de nommage non sémantiques, signature externe |
-| **Decompression bombs** (tar bomb) | Pas de limite de taille à l'extraction par défaut | Calculer la taille via `dryRun` avant `untar()` réel (cf. [tips](tips.md#bombes-de-décompression-tar)) |
+| **Decompression bombs** par défaut | Sans `TarOption::MAX_EXTRACTED_SIZE`, aucune limite — opt-in laissé au caller | Toujours définir `TarOption::MAX_EXTRACTED_SIZE` pour les archives non fiables (cf. [tips](tips.md#bombes-de-décompression-tar)) |
 | **ReDoS** sur patterns regex utilisateur | `preg_match` PHP sans timeout | Ne jamais accepter de regex depuis input user direct ; valider les patterns en amont |
 | **Polyglot files** (fichier valide comme PDF et image) | `mime_content_type` lit les premiers octets | Combiner détection MIME + extension + validation métier |
 
@@ -80,15 +81,21 @@ if ( !isBasePath( $base , $userPath ) ) {
 use function oihana\files\archive\tar\untar ;
 use oihana\files\enums\TarOption;
 
-// ✅ Bon : pre-scan en dryRun pour calcular la taille et détecter le traversal
-$preview = untar( $uploaded , $dest , [ TarOption::DRY_RUN => true ] ) ;
+// ✅ Bon : pre-scan en dryRun + cap taille pour bombes de décompression + traversal
+$preview = untar( $uploaded , $dest , [
+    TarOption::DRY_RUN            => true ,
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 , // 100 Mio max décompressé
+] ) ;
 
 if ( count( $preview ) > 10_000 ) {
     throw new \RuntimeException( "Archive trop grosse (> 10k fichiers)" ) ;
 }
 
-// Extraction safe : refuse d'écraser un fichier existant
-untar( $uploaded , $dest , [ TarOption::OVERWRITE => false ] ) ;
+// Extraction safe : refuse d'écraser, replafonne la taille
+untar( $uploaded , $dest , [
+    TarOption::OVERWRITE          => false ,
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 ,
+] ) ;
 ```
 
 ### 4. Pour le chargement dynamique de fichiers PHP

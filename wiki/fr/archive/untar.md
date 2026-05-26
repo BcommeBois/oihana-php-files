@@ -29,6 +29,7 @@ Extrait une archive tar (compressée ou non) dans un dossier de sortie.
 | `'dryRun'` / `TarOption::DRY_RUN` | `bool` | `false` | N'extrait rien — retourne **la liste des chemins relatifs** qui seraient extraits. |
 | `'overwrite'` / `TarOption::OVERWRITE` | `bool` | `true` | Si `false`, lève `RuntimeException` au premier fichier déjà existant. |
 | `'keepPermissions'` / `TarOption::KEEP_PERMISSIONS` | `bool` | `false` | Restaure les permissions originales via [`preservePharFilePermissions`](../phar/README.md). |
+| `'maxExtractedSize'` / `TarOption::MAX_EXTRACTED_SIZE` | `int\|null` | `null` | Si défini, plafonne la taille décompressée totale (en octets). Lève `RuntimeException` **avant** toute écriture si dépassement. Voir [Protection contre les bombes de décompression](#protection-contre-les-bombes-de-décompression). |
 
 ### Retour
 
@@ -42,6 +43,7 @@ Extrait une archive tar (compressée ou non) dans un dossier de sortie.
 - **`RuntimeException`** :
   - **path traversal détecté** dans une entrée (`..` dans le chemin) ;
   - tentative d'écrasement avec `overwrite: false` ;
+  - **taille décompressée totale supérieure à `maxExtractedSize`** (bombe de décompression) ;
   - autre erreur durant l'extraction.
 
 ### Pipeline interne
@@ -49,7 +51,7 @@ Extrait une archive tar (compressée ou non) dans un dossier de sortie.
 1. `assertTar( $tarFile )` — validation.
 2. `makeDirectory( $outputPath )` — création du dossier de sortie si nécessaire.
 3. Si l'archive est compressée → `decompress()` vers un `.tar` temporaire.
-4. Si `overwrite: false` OU `dryRun: true` → parcours d'abord pour détecter les `..` et les conflits.
+4. Si `overwrite: false` OU `dryRun: true` OU `maxExtractedSize !== null` → parcours d'abord pour détecter les `..`, les conflits **et accumuler la taille décompressée**.
 5. Si `dryRun: true` → retourne la liste.
 6. Sinon → `extractTo( $outputPath )`.
 7. Si `keepPermissions` → restauration des perms.
@@ -68,6 +70,33 @@ untar( '/uploads/malicious.tar' , '/var/www/uploads' ) ;
 ⚠ **Cette protection s'active uniquement si `overwrite: false` OU `dryRun: true`** — c'est-à-dire dans la phase de pré-scan. En mode `overwrite: true` (défaut), elle dépend du comportement de `PharData::extractTo` (qui en théorie applique aussi des protections, mais c'est moins explicite).
 
 > 💡 **Recommandation sécurité** : pour extraire une archive d'origine externe (upload utilisateur, téléchargement), **toujours** utiliser `dryRun: true` d'abord pour valider, puis extraire avec `overwrite: false`. Coût : double parcours, mais sécurité maximale.
+
+### Protection contre les bombes de décompression
+
+Une **bombe de décompression** est une archive de quelques kilooctets qui se décompresse en plusieurs gigaoctets — elle peut saturer l'espace disque, la RAM, ou provoquer un déni de service. L'option `maxExtractedSize` plafonne la taille décompressée totale acceptée :
+
+```php
+use function oihana\files\archive\tar\untar;
+use oihana\files\enums\TarOption;
+
+// Refuse toute archive dont les fichiers cumulent plus de 100 Mio.
+untar( $uploadedArchive , $extractDir , [
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 ,
+]) ;
+// → RuntimeException: untar() aborted: extracted size exceeds maximum 104857600 bytes (potential decompression bomb).
+```
+
+**Comment ça marche.** Quand `maxExtractedSize` est défini, `untar()` force un **pré-scan** de l'archive avant toute écriture, accumule la taille décompressée de chaque entrée et lève une `RuntimeException` dès que le cumul dépasse la limite. **Aucun fichier n'est écrit** dans `$outputPath` lorsque la limite est franchie.
+
+**Points-clés.**
+
+- Le check est **opt-in** : `null` (défaut) conserve le comportement historique sans limite — **backward compatible**.
+- Le seuil s'applique à la **somme** des tailles décompressées des entrées de l'archive (pas par fichier).
+- Activer cette option déclenche un parcours supplémentaire de l'archive — léger surcoût mais protection systématique.
+- La protection fonctionne en mode `dryRun` aussi (lever d'exception au pré-scan).
+- Combinable avec `overwrite: false` et avec la protection path-traversal — les checks s'enchaînent dans la même passe.
+
+> 💡 **Recommandation** : pour toute archive d'origine externe (upload, téléchargement), définir une valeur raisonnable en fonction du quota disque / RAM acceptable côté serveur (typiquement quelques centaines de Mio).
 
 ### Exemples
 
@@ -92,14 +121,18 @@ print_r( $files ) ;
 // ['file1.txt', 'subdir/file2.php', ...]
 
 // 4. Workflow sécurisé pour upload utilisateur
-$preview = untar( $uploadedArchive , $extractDir , [ TarOption::DRY_RUN => true ] ) ;
+$preview = untar( $uploadedArchive , $extractDir , [
+    TarOption::DRY_RUN           => true ,
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 , // refuse > 100 Mio
+]) ;
 
 if ( count( $preview ) > 10_000 ) {
     throw new \RuntimeException( "Archive trop grosse" ) ;
 }
 
 untar( $uploadedArchive , $extractDir , [
-    TarOption::OVERWRITE => false , // refuse d'écraser un fichier existant
+    TarOption::OVERWRITE          => false ,             // refuse d'écraser un fichier existant
+    TarOption::MAX_EXTRACTED_SIZE => 100 * 1024 * 1024 , // re-vérifie au pré-scan
 ]) ;
 ```
 
