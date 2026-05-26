@@ -131,6 +131,35 @@ untar( $uploaded , $dest , [
 
 Full details: [archive/untar.md § Decompression-bomb protection](archive/untar.md#decompression-bomb-protection).
 
+### File-read size caps (`maxBytes`)
+
+Three module surfaces **load an entire file into RAM** (via `file()` or `file_get_contents()`). Without a cap, an oversized input can exhaust `memory_limit` and kill the process. Each surface exposes an opt-in option (default `null` = no limit):
+
+| Surface | Option | Behaviour on overflow |
+|---|---|---|
+| [`getFileLines($file, $map, $maxBytes)`](files/reading.md#getfilelines) | `$maxBytes` | `RuntimeException` before `file()` |
+| [`requireAndMergeArrays(..., $maxBytes)`](files/reading.md#requireandmergearrays) | `$maxBytes` (per file) | `RuntimeException` before `require` |
+| [`new OpenSSLFileEncryption($pass, $cipher, $maxInputBytes)`](openssl/README.md#constructor) | `$maxInputBytes` (constructor) | `RuntimeException` at the top of `encrypt()` / `decrypt()` |
+
+**Recommendation**: for any read whose source is not fully under your control (user upload, external file, shared config), set a hard cap consistent with your process `memory_limit`.
+
+```php
+use function oihana\files\getFileLines ;
+use function oihana\files\requireAndMergeArrays ;
+use oihana\files\openssl\OpenSSLFileEncryption ;
+
+// Reject > 10 MiB on line-by-line reads.
+$lines = getFileLines( $uploadedLog , null , 10 * 1024 * 1024 ) ;
+
+// Reject > 1 MiB per config file.
+$config = requireAndMergeArrays( $paths , true , $baseDir , 1 * 1024 * 1024 ) ;
+
+// Reject > 50 MiB as input to encrypt() / decrypt().
+$crypto = new OpenSSLFileEncryption( $passphrase , 'aes-256-cbc' , 50 * 1024 * 1024 ) ;
+```
+
+> 💡 Combine with `getFileLinesGenerator` when streaming is feasible — `maxBytes` is a guard rail, not a replacement for streaming on legitimately large files.
+
 ### Tar: symlinks and `chmod`
 
 - `tar` **serialises symlinks as symlinks** (not their target). At extraction, they are recreated as-is.

@@ -421,4 +421,55 @@ class OpenSSLFileEncryptionTest extends TestCase
         $this->expectExceptionMessage( "Cipher method 'not-a-cipher' is not available" ) ;
         new OpenSSLFileEncryption( $this->passphrase , 'not-a-cipher' ) ;
     }
+
+    public function testMaxInputBytesNullKeepsLegacyBehaviour(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher , null ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+        $encryption->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+
+        $this->assertSame( file_get_contents( $this->inputFile ) , file_get_contents( $this->decryptedFile ) ) ;
+    }
+
+    public function testMaxInputBytesUnderLimitAllowsEncrypt(): void
+    {
+        // 'Hello, World!' is 13 bytes — well under 1 KiB.
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher , 1024 ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $this->assertFileExists( $this->encryptedFile ) ;
+    }
+
+    public function testMaxInputBytesExceededOnEncryptThrowsAndWritesNothing(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher , 5 ) ;
+
+        $thrown = false ;
+        try
+        {
+            $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+        }
+        catch ( RuntimeException $e )
+        {
+            $thrown = true ;
+            $this->assertMatchesRegularExpression( '/exceeds maxInputBytes/i' , $e->getMessage() ) ;
+        }
+
+        $this->assertTrue( $thrown , 'encrypt() must throw when input exceeds maxInputBytes.' ) ;
+        $this->assertFileDoesNotExist( $this->encryptedFile , 'No encrypted output must be written when the cap is exceeded.' ) ;
+    }
+
+    public function testMaxInputBytesExceededOnDecryptThrows(): void
+    {
+        // First encrypt without limit, then attempt to decrypt with a tiny limit.
+        $writer = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+        $writer->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $reader = new OpenSSLFileEncryption( $this->passphrase , $this->cipher , 5 ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/exceeds maxInputBytes/i' ) ;
+
+        $reader->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
 }

@@ -16,7 +16,8 @@ Quatre fonctions pour lire le contenu d'un fichier de manière idiomatique et ef
 ```php
 getFileLines(
     ?string   $file ,
-    ?callable $map = null
+    ?callable $map      = null ,
+    ?int      $maxBytes = null
 ) : ?array
 ```
 
@@ -28,6 +29,7 @@ Lit **toutes les lignes** d'un fichier dans un tableau. Chaque ligne est `rtrim`
 
 - `$file` : chemin (passé à `assertFile`).
 - `$map` : callback optionnel `fn(string $line): mixed` appliqué à chaque ligne.
+- `$maxBytes` : plafond optionnel sur la taille du fichier (en octets). Si défini, refuse tout fichier dont la taille dépasse cette valeur **avant** la lecture, en levant `RuntimeException`. Défaut `null` (pas de limite). Utile comme garde-fou anti-OOM sur des entrées non fiables.
 
 **Retour :** tableau de lignes (ou résultats du mapping). Tableau **vide** si le fichier existe mais est de taille 0.
 
@@ -47,9 +49,12 @@ $errors = getFileLines( '/var/log/app.log' , function( string $line ) {
     return str_contains( $line , 'ERROR' ) ? trim( $line ) : null ;
 }) ;
 $errors = array_filter( $errors ) ;
+
+// Refuse les fichiers > 10 Mio (défense contre les OOM sur input non fiable)
+$lines = getFileLines( $uploadedLog , null , 10 * 1024 * 1024 ) ;
 ```
 
-> ⚠ **Mémoire** : un fichier de 100 Mo = 100 Mo en RAM. Voir `getFileLinesGenerator` pour le streaming.
+> ⚠ **Mémoire** : un fichier de 100 Mo = 100 Mo en RAM. Voir `getFileLinesGenerator` pour le streaming, ou utiliser `$maxBytes` pour un plafond ferme.
 
 ---
 
@@ -136,7 +141,8 @@ if ( countFileLines( '/var/log/errors.log' ) > 100 ) {
 requireAndMergeArrays(
     array   $filePaths ,
     bool    $recursive   = true ,
-    ?string $allowedBase = null
+    ?string $allowedBase = null ,
+    ?int    $maxBytes    = null
 ) : array
 ```
 
@@ -150,6 +156,7 @@ Chaque chemin passe par une validation défensive avant `require` :
 2. Doit se résoudre via `realpath()` vers un **fichier régulier existant** (sinon `RuntimeException`).
 3. L'extension doit être `.php` **case-insensitive** (sinon `RuntimeException`).
 4. Si `$allowedBase` est fourni : le fichier résolu doit être **à l'intérieur** de ce dossier (sinon `RuntimeException`).
+5. Si `$maxBytes` est fourni : la taille du fichier doit être ≤ `$maxBytes` (sinon `RuntimeException`).
 
 C'est une **defense in depth** : même si tu passes des chemins découverts dynamiquement (par ex. via [`recursiveFilePaths`](discovery.md#recursivefilepaths)), un symlink échappé ou un fichier malicieusement renommé est rejeté.
 
@@ -162,6 +169,7 @@ C'est une **defense in depth** : même si tu passes des chemins découverts dyna
 | `$filePaths`     | `array`     | —       | Liste de chemins à charger. |
 | `$recursive`     | `bool`      | `true`  | `true` → `deepMerge` (récursif). `false` → `array_merge` (plat, écrase au top). |
 | `$allowedBase`   | `?string`   | `null`  | Si fourni, chaque fichier doit être sous cette racine. **Fortement recommandé** quand les chemins ne sont pas 100% fiables. Lève `InvalidArgumentException` si ce n'est pas un dossier valide. |
+| `$maxBytes`      | `?int`      | `null`  | Si fourni, plafonne la taille **par fichier**. Tout fichier excédant la limite est rejeté **avant** `require`, levant `RuntimeException`. Défaut `null` = pas de limite (compat ascendante). Garde-fou anti-OOM utile sur des configs externes. |
 
 ### Pattern recommandé : avec `$allowedBase`
 

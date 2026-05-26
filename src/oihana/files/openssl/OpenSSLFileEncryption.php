@@ -13,6 +13,7 @@ use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use oihana\files\openssl\enums\EncryptionFormat;
 
+use SodiumException;
 use function oihana\files\assertDirectory;
 use function oihana\files\assertFile;
 
@@ -81,14 +82,24 @@ class OpenSSLFileEncryption
     /**
      * Constructor.
      *
-     * @param string $passphrase Secret used to derive the encryption key. Must be non-empty.
-     * @param string $cipher     Cipher used to **decrypt legacy V1 files**. New V2 files always use
-     *                           {@see EncryptionFormat::DEFAULT_CIPHER}. Default `aes-256-cbc` matches
-     *                           the historical behaviour of this class.
+     * @param string   $passphrase    Secret used to derive the encryption key. Must be non-empty.
+     * @param string   $cipher        Cipher used to **decrypt legacy V1 files**. New V2 files always use
+     *                                {@see EncryptionFormat::DEFAULT_CIPHER}. Default `aes-256-cbc` matches
+     *                                the historical behaviour of this class.
+     * @param int|null $maxInputBytes Optional cap on the size of the files read by {@see encrypt()} and
+     *                                {@see decrypt()}. When set, a file whose size exceeds this value is
+     *                                rejected **before** being read into memory ({@see \RuntimeException}).
+     *                                Default `null` (no limit — historical behaviour). Useful as a defensive
+     *                                guard against OOM when processing untrusted inputs.
      *
      * @throws InvalidArgumentException If the passphrase is empty or the cipher is unsupported by OpenSSL.
      */
-    public function __construct( string $passphrase, string $cipher = EncryptionFormat::LEGACY_CIPHER )
+    public function __construct
+    (
+        string $passphrase                ,
+        string $cipher       = EncryptionFormat::LEGACY_CIPHER ,
+        ?int   $maxInputBytes = null
+    )
     {
         if ( $passphrase === Char::EMPTY )
         {
@@ -109,9 +120,10 @@ class OpenSSLFileEncryption
             )) ;
         }
 
-        $this->cipher     = $cipher ;
-        $this->passphrase = $passphrase ;
-        $this->ivLength   = openssl_cipher_iv_length( $cipher ) ;
+        $this->cipher        = $cipher ;
+        $this->passphrase    = $passphrase ;
+        $this->ivLength      = openssl_cipher_iv_length( $cipher ) ;
+        $this->maxInputBytes = $maxInputBytes ;
     }
 
     /**
@@ -161,6 +173,12 @@ class OpenSSLFileEncryption
     }
 
     /**
+     * Optional cap on the size of the input files for {@see encrypt()} / {@see decrypt()}.
+     * `null` means no limit.
+     */
+    private ?int $maxInputBytes ;
+
+    /**
      * Encrypts a file in V2 format (AES-256-GCM + KDF + magic header).
      *
      * Steps:
@@ -182,6 +200,8 @@ class OpenSSLFileEncryption
     public function encrypt( string $inputFile , ?string $outputFile = null ) :string
     {
         assertFile( $inputFile ) ;
+
+        $this->assertWithinMaxInputBytes( $inputFile ) ;
 
         if ( $outputFile === null )
         {
@@ -279,6 +299,8 @@ class OpenSSLFileEncryption
     public function decrypt( string $inputFile , ?string $outputFile = null ) :string
     {
         assertFile( $inputFile ) ;
+
+        $this->assertWithinMaxInputBytes( $inputFile ) ;
 
         if ( $outputFile === null )
         {
@@ -434,6 +456,33 @@ class OpenSSLFileEncryption
         }
 
         return $plaintext ;
+    }
+
+    /**
+     * Rejects an input file whose size exceeds the configured `$maxInputBytes` cap.
+     *
+     * No-op when `$maxInputBytes` is `null` (default).
+     *
+     * @throws RuntimeException If the file size strictly exceeds the cap.
+     */
+    private function assertWithinMaxInputBytes( string $inputFile ) : void
+    {
+        if ( $this->maxInputBytes === null )
+        {
+            return ;
+        }
+
+        $size = filesize( $inputFile ) ;
+        if ( $size > $this->maxInputBytes )
+        {
+            throw new RuntimeException( sprintf
+            (
+                'OpenSSLFileEncryption: file "%s" is %d bytes, exceeds maxInputBytes %d.' ,
+                $inputFile ,
+                $size ,
+                $this->maxInputBytes
+            )) ;
+        }
     }
 
     /**

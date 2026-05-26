@@ -76,13 +76,15 @@ deleteFile( '/tmp/plain.txt' ) ;                            // cleanup
 
 ```php
 public function __construct(
-    string $passphrase ,
-    string $cipher = EncryptionFormat::LEGACY_CIPHER  // 'aes-256-cbc'
+    string   $passphrase ,
+    string   $cipher        = EncryptionFormat::LEGACY_CIPHER , // 'aes-256-cbc'
+    ?int     $maxInputBytes = null
 )
 ```
 
 - `$passphrase` — secret used to derive the key. Must be non-empty.
 - `$cipher` — only used for **decrypting legacy V1 files**. For V2, AES-256-GCM is always used. Historical default preserved.
+- `$maxInputBytes` — optional cap (in bytes) on the size of files passed to `encrypt()` / `decrypt()`. When set, any file whose size exceeds this value is rejected **before** being read into memory, via `RuntimeException`. Default `null` = no limit (historical behaviour). Useful as an OOM guard on untrusted inputs.
 
 **Throws `InvalidArgumentException`** if:
 - the passphrase is empty;
@@ -90,6 +92,13 @@ public function __construct(
 - AES-256-GCM (V2 cipher) is not available in the local OpenSSL build (rare in 2026).
 
 **Destructor**: attempts `sodium_memzero($this->passphrase)` if available, falls back to string overwrite (best-effort, see limitations).
+
+> 💡 **Example with `maxInputBytes`**: to process externally-sourced files while staying safe from OOM, instantiate with a hard cap.
+>
+> ```php
+> // Reject any file > 50 MiB during encrypt() / decrypt().
+> $crypto = new OpenSSLFileEncryption( $passphrase , 'aes-256-cbc' , 50 * 1024 * 1024 ) ;
+> ```
 
 ### Public property: `ivLength`
 

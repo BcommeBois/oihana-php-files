@@ -17,6 +17,8 @@ use function oihana\files\path\isBasePath;
  * 3. The file extension must be `.php` (case-insensitive).
  * 4. If `$allowedBase` is provided, the resolved file must be located inside
  *    that base directory (defense in depth against path-escape attacks).
+ * 5. If `$maxBytes` is provided, the file size must be ≤ `$maxBytes`
+ *    (defensive cap against parser OOM on extremely large config files).
  *
  * This protects against arbitrary file inclusion when paths come from untrusted
  * or semi-trusted sources. Note that even with `$allowedBase`, callers must still
@@ -27,12 +29,16 @@ use function oihana\files\path\isBasePath;
  * @param string|null $allowedBase Optional absolute directory path. When provided, every file in
  *                                 `$filePaths` must be located inside this directory after canonicalisation.
  *                                 Strongly recommended when paths are not 100% trusted at the call site.
+ * @param int|null    $maxBytes    Optional per-file size cap (in bytes). When provided, any file whose size
+ *                                 exceeds this limit is rejected **before** being included, throwing
+ *                                 {@see RuntimeException}. Default `null` (no limit — historical behaviour).
  *
  * @return array The merged array.
  *
  * @throws InvalidArgumentException If `$allowedBase` is provided but does not resolve to a valid directory.
  * @throws RuntimeException         If a path is not a non-empty string, does not resolve to an existing
- *                                  `.php` file, escapes `$allowedBase`, or does not return an array.
+ *                                  `.php` file, escapes `$allowedBase`, exceeds `$maxBytes`, or does not
+ *                                  return an array.
  *
  * @example
  * ```php
@@ -51,6 +57,9 @@ use function oihana\files\path\isBasePath;
  *
  * // Hardened usage — every file must be under __DIR__/config.
  * $config = requireAndMergeArrays($paths, true, __DIR__ . '/config');
+ *
+ * // With a per-file size cap (defensive — 1 MiB max per config file).
+ * $config = requireAndMergeArrays($paths, true, __DIR__ . '/config', 1024 * 1024);
  * ```
  *
  * Example of a required file:
@@ -68,7 +77,14 @@ use function oihana\files\path\isBasePath;
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
  */
-function requireAndMergeArrays( array $filePaths , bool $recursive = true , ?string $allowedBase = null ): array
+function requireAndMergeArrays
+(
+    array   $filePaths          ,
+    bool    $recursive   = true ,
+    ?string $allowedBase = null ,
+    ?int    $maxBytes    = null
+)
+: array
 {
     $result = [];
 
@@ -112,6 +128,21 @@ function requireAndMergeArrays( array $filePaths , bool $recursive = true , ?str
                 $real ,
                 $allowedBaseReal
             )) ;
+        }
+
+        if ( $maxBytes !== null )
+        {
+            $size = filesize( $real ) ;
+            if ( $size > $maxBytes )
+            {
+                throw new RuntimeException( sprintf
+                (
+                    'The file "%s" is %d bytes, exceeds maximum %d bytes.' ,
+                    $real ,
+                    $size ,
+                    $maxBytes
+                )) ;
+            }
         }
 
         $data = require $real ;

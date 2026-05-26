@@ -29,6 +29,7 @@ This section describes the **threat model** the library was designed against, an
 | **Format identification** of an encrypted file | `openssl/` | Magic header `OPHE\x02` for V2; auto-detect legacy |
 | **IV reuse** (catastrophic for GCM) | `openssl/` | `random_bytes(12)` on every `encrypt()` |
 | **Decompression bombs** (tar bomb) — opt-in | `archive/tar/` | `TarOption::MAX_EXTRACTED_SIZE`: pre-scan + abort before any write if exceeded |
+| **OOM via oversized file** (direct reads) — opt-in | `files/`, `openssl/` | `$maxBytes` on `getFileLines`, `requireAndMergeArrays`; `$maxInputBytes` on the `OpenSSLFileEncryption` constructor: `filesize()` check before any read |
 
 ### ❌ **Not** covered threats
 

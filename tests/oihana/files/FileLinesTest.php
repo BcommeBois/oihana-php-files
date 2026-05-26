@@ -6,6 +6,7 @@ use org\bovigo\vfs\vfsStream;
 
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 use oihana\files\exceptions\FileException;
 
@@ -100,5 +101,41 @@ class FileLinesTest extends TestCase
         $mappedLines = getFileLines($file->url(), fn($line) => (int)$line * 10);
 
         $this->assertSame([10, 20, 30, 40], $mappedLines);
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testGetFileLinesMaxBytesNullKeepsLegacyBehaviour(): void
+    {
+        $content = "a\nb\nc" ;
+        $file = vfsStream::newFile('letters.txt')->at($this->root)->setContent($content) ;
+
+        $this->assertSame( ['a','b','c'] , getFileLines( $file->url() , null , null ) ) ;
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testGetFileLinesMaxBytesUnderLimitAllowsRead(): void
+    {
+        $content = "abc\ndef\nghi" ; // 11 bytes
+        $file = vfsStream::newFile('letters.txt')->at($this->root)->setContent($content) ;
+
+        $this->assertSame( ['abc','def','ghi'] , getFileLines( $file->url() , null , 1024 ) ) ;
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testGetFileLinesMaxBytesExceededThrows(): void
+    {
+        $content = str_repeat( 'x' , 100 ) ;
+        $file = vfsStream::newFile('big.txt')->at($this->root)->setContent($content) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/exceeds maximum/i' ) ;
+
+        getFileLines( $file->url() , null , 16 ) ;
     }
 }

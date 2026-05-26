@@ -131,6 +131,35 @@ untar( $uploaded , $dest , [
 
 Détails complets : [archive/untar.md § Protection contre les bombes de décompression](archive/untar.md#protection-contre-les-bombes-de-décompression).
 
+### Bornes de taille sur les lectures de fichiers (`maxBytes`)
+
+Trois surfaces du module **lisent un fichier entier en RAM** (par `file()` ou `file_get_contents()`). Sans plafond, un fichier d'entrée volumineux peut épuiser `memory_limit` et tuer le process. Chaque surface expose une option opt-in (défaut `null` = pas de limite) :
+
+| Surface | Option | Comportement quand dépassé |
+|---|---|---|
+| [`getFileLines($file, $map, $maxBytes)`](files/reading.md#getfilelines) | `$maxBytes` | `RuntimeException` avant `file()` |
+| [`requireAndMergeArrays(..., $maxBytes)`](files/reading.md#requireandmergearrays) | `$maxBytes` (par fichier) | `RuntimeException` avant `require` |
+| [`new OpenSSLFileEncryption($pass, $cipher, $maxInputBytes)`](openssl/README.md#constructeur) | `$maxInputBytes` (constructeur) | `RuntimeException` au début de `encrypt()` / `decrypt()` |
+
+**Recommandation** : sur toute lecture dont la source n'est pas 100% maîtrisée (upload utilisateur, fichier externe, config partagée), définir un plafond ferme cohérent avec le `memory_limit` du process.
+
+```php
+use function oihana\files\getFileLines ;
+use function oihana\files\requireAndMergeArrays ;
+use oihana\files\openssl\OpenSSLFileEncryption ;
+
+// Refuse > 10 Mio à la lecture ligne-à-ligne.
+$lines = getFileLines( $uploadedLog , null , 10 * 1024 * 1024 ) ;
+
+// Refuse > 1 Mio par fichier de configuration.
+$config = requireAndMergeArrays( $paths , true , $baseDir , 1 * 1024 * 1024 ) ;
+
+// Refuse > 50 Mio en entrée d'encrypt() / decrypt().
+$crypto = new OpenSSLFileEncryption( $passphrase , 'aes-256-cbc' , 50 * 1024 * 1024 ) ;
+```
+
+> 💡 Combiner avec `getFileLinesGenerator` quand le streaming est possible — `maxBytes` est un garde-fou, pas une alternative au streaming pour les très gros fichiers légitimes.
+
 ### Tar : symlinks et `chmod`
 
 - `tar` **sérialise les symlinks comme symlinks** (pas leur cible). À l'extraction, ils sont recréés tels quels.

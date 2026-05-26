@@ -151,4 +151,30 @@ class RequireAndMergeArraysTest extends TestCase
 
         requireAndMergeArrays( [] , true , '/path/that/does/not/exist' ) ;
     }
+
+    public function testMaxBytesNullKeepsLegacyBehaviour(): void
+    {
+        $a = $this->writeArrayFile('a.php' , [ 'ok' => 1 ] ) ;
+
+        $result = requireAndMergeArrays( [ $a ] , true , null , null ) ;
+        $this->assertSame( [ 'ok' => 1 ] , $result ) ;
+    }
+
+    public function testMaxBytesUnderLimitAllowsLoad(): void
+    {
+        $a = $this->writeArrayFile('a.php' , [ 'ok' => 1 ] ) ;
+
+        $result = requireAndMergeArrays( [ $a ] , true , null , 4096 ) ;
+        $this->assertSame( [ 'ok' => 1 ] , $result ) ;
+    }
+
+    public function testMaxBytesExceededThrowsAndDoesNotInclude(): void
+    {
+        $a = $this->writeArrayFile('a.php' , [ 'ok' => 1 ] ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'exceeds maximum' ) ;
+
+        requireAndMergeArrays( [ $a ] , true , null , 4 ) ;
+    }
 }
