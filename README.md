@@ -10,7 +10,14 @@ A versatile PHP library for seamless and portable file and path handling.
 
 ## 📚 Documentation
 
-Full project documentation is available at:  
+User guides (FR + EN), with narrative explanations, examples, and security notes:
+
+| | |
+|---|---|
+| 🇬🇧 **[English documentation](wiki/en/README.md)** | 🇫🇷 **[Documentation française](wiki/fr/README.md)** |
+| Getting started, paths, files, archives, OpenSSL, TOML, options, enums, tips. | Démarrage, chemins, fichiers, archives, OpenSSL, TOML, options, énumérations, astuces. |
+
+Auto-generated API reference (phpDocumentor):  
 👉 https://bcommebois.github.io/oihana-php-files
 
 ## 🚀 Features
