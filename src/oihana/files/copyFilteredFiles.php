@@ -32,6 +32,13 @@ use RecursiveIteratorIterator;
  *
  * @throws DirectoryException If a directory cannot be created in the destination path.
  *
+ * @security
+ * `$excludePatterns` is forwarded to {@see shouldExcludeFile()} which uses
+ * `fnmatch()` (glob) or `preg_match()` (regex). **Patterns must come from a
+ * trusted source** — a malicious regex can cause CPU exhaustion (ReDoS) since
+ * PHP's regex engine has no execution timeout. See the
+ * [security guide](../../../wiki/en/security.md#redos-on-user-supplied-regex-patterns).
+ *
  * @example
  *
  * Source directory structure:

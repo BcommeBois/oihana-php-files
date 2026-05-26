@@ -20,6 +20,15 @@ namespace oihana\files ;
  *
  * @return bool Returns `true` if the file path matches any of the exclusion patterns, `false` otherwise.
  *
+ * @security
+ * Each pattern is evaluated with `fnmatch()` (glob) or `preg_match()` (regex,
+ * when the pattern is enclosed in matching delimiters). PHP's regex engine has
+ * no execution timeout, so a maliciously crafted regex such as `/^(a+)+$/` can
+ * cause catastrophic backtracking and effectively a CPU DoS. **Patterns must
+ * come from a trusted source** (configuration, internal code) — never from
+ * direct user input. See the
+ * [security guide](../../../wiki/en/security.md#redos-on-user-supplied-regex-patterns).
+ *
  * @example
  * ```php
  * $patterns = [

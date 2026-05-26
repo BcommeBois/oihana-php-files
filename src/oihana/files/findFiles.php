@@ -42,6 +42,14 @@ use function oihana\core\strings\isRegexp;
  * - recursive : Whether to search recursively (default: false).
  * - sort : A sort option, eg: callback, predefined string, or array of keys.
  *
+ * @security
+ * The `pattern` option is evaluated with `fnmatch()` (glob) or `preg_match()`
+ * (regex). PHP's regex engine has no execution timeout, so a maliciously crafted
+ * regex such as `/^(a+)+$/` can cause catastrophic backtracking and effectively
+ * a CPU DoS. **Patterns must come from a trusted source** (configuration,
+ * internal code) — never from direct user input. See the
+ * [security guide](../../../wiki/en/security.md#redos-on-user-supplied-regex-patterns).
+ *
  * @return SplFileInfo[]
  *
  * @throws DirectoryException

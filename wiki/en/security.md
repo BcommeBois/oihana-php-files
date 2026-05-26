@@ -106,17 +106,42 @@ $definitions = requireAndMergeArrays(
 ) ;
 ```
 
-### 5. For user-supplied regex patterns (find, exclude)
+### 5. ReDoS on user-supplied regex patterns
+
+**Affected functions:** [`findFiles()`](files/discovery.md#findfiles), [`shouldExcludeFile()`](files/discovery.md#shouldexcludefile), [`copyFilteredFiles()`](files/copying.md#copyfilteredfiles).
+
+**What is ReDoS?** Regular-Expression Denial of Service. PHP's `preg_match()` engine performs *backtracking* to find matches. A maliciously crafted regex such as `/^(a+)+$/` — or its real-world cousins `/^(\w+)+$/`, `/^(a|a)*$/`, `/(x+x+)+y/` — combined with a specific input string can trigger **catastrophic backtracking**, where the engine explores an exponential number of paths. The result: a single regex match consumes seconds or minutes of CPU per call.
+
+**Why these functions are vulnerable:** they call `preg_match()` with the pattern provided by the caller. PHP has a `pcre.backtrack_limit` (default 1 000 000) that bails out eventually, but **the engine still burns CPU** until that limit is hit. A handful of malicious requests can saturate a worker pool.
+
+**What the library does NOT do:**
+
+- No pattern validation against ReDoS-prone constructs (no static analyser).
+- No execution timeout (PHP regex engine does not support it natively).
+- No sandboxing of regex evaluation.
+
+**Caller contract:** these functions are designed for **trusted patterns** — configuration files, hard-coded internal code, allowed lists. They are NOT safe with patterns built from direct user input.
 
 ```php
 // ❌ Bad: direct pattern from $_GET → ReDoS vector
 findFiles( $dir , [ 'pattern' => $_GET[ 'pattern' ] ] ) ;
 
-// ✅ Good: validate it's a simple glob, or whitelist patterns
+// ✅ Good: whitelist of fixed patterns
 $allowed = [ '*.txt' , '*.log' , '*.json' ] ;
 $pattern = in_array( $_GET[ 'pattern' ] , $allowed , true ) ? $_GET[ 'pattern' ] : '*' ;
 findFiles( $dir , [ 'pattern' => $pattern ] ) ;
+
+// ✅ Good: build the pattern in code from validated parts
+$ext = preg_quote( $validatedExtension , '/' ) ;
+findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, not regex
 ```
+
+**Defense-in-depth options if you must accept user patterns:**
+
+- Lower `pcre.backtrack_limit` to ~100 000 in `php.ini` for the affected workers.
+- Prefer **glob** (`fnmatch()`) over regex when expressive power is not needed — glob has no catastrophic backtracking.
+- Run pattern-matching code in a separate process with a hard timeout (`pcntl_alarm`, subprocess, fastcgi worker isolation).
+- Use a regex linter to reject known-bad patterns upstream.
 
 ### 6. For sensitive configs (credentials, tokens)
 

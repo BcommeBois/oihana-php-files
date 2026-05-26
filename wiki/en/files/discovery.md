@@ -55,6 +55,8 @@ findFiles( '/var/www' , [ 'pattern' => '/^config\..+$/' ] ) ;
 findFiles( '/var/www' , [ 'pattern' => [ '*.php' , '/^config\..+$/' ] ] ) ;
 ```
 
+> ⚠ **Security — ReDoS.** Patterns must come from a **trusted source** (config, internal code). A malicious regex like `/^(a+)+$/` can burn CPU for seconds via *catastrophic backtracking* — PHP has no timeout on `preg_match`. For user-supplied patterns, see [security.md § ReDoS](../security.md#redos-on-user-supplied-regex-patterns).
+
 ### Examples by use case
 
 ```php
@@ -224,6 +226,8 @@ shouldExcludeFile( '/tmp/error_12345.txt' , $patterns ) ;             // true (r
 shouldExcludeFile( '/var/www/app/config/db.php' , $patterns ) ;       // true (config/db.php matches)
 shouldExcludeFile( '/var/www/index.php' , $patterns ) ;               // false
 ```
+
+> ⚠ **Security — ReDoS.** Same caveat as [`findFiles`](#patterns-glob-or-regex-auto-detected): `$excludePatterns` is used with `preg_match` when a pattern is delimited as regex. Patterns must come from a trusted source — see [security.md § ReDoS](../security.md#redos-on-user-supplied-regex-patterns).
 
 Used internally by [`copyFilteredFiles`](copying.md). Reusable standalone for your own filters.
 
