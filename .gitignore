@@ -1,5 +1,6 @@
 # IDE
 .idea/
+.claude/
 .vscode/
 .vscode/settings.json
 
