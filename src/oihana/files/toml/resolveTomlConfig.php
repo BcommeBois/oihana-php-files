@@ -12,9 +12,7 @@ use function oihana\core\arrays\deepMerge;
 use function oihana\files\assertDirectory;
 use function oihana\files\assertFile;
 use function oihana\files\path\isAbsolutePath;
-use function oihana\files\path\isBasePath;
 use function oihana\files\path\joinPaths;
-use function oihana\files\path\makeAbsolute;
 
 /**
  * Resolves a TOML configuration file and merges it with a default configuration.
@@ -113,20 +111,13 @@ function resolveTomlConfig
             $filePath .= FileExtension::TOML ;
         }
 
-        if( !isAbsolutePath( $filePath ) )
+        if( !isAbsolutePath( $filePath ) && !empty( $defaultPath ) )
         {
-            if( isBasePath( $filePath , getcwd() ) )
+            assertDirectory( $defaultPath ) ;
+            $file = joinPaths( $defaultPath , $filePath ) ;
+            if( is_file( $file ) )
             {
-                $filePath = makeAbsolute( $filePath  ,  getcwd() ) ;
-            }
-            else if( !empty( $defaultPath ) )
-            {
-                assertDirectory( $defaultPath ) ;
-                $file = joinPaths( $defaultPath , $filePath ) ;
-                if( is_file( $file ) )
-                {
-                    $filePath = $file ;
-                }
+                $filePath = $file ;
             }
         }
 

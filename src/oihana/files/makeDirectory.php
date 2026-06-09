@@ -145,7 +145,10 @@ function makeDirectory
 
     if ( !is_dir( $directory ) )
     {
+        // Redundant re-check: line 141 already throws when the directory is absent.
+        // @codeCoverageIgnoreStart
         throw new DirectoryException(sprintf('Directory "%s" was not created.' , $directory ) ) ;
+        // @codeCoverageIgnoreEnd
     }
 
     if ( !is_writable( $directory ) )
@@ -153,12 +156,12 @@ function makeDirectory
         throw new DirectoryException( sprintf('Directory "%s" is not writable.' , $directory ) ) ;
     }
 
-    if ( $owner !== null && !chown( $directory , $owner ) )
+    if ( $owner !== null && !@chown( $directory , $owner ) )
     {
         throw new DirectoryException(sprintf('Failed to change owner to "%s" for directory "%s".', $owner, $directory));
     }
 
-    if ( $group !== null && !chgrp( $directory , $group ) )
+    if ( $group !== null && !@chgrp( $directory , $group ) )
     {
         throw new DirectoryException(sprintf('Failed to change group to "%s" for directory "%s".' , $group , $directory ) ) ;
     }

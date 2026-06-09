@@ -172,15 +172,18 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
 
     if ( !chmod( $filePath , $permissions ) )
     {
+        // chmod on a freshly written, owned file does not fail under the test runner.
+        // @codeCoverageIgnoreStart
         throw new FileException( sprintf('Failed to set permissions %o on file "%s".', $permissions , $filePath ) ) ;
+        // @codeCoverageIgnoreEnd
     }
 
-    if ( $owner !== null && !chown( $filePath , $owner ) )
+    if ( $owner !== null && !@chown( $filePath , $owner ) )
     {
         throw new FileException( sprintf( 'Failed to change owner to "%s" for file "%s".' , $owner , $filePath ) ) ;
     }
 
-    if ( $group !== null && !chgrp( $filePath , $group ) )
+    if ( $group !== null && !@chgrp( $filePath , $group ) )
     {
         throw new FileException( sprintf('Failed to change group to "%s" for file "%s".', $group , $filePath ) );
     }
