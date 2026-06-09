@@ -10,6 +10,7 @@ use oihana\options\Options;
 
 use PHPUnit\Framework\TestCase;
 
+use tests\oihana\options\mocks\ArrayableSource;
 use tests\oihana\options\mocks\MockOption;
 use tests\oihana\options\mocks\MockOptions;
 use tests\oihana\options\mocks\TestOptions;
@@ -386,5 +387,64 @@ class OptionsTest extends TestCase
         $this->assertStringContainsString('--bar', $result);
         $this->assertStringContainsString('--alpha "a"', $result);
         $this->assertStringContainsString('--zeta "z"', $result);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testFormatFromDocumentReplacesPlaceholdersInProperties(): void
+    {
+        $options = $this->getConcreteOptionsInstance(['foo' => 'Hello {{name}}']);
+
+        $options->formatFromDocument(['name' => 'World']);
+
+        $this->assertSame('Hello World', $options->foo);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testGetOptionsExcludesNamedProperties(): void
+    {
+        $options = $this->getConcreteOptionsInstance(['foo' => 'value', 'bar' => true]);
+
+        $result = $options->getOptions(MockOption::class, '--', excludes: ['foo']);
+
+        $this->assertStringNotContainsString('--foo', $result);
+        $this->assertStringContainsString('--bar', $result);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function testGetOptionsSeparatorFallsBackToSpaceWhenCallableReturnsNonString(): void
+    {
+        $options = $this->getConcreteOptionsInstance(['foo' => 'value']);
+
+        $separator = fn(string $name) => null; // non-string -> fall back to a space
+
+        $result = $options->getOptions(MockOption::class, '--', excludes: [], separator: $separator);
+
+        $this->assertStringContainsString('--foo "value"', $result);
+    }
+
+    public function testResolveWithNoSourcesReturnsNewInstance(): void
+    {
+        $result = TestOptions::resolve();
+
+        $this->assertInstanceOf(TestOptions::class, $result);
+    }
+
+    public function testResolveAcceptsPlainArrayableSource(): void
+    {
+        $result = TestOptions::resolve(new ArrayableSource());
+
+        $this->assertSame('arrayable', $result->toArray(true)['host']);
+    }
+
+    public function testToStringDefaultReturnsEmptyString(): void
+    {
+        // TestOptions does not override __toString -> base implementation returns "".
+        $this->assertSame('', (string) new TestOptions());
     }
 }
