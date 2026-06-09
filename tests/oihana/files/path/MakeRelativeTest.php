@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use InvalidArgumentException;
 
-#[CoversFunction('oihana\files\makeRelative')]
+#[CoversFunction('oihana\files\path\makeRelative')]
 final class MakeRelativeTest extends TestCase
 {
 

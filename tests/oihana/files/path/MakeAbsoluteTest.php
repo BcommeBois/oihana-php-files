@@ -6,7 +6,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 
-#[CoversFunction('oihana\files\makeAbsolute')]
+#[CoversFunction('oihana\files\path\makeAbsolute')]
 final class MakeAbsoluteTest extends TestCase
 {
     /**
