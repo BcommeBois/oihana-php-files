@@ -123,4 +123,31 @@ class MakeTimestampedDirectoryTest extends TestCase
 
         makeTimestampedDirectory(null, $this->root->url());
     }
+
+    /**
+     * Avec un basePath vide, le répertoire est créé relativement au cwd
+     * (branche ': $directoryName' du ternaire).
+     * @throws DirectoryException
+     */
+    public function testEmptyBasePathCreatesRelativeDirectory(): void
+    {
+        $cwd = getcwd();
+        $tmp = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'oihana_ts_' . uniqid();
+        mkdir($tmp);
+        chdir($tmp);
+
+        try
+        {
+            $result = makeTimestampedDirectory(null, '', 'ts_');
+
+            // basePath vide -> le chemin retourné est le seul nom de répertoire (sans séparateur).
+            $this->assertStringNotContainsString(DIRECTORY_SEPARATOR, $result);
+            $this->assertDirectoryExists($tmp . DIRECTORY_SEPARATOR . $result);
+        }
+        finally
+        {
+            chdir($cwd);
+            deleteDirectory($tmp, assertable: false);
+        }
+    }
 }

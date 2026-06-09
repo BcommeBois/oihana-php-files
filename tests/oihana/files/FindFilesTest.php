@@ -255,4 +255,16 @@ class FindFilesTest extends TestCase
         $this->assertTrue($hasFile, 'Should find at least one file');
         $this->assertTrue($hasDir, 'Should find at least one directory');
     }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testThrowsOnInvalidMode(): void
+    {
+        // An unknown 'mode' value falls through the per-entry switch default.
+        $this->expectException(DirectoryException::class);
+        $this->expectExceptionMessage("Invalid option 'mode' value");
+
+        findFiles($this->testDir, ['mode' => 'invalid-mode']);
+    }
 }

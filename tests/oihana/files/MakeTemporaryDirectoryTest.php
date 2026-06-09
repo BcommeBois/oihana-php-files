@@ -83,4 +83,23 @@ class MakeTemporaryDirectoryTest extends TestCase
         $this->assertDirectoryExists($result);
         $this->assertEquals($expectedPath, $result);
     }
+
+    public function testThrowsWhenParentPathIsAFile(): void
+    {
+        // Create a *file* where a parent directory is expected: mkdir -p then fails.
+        $blocker = $this->baseTemp;
+        file_put_contents($blocker, 'x');
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('Failed to create temporary directory');
+
+            makeTemporaryDirectory($blocker . DIRECTORY_SEPARATOR . 'child');
+        }
+        finally
+        {
+            @unlink($blocker);
+        }
+    }
 }

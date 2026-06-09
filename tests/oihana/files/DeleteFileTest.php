@@ -49,4 +49,13 @@ class DeleteFileTest extends TestCase
         $this->expectException(FileException::class);
         deleteFile($this->testFile);
     }
+
+    public function testDeleteFileThrowsWhenUnlinkFailsWithAssertionsDisabled(): void
+    {
+        // assertable:false bypasses assertFile(); @unlink() then fails on a missing path.
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Failed to remove file');
+
+        deleteFile($this->testDirectory . 'missing.txt', assertable: false);
+    }
 }

@@ -87,4 +87,20 @@ class CopyFilteredFilesTest extends TestCase
         $this->assertDirectoryExists($this->destDir);
         $this->assertFileDoesNotExist($this->destDir . '/file1.txt');
     }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testSkipsBrokenSymlink(): void
+    {
+        // A dangling symlink yields SplFileInfo::getRealPath() === false -> the entry is skipped.
+        $link = $this->sourceDir . '/broken.link';
+        symlink($this->sourceDir . '/no-such-target', $link);
+
+        $result = copyFilteredFiles($this->sourceDir, $this->destDir, [], null);
+
+        $this->assertTrue($result);
+        $this->assertFileExists($this->destDir . '/file1.txt');
+        $this->assertFileDoesNotExist($this->destDir . '/broken.link');
+    }
 }

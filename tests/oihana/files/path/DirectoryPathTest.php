@@ -51,4 +51,10 @@ final class DirectoryPathTest extends TestCase
             directoryPath('\\\\NAS-01\\media\\photos\\vacances.jpg')
         );
     }
+
+    public function testInvalidUncReturnsEmpty()
+    {
+        // A UNC path with fewer than two segments (server but no share) is invalid.
+        $this->assertSame('', directoryPath('//server'));
+    }
 }

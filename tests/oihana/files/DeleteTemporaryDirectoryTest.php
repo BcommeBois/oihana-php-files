@@ -41,6 +41,12 @@ class DeleteTemporaryDirectoryTest extends TestCase
         $this->assertDirectoryDoesNotExist($dir);
     }
 
+    public function testReturnsFalseWhenDirectoryResolvesToEmptyString(): void
+    {
+        // getTemporaryDirectory('/') rtrims to '' on POSIX -> early return false.
+        $this->assertFalse(deleteTemporaryDirectory('/'));
+    }
+
     /**
      * @throws DirectoryException
      */

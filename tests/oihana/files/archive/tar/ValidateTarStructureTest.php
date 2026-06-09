@@ -47,6 +47,19 @@ class ValidateTarStructureTest extends TestCase
         return $path;
     }
 
+    private function makeTarWithManyFiles(int $count): string
+    {
+        $path = $this->tmpDir . '/' . 'many.tar';
+
+        $phar = new PharData($path);
+        for ($i = 0; $i < $count; $i++)
+        {
+            $phar->addFromString("file{$i}.txt", "content {$i}");
+        }
+
+        return $path;
+    }
+
     public function testValidTarStructure()
     {
         $tarFile = $this->makeValidTarFile();
@@ -63,5 +76,12 @@ class ValidateTarStructureTest extends TestCase
     {
         $nonexistent = $this->tmpDir . '/missing.tar';
         $this->assertFalse( validateTarStructure($nonexistent), 'Expected missing file to return false');
+    }
+
+    public function testStopsAfterTenFiles()
+    {
+        // More than 10 entries exercises the early-break guard in the inspection loop.
+        $tarFile = $this->makeTarWithManyFiles(15);
+        $this->assertTrue( validateTarStructure($tarFile), 'Expected a large valid tar file to return true');
     }
 }

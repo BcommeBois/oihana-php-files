@@ -28,6 +28,7 @@ final class MakeRelativeTest extends TestCase
             'complex path' => ['../../foo/bar', '/home/foo/bar', '/home/user/project'],
             'identical paths' => ['', '/var/www', '/var/www'],
             'base is root' => ['var/www', '/var/www', '/'],
+            'target is filesystem root' => ['../../', '/', '/var/www'],
 
             // Case: Windows
             'windows subdirectory' => ['Users/Test', 'C:/Windows/Users/Test', 'C:/Windows'],
