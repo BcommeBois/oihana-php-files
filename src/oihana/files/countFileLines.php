@@ -42,7 +42,11 @@ function countFileLines( ?string $file ): int
 
     if (!$handle)
     {
+        // Defensive: assertFile() already proved the file exists and is readable;
+        // fopen can still fail on a TOCTOU race or an access()/open() mismatch (ACL, NFS).
+        // @codeCoverageIgnoreStart
         throw new FileException("Unable to open file for reading: {$file}" ) ;
+        // @codeCoverageIgnoreEnd
     }
 
     $lines = 0;

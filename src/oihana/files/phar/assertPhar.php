@@ -36,6 +36,9 @@ function assertPhar(): void
 {
     if ( !class_exists('PharData' ) || !extension_loaded('phar' ) )
     {
+        // The phar extension is bundled and enabled in the test/CI environment.
+        // @codeCoverageIgnoreStart
         throw new RuntimeException( 'PharData is not available. Please ensure the phar extension is enabled.' ) ;
+        // @codeCoverageIgnoreEnd
     }
 }

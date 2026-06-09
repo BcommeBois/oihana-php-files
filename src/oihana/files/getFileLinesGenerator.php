@@ -48,7 +48,11 @@ function getFileLinesGenerator( ?string $file , ?callable $map = null ): Generat
 
     if ( $handle === false )
     {
+        // Defensive: assertFile() already proved the file exists and is readable;
+        // fopen can still fail on a TOCTOU race or an access()/open() mismatch (ACL, NFS).
+        // @codeCoverageIgnoreStart
         throw new FileException("Unable to open file: $file" ) ;
+        // @codeCoverageIgnoreEnd
     }
 
     try

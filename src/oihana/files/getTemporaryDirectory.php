@@ -94,8 +94,10 @@ function getTemporaryDirectory( string|array|null $path = null , bool $assertabl
         }
         else if ( DIRECTORY_SEPARATOR === Char::BACK_SLASH && preg_match('#^[A-Z]:\\\\#i', $path))
         {
-
+            // Windows-only branch: DIRECTORY_SEPARATOR is '/' on the POSIX CI/test runners.
+            // @codeCoverageIgnoreStart
             $path = rtrim($path, DIRECTORY_SEPARATOR); // Windows absolute path (ex: C:\foo)
+            // @codeCoverageIgnoreEnd
         }
         else
         {

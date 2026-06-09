@@ -80,10 +80,6 @@ function getBaseFileName( string $file , ?array $multiplePartExtensions = null )
     }
 
     $fileNameWithExtension = basename( $file ) ;
-    if ( empty( $fileNameWithExtension ) )
-    {
-        throw new InvalidArgumentException('The file path is invalid.' ) ;
-    }
 
     $parts = explode(Char::DOT , $fileNameWithExtension ) ;
     $count = count( $parts ) ;
