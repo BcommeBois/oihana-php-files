@@ -300,4 +300,59 @@ class RecursiveFilePathsTest extends TestCase
         $result = recursiveFilePaths($this->tempDir, $options);
         $this->assertEquals($expected, $result);
     }
+
+    public function testNonFileLeafIsSkipped(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Symlink tests are not reliable on Windows.');
+        }
+
+        // A symlink to a directory is yielded as a (non-followed) leaf; !isFile skips it.
+        $base = sys_get_temp_dir() . '/oihana_rfp_link_' . uniqid();
+        mkdir($base . '/realdir', 0777, true);
+        file_put_contents($base . '/keep.txt', 'x');
+        symlink($base . '/realdir', $base . '/link_to_dir');
+
+        try
+        {
+            $result = recursiveFilePaths($base);
+
+            $this->assertNotContains($base . '/link_to_dir', $result);
+            $this->assertContains($base . '/keep.txt', $result);
+        }
+        finally
+        {
+            @unlink($base . '/link_to_dir');
+            @unlink($base . '/keep.txt');
+            @rmdir($base . '/realdir');
+            @rmdir($base);
+        }
+    }
+
+    public function testWrapsTraversalRuntimeError(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        // An unreadable subdirectory makes the iterator raise a RuntimeException.
+        $base = sys_get_temp_dir() . '/oihana_rfp_' . uniqid();
+        mkdir($base . '/unreadable', 0777, true);
+        chmod($base . '/unreadable', 0000);
+
+        try
+        {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Error during directory traversal');
+            recursiveFilePaths($base);
+        }
+        finally
+        {
+            @chmod($base . '/unreadable', 0777);
+            @rmdir($base . '/unreadable');
+            @rmdir($base);
+        }
+    }
 }

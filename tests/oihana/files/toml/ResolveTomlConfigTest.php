@@ -157,4 +157,21 @@ TOML;
         $this->assertSame(84, $result['number']);  // 42 * 2
         $this->assertTrue($result['processed']);
     }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws TomlError
+     */
+    public function testResolvesRelativeFileViaDefaultPath(): void
+    {
+        // Relative filename, resolved by joining it with a valid $defaultPath that holds it.
+        $configDir = $this->tempDir . '/conf';
+        makeDirectory($configDir);
+        file_put_contents($configDir . '/settings.toml', 'key = "value"');
+
+        $result = resolveTomlConfig('settings', ['key' => 'default'], $configDir);
+
+        $this->assertSame('value', $result['key']);
+    }
 }

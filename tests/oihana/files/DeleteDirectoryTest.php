@@ -155,4 +155,85 @@ class DeleteDirectoryTest extends TestCase
         // Call the function with a file path
         deleteDirectory( $filePath );
     }
+
+    public function testThrowsWhenAChildFileCannotBeRemoved(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        // Target is writable, but the read-only subdir prevents unlinking its file.
+        $base = sys_get_temp_dir() . '/oihana_del_' . uniqid();
+        mkdir($base . '/ro', 0777, true);
+        file_put_contents($base . '/ro/file.txt', 'x');
+        chmod($base . '/ro', 0555);
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessageMatches('/Failed to remove file/');
+            deleteDirectory($base);
+        }
+        finally
+        {
+            @chmod($base . '/ro', 0777);
+            @unlink($base . '/ro/file.txt');
+            @rmdir($base . '/ro');
+            @rmdir($base);
+        }
+    }
+
+    public function testThrowsWhenAChildDirectoryCannotBeRemoved(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        // The read-only middle dir prevents rmdir of its empty leaf subdir.
+        $base = sys_get_temp_dir() . '/oihana_del_' . uniqid();
+        mkdir($base . '/mid/leaf', 0777, true);
+        chmod($base . '/mid', 0555);
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessageMatches('/Failed to remove directory/');
+            deleteDirectory($base);
+        }
+        finally
+        {
+            @chmod($base . '/mid', 0777);
+            @rmdir($base . '/mid/leaf');
+            @rmdir($base . '/mid');
+            @rmdir($base);
+        }
+    }
+
+    public function testWrapsUnexpectedIterationError(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        // An unreadable subdir makes the recursive iterator throw a non-DirectoryException.
+        $base = sys_get_temp_dir() . '/oihana_del_' . uniqid();
+        mkdir($base . '/unreadable', 0777, true);
+        chmod($base . '/unreadable', 0000);
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessageMatches('/An error occurred while deleting directory/');
+            deleteDirectory($base);
+        }
+        finally
+        {
+            @chmod($base . '/unreadable', 0777);
+            @rmdir($base . '/unreadable');
+            @rmdir($base);
+        }
+    }
 }

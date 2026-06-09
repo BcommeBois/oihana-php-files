@@ -170,4 +170,80 @@ class MakeFileTest extends TestCase
 
         $this->assertFileExists($file);
     }
+
+    public function testThrowsWhenArrayOptionsHaveEmptyFile(): void
+    {
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('File path cannot be null or empty');
+
+        makeFile(['content' => 'no file key']);
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testStringPathWithNullContentWritesEmptyFile(): void
+    {
+        $file   = $this->tmpDir . '/empty.txt';
+        $result = makeFile($file);     // content defaults to null -> normalised to ''
+
+        $this->assertSame($file, $result);
+        $this->assertStringEqualsFile($file, '');
+    }
+
+    public function testThrowsWhenExistingFileIsNotWritable(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        $file = $this->tmpDir . '/readonly.txt';
+        file_put_contents($file, 'existing');
+        chmod($file, 0444);
+
+        try
+        {
+            $this->expectException(FileException::class);
+            $this->expectExceptionMessage('exists and is not writable');
+            makeFile($file, 'new content');  // no overwrite, no append
+        }
+        finally
+        {
+            @chmod($file, 0644);
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testThrowsWhenOwnerChangeFails(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Owner tests are not reliable on Windows.');
+        }
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Failed to change owner');
+
+        makeFile($this->tmpDir . '/owned.txt', 'x', ['owner' => 'nonexistent_user_xyz']);
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testThrowsWhenGroupChangeFails(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Group tests are not reliable on Windows.');
+        }
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Failed to change group');
+
+        makeFile($this->tmpDir . '/grouped.txt', 'x', ['group' => 'nonexistent_group_xyz']);
+    }
 }

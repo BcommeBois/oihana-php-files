@@ -131,4 +131,69 @@ class MakeDirectoryTest extends TestCase
         $this->assertTrue(is_dir($path));
         $this->assertEquals(0750, $this->root->getChild('option_array_dir')->getPermissions());
     }
+
+    public function testThrowsWhenCreatedDirectoryIsNotWritable(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Permission tests are not reliable on Windows.');
+        }
+
+        // A freshly created read-only directory is not writable.
+        $path = sys_get_temp_dir() . '/oihana_mkdir_ro_' . uniqid();
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('is not writable');
+            makeDirectory($path, 0444);
+        }
+        finally
+        {
+            @chmod($path, 0777);
+            @rmdir($path);
+        }
+    }
+
+    public function testThrowsWhenOwnerChangeFails(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Owner tests are not reliable on Windows.');
+        }
+
+        $path = sys_get_temp_dir() . '/oihana_mkdir_own_' . uniqid();
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('Failed to change owner');
+            makeDirectory($path, 0755, true, 'nonexistent_user_xyz');
+        }
+        finally
+        {
+            @rmdir($path);
+        }
+    }
+
+    public function testThrowsWhenGroupChangeFails(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('Group tests are not reliable on Windows.');
+        }
+
+        $path = sys_get_temp_dir() . '/oihana_mkdir_grp_' . uniqid();
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('Failed to change group');
+            makeDirectory($path, 0755, true, null, 'nonexistent_group_xyz');
+        }
+        finally
+        {
+            @rmdir($path);
+        }
+    }
 }

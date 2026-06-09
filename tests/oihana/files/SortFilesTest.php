@@ -102,4 +102,48 @@ class SortFilesTest extends TestCase
             $sizes
         );
     }
+
+    /** Tri par clé 'size' (match arm) ASC
+     * @throws DirectoryException
+     */
+    public function testSortBySizeKeyAsc(): void
+    {
+        $files = findFiles($this->testDir);
+        sortFiles($files, 'size');
+
+        $sizes = array_map(fn(SplFileInfo $f) => $f->getSize(), $files);
+        $this->assertSame([5, 10, 15, 20, 30], $sizes);
+    }
+
+    /** Exerce les bras 'type' / 'atime' / 'ctime' du match.
+     * @throws DirectoryException
+     */
+    public function testSortByTypeAtimeCtimeKeys(): void
+    {
+        foreach (['type', 'atime', 'ctime'] as $key)
+        {
+            $files = findFiles($this->testDir);
+            sortFiles($files, $key);
+
+            $this->assertCount(5, $files);
+            foreach ($files as $f)
+            {
+                $this->assertSame('file', $f->getType());
+            }
+        }
+    }
+
+    /** Clé inconnue -> bras default (cmp 0) -> ordre d'origine conservé.
+     * @throws DirectoryException
+     */
+    public function testUnknownSortKeyKeepsOriginalOrder(): void
+    {
+        $files  = findFiles($this->testDir);
+        $before = array_map(fn(SplFileInfo $f) => $f->getFilename(), $files);
+
+        sortFiles($files, 'totally-unknown-key');
+
+        $after = array_map(fn(SplFileInfo $f) => $f->getFilename(), $files);
+        $this->assertSame($before, $after);
+    }
 }
