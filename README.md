@@ -39,17 +39,28 @@ Install via [Composer](https://getcomposer.org):
 composer require oihana/php-files
 ```
 
-## ✅ Running Unit Tests
+## ✅ Tests & coverage
 
-To run all tests:
+Run the full unit-test suite (PHPUnit, strict mode):
 ```bash
-composer run-script test
+composer test
 ```
 
-To run a specific test file:
+Run a single test case:
 ```bash
-composer run test ./tests/oihana/files/OpenSSLFileEncryptionTest.php
+./vendor/bin/phpunit --filter OpenSSLFileEncryptionTest
 ```
+
+Measure coverage (requires Xdebug or PCOV):
+```bash
+composer coverage        # text + Clover + HTML under build/coverage/
+composer coverage:md     # readable Markdown summary (build/coverage/COVERAGE.md)
+```
+
+The suite currently covers **100% of lines** (1416/1416). For the testing
+philosophy, the testability tiers and the `@codeCoverageIgnore` policy, see the
+detailed guide: **[wiki/en/testing.md](wiki/en/testing.md)** ·
+**[wiki/fr/testing.md](wiki/fr/testing.md)**.
 
 ## 🧾 License
 

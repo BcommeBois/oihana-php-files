@@ -24,6 +24,10 @@ composer coverage        # suite + coverage report (text + Clover + HTML under b
 composer coverage:md     # regenerate build/coverage/COVERAGE.md, a readable Markdown summary
 ```
 
+For the full guide — testability tiers, characterization rule, reading the
+report and the `@codeCoverageIgnore` policy — see
+[wiki/en/testing.md](wiki/en/testing.md) (FR: [wiki/fr/testing.md](wiki/fr/testing.md)).
+
 The suite runs in **strict mode**: warnings, risky tests (no assertion), and
 skipped tests all fail the run. A test that checks nothing protects nothing.
 

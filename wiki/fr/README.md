@@ -99,6 +99,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 ### Transverse
 
 - [Sécurité](security.md) — périmètre de sécurité, menaces couvertes / non couvertes, bonnes pratiques utilisateur.
+- [Tests & couverture](testing.md) — lancer la suite PHPUnit, mesurer la couverture, et la politique d'annotation `@codeCoverageIgnore`.
 - [Astuces et pièges](tips.md) — règles d'or et incidents rencontrés (chemins Windows, *symlinks*, permissions, *encoding*, etc.).
 
 ## Code source

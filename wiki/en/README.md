@@ -99,6 +99,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 ### Cross-cutting
 
 - [Security](security.md) — security perimeter, covered / not-covered threats, user best practices.
+- [Tests & coverage](testing.md) — run the PHPUnit suite, measure coverage, and the `@codeCoverageIgnore` annotation policy.
 - [Tips and pitfalls](tips.md) — golden rules and incidents encountered (Windows paths, *symlinks*, permissions, encoding, etc.).
 
 ## Source code
