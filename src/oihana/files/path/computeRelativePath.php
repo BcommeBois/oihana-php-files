@@ -17,7 +17,7 @@ use oihana\enums\Char;
  * echo computeRelativePath( 'foo/bar/baz' , 'foo'     ) . PHP_EOL; // 'bar/baz'
  * echo computeRelativePath( 'foo/baz'     , 'foo/bar' ) . PHP_EOL; // '../baz'
  * echo computeRelativePath( 'foo/bar'     , 'foo/bar' ) . PHP_EOL; // '.'
- * echo computeRelativePath( 'a/b'         , 'a/b/c/d' ) . PHP_EOL; // '../../'
+ * echo computeRelativePath( 'a/b'         , 'a/b/c/d' ) . PHP_EOL; // '../..'
  * echo computeRelativePath( 'a/b/c'       , 'a'       ) . PHP_EOL; // 'b/c'
  * echo computeRelativePath( 'a/x/y'       , 'a/b/c'   ) . PHP_EOL; // '../../x/y'
  * ```
