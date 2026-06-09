@@ -58,8 +58,11 @@ function preservePharFilePermissions( PharData $phar , string $outputPath ): voi
             }
         }
     }
+    // Iterating a valid phar and calling chmod() does not throw under the test runner.
+    // @codeCoverageIgnoreStart
     catch ( Exception $exception )
     {
         error_log( sprintf( 'Warning: Could not preserve permissions for some files: %s' , $exception->getMessage() ) );
     }
+    // @codeCoverageIgnoreEnd
 }

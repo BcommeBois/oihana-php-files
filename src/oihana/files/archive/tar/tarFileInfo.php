@@ -119,10 +119,13 @@ function tarFileInfo( string $filePath , bool $strictMode = false ): array
             }
             $info[ TarInfo::TOTAL_SIZE ] = $totalSize;
         }
+        // PharData does not throw when iterating an already-validated tar archive.
+        // @codeCoverageIgnoreStart
         catch ( Exception $e )
         {
             // Keep is_valid as true but don't populate detailed info
         }
+        // @codeCoverageIgnoreEnd
     }
 
     return $info;

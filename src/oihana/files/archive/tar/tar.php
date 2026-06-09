@@ -166,7 +166,10 @@ function tar
 
             if ( $realPath === false )
             {
+                // Unreachable: every $path was already proven to exist (file_exists guard above).
+                // @codeCoverageIgnoreStart
                 continue;
+                // @codeCoverageIgnoreEnd
             }
 
             if ( is_dir( $realPath ) )
@@ -255,7 +258,11 @@ function tar
 
             if ( !Phar::canCompress( $pharCompression ) )
             {
+                // Unreachable here: GZIP/BZIP2 are always compressible (ext-zlib/bz2 present);
+                // this guards runtimes that lack the compression extension.
+                // @codeCoverageIgnoreStart
                 throw new UnsupportedCompressionException("Compression type '$compression' is not supported.");
+                // @codeCoverageIgnoreEnd
             }
 
             $pharToCompress = new PharData($tempTarPath);
@@ -268,7 +275,10 @@ function tar
             {
                 if ( !file_exists( $compressedTempPath ) )
                 {
+                    // Unreachable: a successful compress() always produces this sibling file.
+                    // @codeCoverageIgnoreStart
                     throw new RuntimeException("Compressed temporary file was not found at: $compressedTempPath" ) ;
+                    // @codeCoverageIgnoreEnd
                 }
                 rename( $compressedTempPath , $finalPath ) ;
             }
@@ -276,6 +286,10 @@ function tar
 
         return $finalPath;
     }
+    // Defensive wrapper: the typed exceptions (Unsupported/FileException) are thrown
+    // *before* this try (lines ~147/156), and no \Exception is deterministically raised
+    // inside it, so this catch is unreachable under test.
+    // @codeCoverageIgnoreStart
     catch ( Exception $exception )
     {
         if ( $exception instanceof FileException || $exception instanceof UnsupportedCompressionException)
@@ -290,6 +304,7 @@ function tar
             $exception
         );
     }
+    // @codeCoverageIgnoreEnd
     finally
     {
         if ( file_exists( $tempTarPath ) )

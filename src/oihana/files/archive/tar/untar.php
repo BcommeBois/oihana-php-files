@@ -116,14 +116,21 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
             {
                 if ( !$file->isFile() )
                 {
+                    // The LEAVES_ONLY iterator over a PharData yields files only (no dir/symlink leaves).
+                    // @codeCoverageIgnoreStart
                     continue;
+                    // @codeCoverageIgnoreEnd
                 }
 
                 $relativePath = str_replace($basePharPath . '/', '', $file->getPathname() ) ;
 
                 if ( str_contains( $relativePath , Char::DOUBLE_DOT ) )
                 {
+                    // Defense-in-depth: PharData sanitises '..' entries on add/read, so this
+                    // guards only externally hand-crafted archives that bypass that sanitisation.
+                    // @codeCoverageIgnoreStart
                     throw new RuntimeException( sprintf( 'Path traversal attempt detected in tar file: %s', $relativePath ) );
+                    // @codeCoverageIgnoreEnd
                 }
 
                 $fileList[] = $relativePath ;

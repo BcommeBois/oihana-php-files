@@ -63,7 +63,10 @@ function hasTarMimeType( string $filePath , array $mimeTypes  =
     $info = finfo_open( FILEINFO_MIME_TYPE );
     if ( $info === false )
     {
+        // finfo_open does not fail when ext-fileinfo is available (a hard requirement).
+        // @codeCoverageIgnoreStart
         return false;
+        // @codeCoverageIgnoreEnd
     }
 
     $mimeType = finfo_file( $info , $filePath );
@@ -71,7 +74,10 @@ function hasTarMimeType( string $filePath , array $mimeTypes  =
 
     if ( $mimeType === false )
     {
+        // finfo_file does not return false for an existing, readable file.
+        // @codeCoverageIgnoreStart
         return false;
+        // @codeCoverageIgnoreEnd
     }
 
     return array_any( $mimeTypes , fn( $validType ) => str_contains( $mimeType , $validType ) );
