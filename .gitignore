@@ -13,7 +13,8 @@ Thumbs.db
 # Php
 composer.lock
 composer-dev.lock
-/build/parser
+/build/
+/build/coverage/history.json   # coverage trend log — local only
 /.phpdoc/cache
 .php-cs-fixer.cache
 .phpunit.cache
