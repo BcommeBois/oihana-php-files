@@ -2,6 +2,7 @@
 
 namespace tests\oihana\files\archive\tar;
 
+use Phar;
 use PharData;
 use RuntimeException;
 
@@ -213,5 +214,72 @@ class UntarTest extends TestCase
         // Check extracted permissions
         $perms = fileperms($extractedFile) & 0777;
         $this->assertSame(0755, $perms, 'Permissions should be preserved (0755)');
+    }
+
+    private function makeGzTar(): string
+    {
+        // Build under a "work" name, then rename the .gz so the base .tar name that
+        // untar() will decompress to was never registered in this process's Phar cache.
+        $work = $this->outputDir . 'work_' . uniqid() . '.tar';
+        $phar = new PharData($work);
+        $phar->addFromString('a.txt', 'alpha');
+        $phar->compress(Phar::GZ);   // produces "<work>.gz"
+        unset($phar);
+        @unlink($work);
+
+        $finalGz = $this->outputDir . 'final_' . uniqid() . '.tar.gz';
+        rename($work . '.gz', $finalGz);
+
+        return $finalGz;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarCompressedArchiveExtracts(): void
+    {
+        $gz         = $this->makeGzTar();
+        $extractDir = $this->outputDir . '/extract_gz';
+
+        $result = untar($gz, $extractDir);
+
+        $this->assertTrue($result);
+        $this->assertFileExists($extractDir . '/a.txt');
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarCompressedArchiveDryRunReturnsFileList(): void
+    {
+        $gz         = $this->makeGzTar();
+        $extractDir = $this->outputDir . '/extract_gz_dry';
+
+        $result = untar($gz, $extractDir, ['dryRun' => true]);
+
+        $this->assertIsArray($result);
+        $this->assertContains('a.txt', $result);
+        $this->assertFileDoesNotExist($extractDir . '/a.txt');
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testUntarSkipsNonFileEntries(): void
+    {
+        $tar  = $this->outputDir . 'withdir_' . uniqid() . '.tar';
+        $phar = new PharData($tar);
+        $phar->addEmptyDir('emptydir');
+        $phar->addFromString('f.txt', 'x');
+        unset($phar);
+
+        $result = untar($tar, $this->outputDir . '/extract_dir', ['dryRun' => true]);
+
+        $this->assertContains('f.txt', $result);
+        $this->assertNotContains('emptydir', $result);
+        $this->assertNotContains('emptydir/', $result);
     }
 }

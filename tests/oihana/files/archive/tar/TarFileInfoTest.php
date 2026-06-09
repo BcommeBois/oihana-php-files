@@ -100,4 +100,26 @@ class TarFileInfoTest extends TestCase
         $this->assertSame(CompressionType::GZIP, $info[TarInfo::COMPRESSION]);
         $this->assertEquals( 1 , $info[TarInfo::FILE_COUNT]);
     }
+
+    /**
+     * @throws FileException
+     */
+    public function testHandlesCompressedTarBz2(): void
+    {
+        $file    = $this->tempDir . '/archive.tar';
+        $bz2File = $this->tempDir . '/archive.tar.bz2';
+
+        file_put_contents($this->tempDir . '/file.txt', 'hello');
+
+        $tar = new PharData( $file ) ;
+        $tar->addFile($this->tempDir . '/file.txt', 'file.txt');
+        $tar->compress( Phar::BZ2 ) ;
+
+        // Remove uncompressed to keep only .bz2
+        unlink( $file ) ;
+
+        $info = tarFileInfo( $bz2File );
+
+        $this->assertSame(CompressionType::BZIP2, $info[TarInfo::COMPRESSION]);
+    }
 }

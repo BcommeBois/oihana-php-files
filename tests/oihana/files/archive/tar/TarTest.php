@@ -13,6 +13,7 @@ use RuntimeException;
 use function oihana\files\archive\tar\tar;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
+use function oihana\reflect\helpers\getFunctionInfo;
 
 class TarTest extends TestCase
 {
@@ -186,5 +187,86 @@ class TarTest extends TestCase
             $phar[ $expectedKey ]->isDir() ,
             "The entry '$expectedKey' should be a directory."
         );
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws UnsupportedCompressionException
+     */
+    public function testCreatesTarFromDirectoryWithoutPreserveRoot(): void
+    {
+        // Directory (no preserveRoot) -> the basename-prefixed branch adds the file.
+        $sub = $this->tempDir . '/payload';
+        mkdir($sub);
+        file_put_contents($sub . '/inner.txt', 'inner');
+
+        $this->archivePath = tar($sub, null, CompressionType::NONE);
+
+        $this->assertFileExists($this->archivePath);
+
+        $phar = new PharData($this->archivePath);
+        $this->assertTrue($phar->offsetExists('payload/inner.txt'));
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws UnsupportedCompressionException
+     */
+    public function testCreatesTarFromFileWithPreserveRoot(): void
+    {
+        // Single file + preserveRoot -> the str_replace(preserveRoot) archive-path branch.
+        $file = $this->tempDir . '/rooted.txt';
+        file_put_contents($file, 'data');
+
+        $this->archivePath = tar($file, null, CompressionType::NONE, $this->tempDir);
+
+        $this->assertFileExists($this->archivePath);
+
+        $phar = new PharData($this->archivePath);
+        $this->assertTrue($phar->offsetExists('rooted.txt'));
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws UnsupportedCompressionException
+     */
+    public function testThrowsWhenFileEqualsPreserveRoot(): void
+    {
+        // When the only path IS the preserveRoot, its archive path is empty -> no content.
+        $file = $this->tempDir . '/self.txt';
+        file_put_contents($file, 'x');
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('No files were added to the archive.');
+
+        tar($file, $this->tempDir . '/out.tar', CompressionType::NONE, $file);
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws UnsupportedCompressionException
+     */
+    public function testCreatesTemporaryWorkingDirectoryWhenMissing(): void
+    {
+        // Remove the function's cached temp working dir so the makeDirectory() branch runs.
+        $name    = getFunctionInfo('oihana\files\archive\tar\tar')['name'];
+        $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR
+                 . str_replace('\\', DIRECTORY_SEPARATOR, $name) . DIRECTORY_SEPARATOR;
+
+        if (is_dir($tmpPath))
+        {
+            deleteDirectory($tmpPath, assertable: false);
+        }
+
+        $file = $this->tempDir . '/x.txt';
+        file_put_contents($file, 'data');
+
+        $this->archivePath = tar($file, null, CompressionType::NONE);
+
+        $this->assertFileExists($this->archivePath);
     }
 }
