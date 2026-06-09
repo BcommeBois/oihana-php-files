@@ -161,8 +161,11 @@ findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, not regex
 
 | Date | Version | Change |
 |---|---|---|
-| 2026-05 | 1.1.0 (upcoming) | `requireAndMergeArrays`: path/extension validation, `$allowedBase` parameter (mitigates RCE via attacked path inclusion) |
-| 2026-05 | 1.1.0 (upcoming) | `OpenSSLFileEncryption`: V2 refactor — AES-256-GCM (AEAD), KDF (Argon2id/PBKDF2 600k), `random_bytes`, soft-break for V1 backward compatibility |
+| 2026-06 | 1.1.0 | `requireAndMergeArrays`: path/extension validation, `$allowedBase` parameter (mitigates RCE via attacked path inclusion) |
+| 2026-06 | 1.1.0 | `OpenSSLFileEncryption`: V2 refactor — AES-256-GCM (AEAD), KDF (Argon2id/PBKDF2 600k), `random_bytes`, soft-break for V1 backward compatibility |
+| 2026-06 | 1.1.0 | Documentation of the **ReDoS** surface on `findFiles` / `shouldExcludeFile` / `copyFilteredFiles` (trusted patterns only) |
+| 2026-06 | 1.1.0 | `untar`: opt-in protection against **decompression bombs** via `TarOption::MAX_EXTRACTED_SIZE` |
+| 2026-06 | 1.1.0 | Opt-in **size caps** on reads: `$maxBytes` (`getFileLines`, `requireAndMergeArrays`) and `$maxInputBytes` (`OpenSSLFileEncryption`) |
 
 For technical details: see [CHANGELOG.md](../../CHANGELOG.md) `Security` section.
 

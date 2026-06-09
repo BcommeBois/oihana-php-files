@@ -42,7 +42,7 @@ Voir [`canonicalizePath`](../path/joining-and-normalizing.md).
 
 ### Cipher (chiffrement symétrique)
 
-Algorithme de chiffrement utilisé par `OpenSSLFileEncryption`. Par défaut **`aes-256-cbc`** (Advanced Encryption Standard, clé 256 bits, mode Cipher Block Chaining). Tout algorithme listé par `openssl_get_cipher_methods()` est accepté.
+Algorithme de chiffrement utilisé par `OpenSSLFileEncryption`. Les **nouveaux** fichiers utilisent **AES-256-GCM** (mode authentifié AEAD, format V2). Le paramètre `$cipher` du constructeur (défaut historique **`aes-256-cbc`**) ne sert qu'à **relire les fichiers legacy V1** ; tout algorithme listé par `openssl_get_cipher_methods()` est accepté pour ce rôle.
 
 ## E
 

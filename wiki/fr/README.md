@@ -13,7 +13,7 @@ Aux développeurs PHP qui veulent :
 - manipuler des **chemins** (Unix, Windows, URL, `phar://`) de manière homogène — `joinPaths`, `normalizePath`, `canonicalizePath`, `makeAbsolute`/`makeRelative` ;
 - effectuer des opérations **fichier/dossier** robustes avec validations explicites — `assertFile`, `findFiles`, `makeDirectory`, `copyFilteredFiles`, `deleteDirectory` ;
 - créer et extraire des **archives tar/tar.gz/tar.bz2** sans dépendance externe au-delà de l'extension `phar` ;
-- **chiffrer/déchiffrer** des fichiers via OpenSSL (`aes-256-cbc` par défaut) avec IV embarqué ;
+- **chiffrer/déchiffrer** des fichiers via OpenSSL — **AES-256-GCM authentifié** (AEAD) avec dérivation de clé (Argon2id/PBKDF2) ;
 - charger une configuration **TOML** avec valeurs par défaut et fusion profonde ;
 - éviter de redéfinir partout les **types MIME** standards (image, audio, vidéo, divers) et leurs **extensions** associées.
 
@@ -80,7 +80,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 ### OpenSSL — [`openssl/`](openssl/)
 
-- [Vue d'ensemble](openssl/README.md) — la classe `OpenSSLFileEncryption` : chiffrement/déchiffrement de fichiers avec IV embarqué.
+- [Vue d'ensemble](openssl/README.md) — la classe `OpenSSLFileEncryption` : chiffrement/déchiffrement de fichiers **authentifié** (AES-256-GCM, format V2 ; lecture rétro-compatible des fichiers V1).
 
 ### TOML — [`toml/`](toml/)
 

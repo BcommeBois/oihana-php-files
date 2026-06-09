@@ -56,16 +56,14 @@ Pipeline complet : **résolution de chemin → assertion → décodage → fusio
 |------------------|-------------|-------|
 | `$filePath`      | `?string`   | Chemin du TOML. **Si `null` ou vide → seule la config par défaut est utilisée.** |
 | `$defaultConfig` | `?array`    | Valeurs par défaut, fusionnées sous la config décodée (priorité plus basse). |
-| `$defaultPath`   | `?string`   | Dossier de base pour résoudre les chemins relatifs si `$filePath` ne se résout pas dans `getcwd()`. |
+| `$defaultPath`   | `?string`   | Dossier de base où chercher un `$filePath` relatif. Si `null`, un `$filePath` relatif est résolu par rapport au répertoire de travail courant. |
 | `$init`          | `?callable` | Post-traitement appliqué à la config finale. Signature : `fn(array): array`. |
 
 ### Logique de résolution du chemin
 
 1. **Ajout d'extension** : si `$filePath` ne se termine pas par `.toml`, le suffixe est ajouté automatiquement (`FileExtension::TOML`).
-2. **Résolution relative** : si `$filePath` n'est pas absolu :
-   - tenter [`isBasePath($filePath, getcwd())`](../path/inspection.md#isbasepath) → si OK, `makeAbsolute` depuis `getcwd()` ;
-   - sinon, si `$defaultPath` est fourni, joindre `joinPaths($defaultPath, $filePath)` et tester `is_file`. Si OK, utiliser ce chemin.
-3. **`assertFile`** : vérifie que le chemin résolu existe et est lisible.
+2. **Résolution relative** : si `$filePath` n'est pas absolu **et** qu'un `$defaultPath` est fourni, on joint `joinPaths($defaultPath, $filePath)` et on teste `is_file`. Si le fichier existe à cet endroit, ce chemin est retenu (`$defaultPath` est validé par `assertDirectory`).
+3. **`assertFile`** : vérifie que le chemin final existe et est lisible. Un chemin resté relatif est résolu par rapport au répertoire de travail courant par les fonctions de fichiers de PHP.
 
 ### Logique de fusion
 
@@ -223,7 +221,7 @@ Pour `oihana/*`, le choix par défaut est :
 ## Voir aussi
 
 - [Lecture](../files/reading.md#requireandmergearrays) — `requireAndMergeArrays` pour le même pattern en pur PHP.
-- [Path](../path/README.md) — `isAbsolutePath`, `isBasePath`, `joinPaths`, `makeAbsolute` utilisées en interne.
+- [Path](../path/README.md) — `isAbsolutePath` et `joinPaths` utilisées en interne pour la résolution du chemin.
 - [Assertions](../files/assertions.md) — `assertFile`, `assertDirectory`.
 - [Dépendances](../getting-started/dependencies.md#deviumtoml) — `devium/toml`, `deepMerge`.
 - [Exceptions](../exceptions.md) — `FileException`, `DirectoryException`.

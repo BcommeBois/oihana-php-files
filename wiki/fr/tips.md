@@ -87,18 +87,17 @@ makeFile( $path , $content , [
 
 ## Pièges crypto et sécurité
 
-### OpenSSL : limitations actuelles
+### OpenSSL : garanties et limites
 
-Le module [`OpenSSLFileEncryption`](openssl/README.md) a plusieurs **angles d'attaque connus** :
+Depuis la **v1.1.0**, [`OpenSSLFileEncryption`](openssl/README.md) écrit un **format V2** qui corrige les faiblesses des versions ≤ 1.0 :
 
-1. **CBC sans HMAC** : pas de détection de tampering. Un attaquant peut altérer le ciphertext et le déchiffrement renvoie des données silencieusement corrompues.
-2. **GCM cassé** : si tu instancies avec `cipher: 'aes-256-gcm'`, le code ne gère pas le tag — l'`encrypt` "marche" mais le `decrypt` ne valide pas l'intégrité.
-3. **Pas de KDF** : la passphrase est utilisée directement comme clé. Passphrase courte = clé faible.
-4. **`openssl_random_pseudo_bytes`** : déprécié au profit de `random_bytes`.
+1. **AES-256-GCM (AEAD)** : confidentialité **et** intégrité. Toute altération du fichier chiffré fait échouer `decrypt()` avec une `RuntimeException`, au lieu de renvoyer du clair silencieusement corrompu.
+2. **KDF** : la passphrase n'est jamais utilisée comme clé brute — dérivation par **Argon2id** (avec `ext-sodium`) ou repli **PBKDF2-SHA256** (600 000 itérations), avec un **sel aléatoire par fichier**.
+3. **`random_bytes`** pour le sel et l'IV (12 octets, recommandation NIST pour GCM).
 
-Un refactor est planifié — voir le détail dans la doc OpenSSL et le backlog interne.
+Les fichiers **V1** (≤ 1.0 : CBC, sans MAC, passphrase brute) restent **lisibles** par `decrypt()` (détection automatique de l'absence du magic `OPHE\x02`), mais n'ont **aucune détection d'altération** — re-chiffre tes anciens fichiers pour bénéficier du V2.
 
-> 💡 **En attendant** : utiliser pour des fichiers au repos sur disque de confiance (backups locaux), pas pour des fichiers échangés ou stockés sur un disque accessible à un attaquant potentiel.
+> 💡 **Limite résiduelle** : la sécurité repose entièrement sur la **passphrase**. La librairie ne gère ni son stockage, ni sa rotation, ni les fuites par canal auxiliaire (dump mémoire). Voir [Sécurité](security.md).
 
 ### Tar : path traversal en mode default
 

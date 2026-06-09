@@ -56,16 +56,14 @@ Full pipeline: **path resolution → assertion → decoding → merge → post-p
 |------------------|-------------|--------|
 | `$filePath`      | `?string`   | TOML path. **If `null` or empty → only the default config is used.** |
 | `$defaultConfig` | `?array`    | Default values, merged underneath the decoded config (lower priority). |
-| `$defaultPath`   | `?string`   | Base directory to resolve relative paths if `$filePath` does not resolve in `getcwd()`. |
+| `$defaultPath`   | `?string`   | Base directory to look a relative `$filePath` up in. If `null`, a relative `$filePath` is resolved against the current working directory. |
 | `$init`          | `?callable` | Post-processing applied to the final config. Signature: `fn(array): array`. |
 
 ### Path resolution logic
 
 1. **Extension append**: if `$filePath` does not end with `.toml`, the suffix is added automatically (`FileExtension::TOML`).
-2. **Relative resolution**: if `$filePath` is not absolute:
-   - try [`isBasePath($filePath, getcwd())`](../path/inspection.md#isbasepath) → if OK, `makeAbsolute` from `getcwd()`;
-   - otherwise, if `$defaultPath` is provided, join `joinPaths($defaultPath, $filePath)` and test `is_file`. If OK, use that path.
-3. **`assertFile`**: verifies the resolved path exists and is readable.
+2. **Relative resolution**: if `$filePath` is not absolute **and** a `$defaultPath` is provided, join `joinPaths($defaultPath, $filePath)` and test `is_file`. If the file exists there, that path is used (`$defaultPath` is validated by `assertDirectory`).
+3. **`assertFile`**: verifies the final path exists and is readable. A still-relative path is resolved against the current working directory by PHP's filesystem functions.
 
 ### Merge logic
 
@@ -223,7 +221,7 @@ For `oihana/*`, the default choice is:
 ## See also
 
 - [Reading](../files/reading.md#requireandmergearrays) — `requireAndMergeArrays` for the same pattern in pure PHP.
-- [Path](../path/README.md) — `isAbsolutePath`, `isBasePath`, `joinPaths`, `makeAbsolute` used internally.
+- [Path](../path/README.md) — `isAbsolutePath` and `joinPaths` used internally for path resolution.
 - [Assertions](../files/assertions.md) — `assertFile`, `assertDirectory`.
 - [Dependencies](../getting-started/dependencies.md#deviumtoml) — `devium/toml`, `deepMerge`.
 - [Exceptions](../exceptions.md) — `FileException`, `DirectoryException`.

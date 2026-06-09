@@ -87,18 +87,17 @@ makeFile( $path , $content , [
 
 ## Crypto & security pitfalls
 
-### OpenSSL: current limitations
+### OpenSSL: guarantees and limits
 
-The [`OpenSSLFileEncryption`](openssl/README.md) module has several **known attack vectors**:
+Since **v1.1.0**, [`OpenSSLFileEncryption`](openssl/README.md) writes a **V2 format** that fixes the weaknesses of versions ≤ 1.0:
 
-1. **CBC without HMAC**: no tampering detection. An attacker can alter the ciphertext and decryption returns silently corrupted data.
-2. **Broken GCM**: if you instantiate with `cipher: 'aes-256-gcm'`, the code does not handle the tag — `encrypt` "works" but `decrypt` does not validate integrity.
-3. **No KDF**: the passphrase is used directly as key. Short passphrase = weak key.
-4. **`openssl_random_pseudo_bytes`**: deprecated in favour of `random_bytes`.
+1. **AES-256-GCM (AEAD)**: confidentiality **and** integrity. Any alteration of the encrypted file makes `decrypt()` fail with a `RuntimeException`, instead of returning silently corrupted plaintext.
+2. **KDF**: the passphrase is never used as a raw key — derived via **Argon2id** (with `ext-sodium`) or the **PBKDF2-SHA256** fallback (600,000 iterations), with a **per-file random salt**.
+3. **`random_bytes`** for the salt and IV (12 bytes, the NIST recommendation for GCM).
 
-A refactor is planned — see the OpenSSL doc and the internal backlog.
+**V1** files (≤ 1.0: CBC, no MAC, raw passphrase) remain **readable** by `decrypt()` (it auto-detects the missing `OPHE\x02` magic), but have **no tampering detection** — re-encrypt your old files to get the V2 guarantees.
 
-> 💡 **For now**: use for files at rest on a trusted disk (local backups), not for files exchanged or stored on a disk accessible to a potential attacker.
+> 💡 **Residual limit**: security rests entirely on the **passphrase**. The library handles neither its storage, nor its rotation, nor side-channel leaks (memory dumps). See [Security](security.md).
 
 ### Tar: path traversal in default mode
 

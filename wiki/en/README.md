@@ -13,7 +13,7 @@ PHP developers who want to:
 - manipulate **paths** (Unix, Windows, URL, `phar://`) consistently — `joinPaths`, `normalizePath`, `canonicalizePath`, `makeAbsolute`/`makeRelative`;
 - perform robust **file/directory** operations with explicit validation — `assertFile`, `findFiles`, `makeDirectory`, `copyFilteredFiles`, `deleteDirectory`;
 - create and extract **tar / tar.gz / tar.bz2 archives** without external dependencies beyond the `phar` extension;
-- **encrypt/decrypt** files with OpenSSL (default `aes-256-cbc`) with the IV embedded in the output;
+- **encrypt/decrypt** files with OpenSSL — **authenticated AES-256-GCM** (AEAD) with key derivation (Argon2id/PBKDF2);
 - load **TOML configuration** with default values and deep merging;
 - avoid re-declaring standard **MIME types** (image, audio, video, misc) and their **extensions** across projects.
 
@@ -80,7 +80,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 ### OpenSSL — [`openssl/`](openssl/)
 
-- [Overview](openssl/README.md) — the `OpenSSLFileEncryption` class: file encryption/decryption with embedded IV.
+- [Overview](openssl/README.md) — the `OpenSSLFileEncryption` class: **authenticated** file encryption/decryption (AES-256-GCM, V2 format; backward-compatible reading of V1 files).
 
 ### TOML — [`toml/`](toml/)
 
