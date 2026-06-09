@@ -30,6 +30,11 @@ class FileMimeTypeTest extends TestCase
         $this->assertNull($extension);
     }
 
+    public function testGetExtensionReturnsNullForEmptyMimeType(): void
+    {
+        $this->assertNull(FileMimeType::getExtension(''));
+    }
+
     public function testGetExtensionReturnsCorrectExtensionForMimeTypeWithMultipleValues(): void
     {
         // Example for a MIME type stored as an array in FileMimeType (e.g. M4A)

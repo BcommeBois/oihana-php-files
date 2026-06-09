@@ -78,4 +78,28 @@ class FileExtensionTest extends TestCase
         // Test with value equal to null (must return null)
         $this->assertNull(FileExtension::getMimeType(''));
     }
+
+    public function testGetFromMimeTypeDelegatesToFileMimeType(): void
+    {
+        // getFromMimeType is a thin delegate to FileMimeType::getExtension.
+        $this->assertSame
+        (
+            FileMimeType::getExtension(FileMimeType::MP3),
+            FileExtension::getFromMimeType(FileMimeType::MP3)
+        );
+
+        $this->assertNull(FileExtension::getFromMimeType(''));
+    }
+
+    public function testResetCachesClearsInternalState(): void
+    {
+        // Warm the caches, then reset; subsequent calls must still work.
+        FileExtension::getMimeType('.mp3');
+        FileExtension::getMultiplePartExtensions();
+
+        FileExtension::resetCaches();
+
+        $this->assertContains('.tar.gz', FileExtension::getMultiplePartExtensions());
+        $this->assertSame(FileMimeType::MP3, FileExtension::getMimeType('.mp3'));
+    }
 }
