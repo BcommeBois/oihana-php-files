@@ -4,6 +4,7 @@ namespace tests\oihana\files\openssl;
 
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
+use oihana\files\openssl\enums\EncryptionFormat;
 use oihana\files\openssl\OpenSSLFileEncryption;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -52,14 +53,14 @@ class OpenSSLFileEncryptionTest extends TestCase
             unlink($this->decryptedFile);
         }
 
-        // ---- Delete any subdirectories created during testing.
+        // ---- Recursively delete any files and subdirectories created during testing.
         if (file_exists($this->testDir)) {
-            $items = array_diff(scandir($this->testDir), ['.', '..']);
-            foreach ($items as $item) {
-                $path = $this->testDir . '/' . $item;
-                if (is_file($path)) {
-                    unlink($path);
-                }
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($this->testDir, \FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::CHILD_FIRST
+            );
+            foreach ($iterator as $entry) {
+                $entry->isDir() ? @rmdir($entry->getPathname()) : @unlink($entry->getPathname());
             }
             rmdir($this->testDir);
         }
@@ -471,5 +472,179 @@ class OpenSSLFileEncryptionTest extends TestCase
         $this->expectExceptionMessageMatches( '/exceeds maxInputBytes/i' ) ;
 
         $reader->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testEncryptFailsWhenOutputPathIsADirectory(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        // Output path is an existing (writable) directory -> file_put_contents() returns false.
+        $dir = $this->testDir . '/enc_out_dir';
+        if ( !is_dir( $dir ) ) { mkdir( $dir ) ; }
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/Encryption failed, file write failed/' ) ;
+
+        $encryption->encrypt( $this->inputFile , $dir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptFailsWhenOutputDirectoryNotWritable(): void
+    {
+        if ( DIRECTORY_SEPARATOR === '\\' )
+        {
+            $this->markTestSkipped( 'Permission tests are not reliable on Windows.' ) ;
+        }
+
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $roDir = $this->testDir . '/ro_out_dir';
+        if ( !is_dir( $roDir ) ) { mkdir( $roDir ) ; }
+        chmod( $roDir , 0555 ) ;
+
+        try
+        {
+            $this->expectException( RuntimeException::class ) ;
+            $this->expectExceptionMessage( 'Decryption failed, output directory is not writable.' ) ;
+            $encryption->decrypt( $this->encryptedFile , $roDir . '/out.txt' ) ;
+        }
+        finally
+        {
+            @chmod( $roDir , 0777 ) ;
+            @rmdir( $roDir ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptFailsWhenOutputFileNotWritable(): void
+    {
+        if ( DIRECTORY_SEPARATOR === '\\' )
+        {
+            $this->markTestSkipped( 'Permission tests are not reliable on Windows.' ) ;
+        }
+
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $roFile = $this->testDir . '/ro_target.txt';
+        file_put_contents( $roFile , 'old' ) ;
+        chmod( $roFile , 0444 ) ;
+
+        try
+        {
+            $this->expectException( RuntimeException::class ) ;
+            $this->expectExceptionMessage( 'Decryption failed, output file is not writable.' ) ;
+            $encryption->decrypt( $this->encryptedFile , $roFile ) ;
+        }
+        finally
+        {
+            @chmod( $roFile , 0644 ) ;
+            @unlink( $roFile ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptFailsWhenOutputPathIsADirectory(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        // Decryption succeeds, but the write target is a directory -> file_put_contents() fails.
+        $dir = $this->testDir . '/dec_out_dir';
+        if ( !is_dir( $dir ) ) { mkdir( $dir ) ; }
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/Decryption failed, file write failed/' ) ;
+
+        $encryption->decrypt( $this->encryptedFile , $dir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptV2WrapsKdfErrorOnCorruptAlgorithmByte(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+        $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        // The KDF identifier sits right after MAGIC + VERSION; set it to an unknown value.
+        $data   = file_get_contents( $this->encryptedFile ) ;
+        $offset = EncryptionFormat::MAGIC_LENGTH + EncryptionFormat::VERSION_LENGTH ;
+        $data[ $offset ] = chr( 99 ) ;
+
+        $corrupt = $this->testDir . '/corrupt_kdf.enc';
+        file_put_contents( $corrupt , $data ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $encryption->decrypt( $corrupt , $this->decryptedFile ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptLegacyThrowsWhenPayloadTooShort(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        // Not a V2 payload and shorter than the IV length -> legacy "too short" guard.
+        $shortFile = $this->testDir . '/short.enc';
+        file_put_contents( $shortFile , 'short' ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'file is too short to contain IV' ) ;
+
+        $encryption->decrypt( $shortFile , $this->decryptedFile ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testDecryptLegacyThrowsOnWrongPassphrase(): void
+    {
+        // Craft a legacy V1 payload (IV + raw CBC ciphertext) using a known passphrase...
+        $ivLength = openssl_cipher_iv_length( $this->cipher ) ;
+        $iv       = random_bytes( $ivLength ) ;
+        $cipher   = openssl_encrypt( 'legacy data' , $this->cipher , 'right-pass' , OPENSSL_RAW_DATA , $iv ) ;
+
+        $legacyFile = $this->testDir . '/legacy.enc';
+        file_put_contents( $legacyFile , $iv . $cipher ) ;
+
+        // ...then decrypt with a different passphrase -> openssl_decrypt() returns false.
+        $reader = new OpenSSLFileEncryption( 'wrong-pass' , $this->cipher ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $reader->decrypt( $legacyFile , $this->decryptedFile ) ;
+    }
+
+    public function testIsEncryptedFileDetectsLegacyHeuristic(): void
+    {
+        $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        // Non-V2 binary blob with a non-zero, non-printable IV passes the legacy heuristic.
+        $blob = $this->testDir . '/legacy_blob.bin';
+        file_put_contents( $blob , str_repeat( chr( 1 ) , 64 ) ) ;
+
+        $this->assertTrue( $encryption->isEncryptedFile( $blob ) ) ;
     }
 }
