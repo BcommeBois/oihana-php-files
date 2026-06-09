@@ -82,10 +82,13 @@ function deriveKey( string $passphrase , string $salt , int $algorithm ): string
         {
             if ( !function_exists('sodium_crypto_pwhash' ) )
             {
+                // ext-sodium is loaded in the test/CI environment, so this guard cannot fire.
+                // @codeCoverageIgnoreStart
                 throw new RuntimeException
                 (
                     'deriveKey: Argon2id requested but the sodium extension is not loaded.'
                 ) ;
+                // @codeCoverageIgnoreEnd
             }
             return sodium_crypto_pwhash
             (

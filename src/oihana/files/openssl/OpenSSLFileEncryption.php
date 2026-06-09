@@ -113,11 +113,14 @@ class OpenSSLFileEncryption
 
         if ( !in_array( EncryptionFormat::DEFAULT_CIPHER , openssl_get_cipher_methods( true ) ) )
         {
+            // AES-256-GCM is always present in modern OpenSSL builds (ext-openssl required).
+            // @codeCoverageIgnoreStart
             throw new InvalidArgumentException( sprintf
             (
                 'V2 cipher "%s" is not available in this OpenSSL build.' ,
                 EncryptionFormat::DEFAULT_CIPHER
             )) ;
+            // @codeCoverageIgnoreEnd
         }
 
         $this->cipher        = $cipher ;
@@ -144,10 +147,13 @@ class OpenSSLFileEncryption
         {
             sodium_memzero( $this->passphrase ) ;
         }
+        // ext-sodium is loaded, so the fallback overwrite branch is never taken under test.
+        // @codeCoverageIgnoreStart
         else
         {
             $this->passphrase = str_repeat("\0" , strlen( $this->passphrase ) ) ;
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -211,7 +217,10 @@ class OpenSSLFileEncryption
         $plaintext = file_get_contents( $inputFile ) ;
         if ( $plaintext === false )
         {
+            // Defensive: assertFile() already proved the input is a readable file.
+            // @codeCoverageIgnoreStart
             throw new RuntimeException('Encryption failed, unable to read the input file.' ) ;
+            // @codeCoverageIgnoreEnd
         }
 
         try
@@ -219,10 +228,13 @@ class OpenSSLFileEncryption
             $salt = random_bytes( EncryptionFormat::SALT_LENGTH ) ;
             $iv   = random_bytes( EncryptionFormat::GCM_IV_LENGTH ) ;
         }
+        // random_bytes only throws when no CSPRNG is available, which never happens here.
+        // @codeCoverageIgnoreStart
         catch ( Exception )
         {
             throw new RuntimeException('Encryption failed: could not source cryptographically-secure randomness.') ;
         }
+        // @codeCoverageIgnoreEnd
 
         $kdfAlgorithm = bestAvailableKdf() ;
         $key          = deriveKey( $this->passphrase , $salt , $kdfAlgorithm ) ;
@@ -242,7 +254,10 @@ class OpenSSLFileEncryption
 
         if ( $ciphertext === false )
         {
+            // Defensive: openssl_encrypt does not fail with a valid AEAD cipher, key and IV.
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("Encryption failed, openssl_encrypt returned false.") ;
+            // @codeCoverageIgnoreEnd
         }
 
         $outputDir = dirname( $outputFile ) ;
@@ -310,7 +325,10 @@ class OpenSSLFileEncryption
         $data = file_get_contents( $inputFile ) ;
         if ( $data === false )
         {
+            // Defensive: assertFile() already proved the input is a readable file.
+            // @codeCoverageIgnoreStart
             throw new RuntimeException("Failed to decrypt, unable to read the file." ) ;
+            // @codeCoverageIgnoreEnd
         }
 
         $plaintext = $this->isV2Payload( $data )
@@ -537,7 +555,10 @@ class OpenSSLFileEncryption
             $data = file_get_contents( $filePath ) ;
             if ( $data === false )
             {
+                // Defensive: is_file() already passed; an unreadable file here is a TOCTOU race.
+                // @codeCoverageIgnoreStart
                 return false ;
+                // @codeCoverageIgnoreEnd
             }
 
             // Fast path: V2 magic + minimum viable payload length
@@ -579,9 +600,12 @@ class OpenSSLFileEncryption
 
             return true ;
         }
+        // The heuristic above (substr/ord/comparisons) does not throw on in-memory data.
+        // @codeCoverageIgnoreStart
         catch ( Exception )
         {
             return false ;
         }
+        // @codeCoverageIgnoreEnd
     }
 }
