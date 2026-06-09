@@ -2,6 +2,7 @@
 
 namespace oihana\files\path ;
 
+use oihana\files\enums\CanonicalizeBuffer;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -55,5 +56,28 @@ final class CanonicalizePathTest extends TestCase
         $p1 = canonicalizePath('/tmp/example');
         $p2 = canonicalizePath('/tmp/example');     // second call should hit cache
         $this->assertSame($p1, $p2);
+    }
+
+    public function testEmptyPathReturnsEmpty(): void
+    {
+        $this->assertSame('', canonicalizePath(''));
+    }
+
+    public function testBufferCleanupTriggersAboveThreshold(): void
+    {
+        // Reset the shared static buffer so the count is deterministic.
+        CanonicalizeBuffer::$buffer     = [];
+        CanonicalizeBuffer::$bufferSize = 0;
+
+        // One distinct path past the threshold triggers the soft-LRU clean-up,
+        // which trims the buffer back down to CLEANUP_SIZE.
+        $count = CanonicalizeBuffer::CLEANUP_THRESHOLD + 1;
+        for ($i = 0; $i < $count; $i++)
+        {
+            canonicalizePath('/tmp/cleanup/path' . $i);
+        }
+
+        $this->assertSame(CanonicalizeBuffer::CLEANUP_SIZE, CanonicalizeBuffer::$bufferSize);
+        $this->assertLessThanOrEqual(CanonicalizeBuffer::CLEANUP_SIZE, count(CanonicalizeBuffer::$buffer));
     }
 }
