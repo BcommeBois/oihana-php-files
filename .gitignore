@@ -14,7 +14,10 @@ Thumbs.db
 composer.lock
 composer-dev.lock
 /build/
-/build/coverage/history.json   # coverage trend log — local only
+# coverage trend log — local only
+/build/coverage/history.json
+# phpDocumentor output — built & deployed by CI (GitHub Pages)
+/docs/
 /.phpdoc/cache
 .php-cs-fixer.cache
 .phpunit.cache
