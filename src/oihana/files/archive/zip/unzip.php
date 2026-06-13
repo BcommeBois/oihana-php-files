@@ -22,7 +22,7 @@ use function oihana\files\path\joinPaths;
  *
  * @param string $zipFile    Path to the zip archive to extract.
  * @param string $outputPath Directory where the archive is extracted. Created if missing.
- * @param array{dryRun?: bool, overwrite?: bool, maxEntries?: int|null, maxSize?: int|null} $options Optional flags, keyed by {@see ZipOption}:
+ * @param array{dryRun?: bool, overwrite?: bool, maxEntries?: int|null, maxSize?: int|null, keepPermissions?: bool} $options Optional flags, keyed by {@see ZipOption}:
  *   - **dryRun**: If true, no file is written; returns the list of file entries that would be
  *     extracted (directory entries excluded). Default: false.
  *   - **overwrite**: If false, extraction fails when a target file already exists. Default: true.
@@ -31,6 +31,9 @@ use function oihana\files\path\joinPaths;
  *   - **maxSize**: If a positive integer, the archive is pre-scanned and rejected **before**
  *     any file is written when the sum of the entries' uncompressed sizes exceeds this limit
  *     (decompression-bomb guard). Default: null (no limit).
+ *   - **keepPermissions**: If true, restores the Unix file mode stored in each entry's external
+ *     attributes (`OPSYS_UNIX`) via `chmod()`. Entries without Unix permissions are left with the
+ *     default mode. Best-effort: a failing `chmod()` is ignored. Default: false.
  *
  * @return true|string[] Returns true on successful extraction, or the list of file entries
  *                       (relative to the archive root) when dryRun is enabled.
@@ -75,10 +78,11 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
 
     try
     {
-        $dryRun     = $options[ ZipOption::DRY_RUN     ] ?? false ;
-        $overwrite  = $options[ ZipOption::OVERWRITE   ] ?? true  ;
-        $maxEntries = $options[ ZipOption::MAX_ENTRIES ] ?? null  ;
-        $maxSize    = $options[ ZipOption::MAX_SIZE    ] ?? null  ;
+        $dryRun          = $options[ ZipOption::DRY_RUN          ] ?? false ;
+        $overwrite       = $options[ ZipOption::OVERWRITE        ] ?? true  ;
+        $maxEntries      = $options[ ZipOption::MAX_ENTRIES      ] ?? null  ;
+        $maxSize         = $options[ ZipOption::MAX_SIZE         ] ?? null  ;
+        $keepPermissions = $options[ ZipOption::KEEP_PERMISSIONS ] ?? false ;
 
         $numFiles = $zip->numFiles ;
 
@@ -129,16 +133,32 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
             if ( $isDir )
             {
                 makeDirectory( $target ) ;
-                continue ;
             }
-
-            if ( !$overwrite && file_exists( $target ) )
+            else
             {
-                throw new FileException( sprintf('The target file "%s" already exists.' , $target ) ) ;
+                if ( !$overwrite && file_exists( $target ) )
+                {
+                    throw new FileException( sprintf('The target file "%s" already exists.' , $target ) ) ;
+                }
+
+                makeDirectory( dirname( $target ) ) ;
+                file_put_contents( $target , $zip->getFromIndex( $i ) ) ;
             }
 
-            makeDirectory( dirname( $target ) ) ;
-            file_put_contents( $target , $zip->getFromIndex( $i ) ) ;
+            if ( $keepPermissions )
+            {
+                $opSys = 0 ;
+                $attr  = 0 ;
+                if ( $zip->getExternalAttributesIndex( $i , $opSys , $attr ) && $opSys === ZipArchive::OPSYS_UNIX )
+                {
+                    $mode = ( $attr >> 16 ) & 0o7777 ;
+                    if ( $mode !== 0 )
+                    {
+                        // @-suppressed: chmod() warns when the caller does not own the target; best-effort only.
+                        @chmod( $target , $mode ) ;
+                    }
+                }
+            }
         }
 
         return $dryRun ? $entries : true ;

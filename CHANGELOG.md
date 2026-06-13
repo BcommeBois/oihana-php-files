@@ -22,7 +22,8 @@ mirroring the existing `archive\tar` helpers.
   `oihana\files\archive\zip\zipDirectory` (exclude / filter / metadata),
   mirroring the `archive\tar` creation helpers.
 - **Zip extraction** — `oihana\files\archive\zip\unzip` (dry-run, overwrite control,
-  Zip Slip and decompression-bomb guards via `maxEntries` / `maxSize`),
+  optional Unix-permission restore via `keepPermissions`, Zip Slip and
+  decompression-bomb guards via `maxEntries` / `maxSize`),
   mirroring `oihana\files\archive\tar\untar`.
 - **Directory staging helper** — `oihana\files\copyFilteredFilesWithMetadata`,
   the filtered-copy + optional `.metadata.json` + non-empty guard shared by
