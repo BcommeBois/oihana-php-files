@@ -14,6 +14,9 @@ mirroring the existing `archive\tar` helpers.
 - **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
   the low-level `finfo` detector (returns `null` on failure, never throws)
   shared by the MIME helpers.
+- **Single-file compression** — `oihana\files\gzipFile`/`gunzipFile` (via `ext-zlib`) and
+  `oihana\files\bzip2File`/`bunzip2File` (via `ext-bz2`): chunked, streaming, no subprocess.
+  `ext-zlib`/`ext-bz2` added to `suggest`.
 - **Atomic write** — `oihana\files\writeFileAtomic( string $file , string $content , int $permissions = 0644 )`,
   a temp-then-`rename` writer so concurrent readers never observe a partial file.
 - **File size** — `oihana\files\getFileSize( string $file )` (typed wrapper around
@@ -61,6 +64,17 @@ mirroring the existing `archive\tar` helpers.
 - `oihana\files\archive\tar\tarDirectory` now delegates its staging step to
   `oihana\files\copyFilteredFilesWithMetadata` (no behavior change).
 - `composer.json` now requires `ext-zip`.
+
+### Fixed
+
+- Failure paths no longer emit a stray native `E_WARNING` before throwing their
+  typed exception. `makeDirectory`, `makeTimestampedDirectory`, `makeFile`,
+  `getFileLinesGenerator` and `archive\zip\zip` now `@`-suppress their fallible
+  native call (`mkdir`/`chmod`/`fopen`/`ZipArchive::open`) — the error is already
+  reported by the `DirectoryException`/`FileException` that follows. This keeps the
+  warning from breaking strict downstream test suites (`failOnWarning=true`) that
+  exercise these error paths, and aligns these calls with the `@`-suppression
+  already used elsewhere in the library (e.g. `makeTemporaryDirectory`, `writeFileAtomic`).
 
 ## [1.1.0] - 2026-06-09
 

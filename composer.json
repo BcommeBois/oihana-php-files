@@ -85,11 +85,15 @@
             "src/oihana/files/renameFile.php",
             "src/oihana/files/deleteDirectory.php",
             "src/oihana/files/deleteFile.php",
+            "src/oihana/files/bunzip2File.php",
+            "src/oihana/files/bzip2File.php",
             "src/oihana/files/deleteTemporaryDirectory.php",
             "src/oihana/files/fileChecksum.php",
             "src/oihana/files/filesAreEqual.php",
             "src/oihana/files/findFiles.php",
             "src/oihana/files/formatFileSize.php",
+            "src/oihana/files/gunzipFile.php",
+            "src/oihana/files/gzipFile.php",
             "src/oihana/files/getBaseFileName.php",
             "src/oihana/files/getDirectory.php",
             "src/oihana/files/getFileContent.php",
@@ -136,7 +140,9 @@
         "devium/toml": "^1.0"
     },
     "suggest": {
-        "ext-sodium": "Recommended for OpenSSLFileEncryption: enables Argon2id (stronger, GPU-resistant KDF) and sodium_memzero() (reliable in-memory passphrase wiping). Without it, the library transparently falls back to PBKDF2-SHA256 600 000 iterations."
+        "ext-sodium": "Recommended for OpenSSLFileEncryption: enables Argon2id (stronger, GPU-resistant KDF) and sodium_memzero() (reliable in-memory passphrase wiping). Without it, the library transparently falls back to PBKDF2-SHA256 600 000 iterations.",
+        "ext-zlib": "Required by gzipFile()/gunzipFile() for standalone single-file gzip (de)compression.",
+        "ext-bz2": "Required by bzip2File()/bunzip2File() for standalone single-file bzip2 (de)compression."
     },
     "scripts": {
         "test": "./vendor/bin/phpunit",
@@ -152,6 +158,7 @@
     "require-dev": {
         "ext-posix" : "*",
         "ext-zlib" : "*",
+        "ext-bz2" : "*",
         "phpunit/phpunit": "^12",
         "nunomaduro/collision": "^8.8",
         "mikey179/vfsstream": "^1.6",
