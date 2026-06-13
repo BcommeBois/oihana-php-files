@@ -17,6 +17,9 @@ mirroring the existing `archive\tar` helpers.
 - **Single-file compression** — `oihana\files\gzipFile`/`gunzipFile` (via `ext-zlib`) and
   `oihana\files\bzip2File`/`bunzip2File` (via `ext-bz2`): chunked, streaming, no subprocess.
   `ext-zlib`/`ext-bz2` added to `suggest`.
+- **Disk space** — `oihana\files\getFreeDiskSpace`, `oihana\files\getTotalDiskSpace` and
+  `oihana\files\getDiskUsage` (typed wrappers around `disk_free_space`/`disk_total_space`),
+  handy as a pre-flight guard before extracting archives.
 - **Symbolic links** — `oihana\files\createSymlink` (with overwrite, allows dangling targets),
   `oihana\files\isSymlink`, and `oihana\files\readSymlink`.
 - **Touch** — `oihana\files\touchFile( string $file , ?int $mtime = null , ?int $atime = null , bool $createDirectory = true )`,

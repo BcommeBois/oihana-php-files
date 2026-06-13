@@ -24,6 +24,12 @@ Quatorze fonctions utilitaires pour interagir avec le système d'exploitation, m
 - [`getFileSize`](#getfilesize) — taille en octets (avec exception typée).
 - [`formatFileSize`](#formatfilesize) — octets → chaîne lisible (`"1.18 MB"`).
 
+## Espace disque
+
+- [`getFreeDiskSpace`](#getfreediskspace) — octets libres du système de fichiers.
+- [`getTotalDiskSpace`](#gettotaldiskspace) — taille totale du système de fichiers.
+- [`getDiskUsage`](#getdiskusage) — octets utilisés (total − libres).
+
 ## Chemins horodatés (générateurs purs)
 
 - [`getTimestampedFile`](#gettimestampedfile) — chemin de fichier avec timestamp, **sans le créer**.
@@ -405,6 +411,51 @@ formatFileSize( 1536 ) ;    // "1.5 KB"
 formatFileSize( 1240518 ) ; // "1.18 MB"
 
 echo formatFileSize( getFileSize( '/data/report.pdf' ) ) ; // "1.18 MB"
+```
+
+---
+
+## `getFreeDiskSpace`
+
+```php
+getFreeDiskSpace( string $directory = '.' ) : float
+```
+
+Octets **libres** du système de fichiers hébergeant `$directory`. Wrapper typé autour de `disk_free_space()` : un chemin invalide lève une `FileException` au lieu de retourner `false`. Utile comme garde avant d'extraire une archive ou d'écrire de gros fichiers.
+
+```php
+use function oihana\files\getFreeDiskSpace;
+
+if ( getFreeDiskSpace( '/var/www' ) < $tailleEstimee )
+{
+    throw new RuntimeException( 'Espace disque insuffisant.' ) ;
+}
+```
+
+---
+
+## `getTotalDiskSpace`
+
+```php
+getTotalDiskSpace( string $directory = '.' ) : float
+```
+
+Taille **totale** (en octets) du système de fichiers. Wrapper typé autour de `disk_total_space()` ; `FileException` si le chemin est invalide.
+
+---
+
+## `getDiskUsage`
+
+```php
+getDiskUsage( string $directory = '.' ) : float
+```
+
+Octets **utilisés** = `getTotalDiskSpace()` − `getFreeDiskSpace()` (même unité que les deux autres). À combiner avec [`formatFileSize`](#formatfilesize), ou à diviser par `getTotalDiskSpace()` pour un ratio d'occupation.
+
+```php
+use function oihana\files\{ getDiskUsage , formatFileSize };
+
+echo formatFileSize( (int) getDiskUsage( '/' ) ) ; // ex. "187.4 GB"
 ```
 
 ---

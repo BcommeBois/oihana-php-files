@@ -24,6 +24,12 @@ Fourteen utility functions to interact with the operating system, manipulate pat
 - [`getFileSize`](#getfilesize) — size in bytes (with a typed exception).
 - [`formatFileSize`](#formatfilesize) — bytes → human-readable string (`"1.18 MB"`).
 
+## Disk space
+
+- [`getFreeDiskSpace`](#getfreediskspace) — free bytes of the filesystem.
+- [`getTotalDiskSpace`](#gettotaldiskspace) — total size of the filesystem.
+- [`getDiskUsage`](#getdiskusage) — used bytes (total − free).
+
 ## Timestamped paths (pure generators)
 
 - [`getTimestampedFile`](#gettimestampedfile) — file path with timestamp, **without creating it**.
@@ -405,6 +411,51 @@ formatFileSize( 1536 ) ;    // "1.5 KB"
 formatFileSize( 1240518 ) ; // "1.18 MB"
 
 echo formatFileSize( getFileSize( '/data/report.pdf' ) ) ; // "1.18 MB"
+```
+
+---
+
+## `getFreeDiskSpace`
+
+```php
+getFreeDiskSpace( string $directory = '.' ) : float
+```
+
+**Free** bytes of the filesystem hosting `$directory`. A typed wrapper around `disk_free_space()`: an invalid path throws a `FileException` instead of returning `false`. Useful as a guard before extracting an archive or writing large files.
+
+```php
+use function oihana\files\getFreeDiskSpace;
+
+if ( getFreeDiskSpace( '/var/www' ) < $estimatedSize )
+{
+    throw new RuntimeException( 'Not enough free disk space.' ) ;
+}
+```
+
+---
+
+## `getTotalDiskSpace`
+
+```php
+getTotalDiskSpace( string $directory = '.' ) : float
+```
+
+**Total** size (in bytes) of the filesystem. A typed wrapper around `disk_total_space()`; throws `FileException` on an invalid path.
+
+---
+
+## `getDiskUsage`
+
+```php
+getDiskUsage( string $directory = '.' ) : float
+```
+
+**Used** bytes = `getTotalDiskSpace()` − `getFreeDiskSpace()` (same unit as the other two). Combine with [`formatFileSize`](#formatfilesize), or divide by `getTotalDiskSpace()` for a usage ratio.
+
+```php
+use function oihana\files\{ getDiskUsage , formatFileSize };
+
+echo formatFileSize( (int) getDiskUsage( '/' ) ) ; // e.g. "187.4 GB"
 ```
 
 ---
