@@ -16,9 +16,9 @@ Les fonctions sont groupées en **9 catégories** documentées séparément :
 | **Répertoires temporaires** | [temporary.md](temporary.md) | `getTemporaryDirectory`, `makeTemporaryDirectory`, `deleteTemporaryDirectory` (workflow) |
 | **Lecture** | [reading.md](reading.md) | `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |
 | **Découverte** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories` |
-| **Copie filtrée** | [copying.md](copying.md) | `copyFilteredFiles` |
+| **Copie et déplacement** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
 | **Système** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory` |
-| **MIME** | [mime.md](mime.md) | `validateMimeType`, `getImageMimeType` |
+| **MIME** | [mime.md](mime.md) | `getMimeType`, `validateMimeType`, `hasMimeType`, `getImageMimeType` |
 
 ## Conventions transverses
 

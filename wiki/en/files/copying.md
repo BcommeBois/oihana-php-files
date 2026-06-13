@@ -1,9 +1,101 @@
-# Filtered copy
+# Copy and move
 
-Two functions central to **backup**, **sync**, **export** and **archiving** workflows.
+File copy and move helpers, from a **single file** to a **whole directory** (**backup**, **sync**, **export** and **archiving** workflows).
 
+**Single file:**
+- [`copyFile`](#copyfile) — copies a file (overwrite, directory destination, parent creation, typed exceptions).
+- [`moveFile`](#movefile) — moves/renames a file (atomic `rename` + cross-filesystem copy/delete fallback).
+- [`renameFile`](#renamefile) — semantic alias of `moveFile`.
+
+**Directory (filtered copy):**
 - [`copyFilteredFiles`](#copyfilteredfiles) — recursive copy with pattern exclusions + filter callback.
 - [`copyFilteredFilesWithMetadata`](#copyfilteredfileswithmetadata) — `copyFilteredFiles` + optional `.metadata.json` + "nothing matched" guard.
+
+---
+
+## `copyFile`
+
+```php
+copyFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+Copies **one** file, with typed error handling (whereas [`copyFilteredFiles`](#copyfilteredfiles) mirrors a whole tree):
+
+- the source is validated with [`assertFile`](assertions.md#assertfile) (must exist and be readable);
+- if `$destination` is an **existing directory**, the file is copied **inside** it, keeping the source basename (the `cp source dir/` convention);
+- copying a file **onto itself** is refused (it would truncate the source);
+- when `$overwrite` is `false`, an existing destination raises a `FileException`;
+- the destination's parent directory is created on demand via [`makeDirectory`](creation.md#makedirectory) when `$createDirectory` is `true`.
+
+**Returns `true`** on success.
+
+| Case | Exception |
+|---|---|
+| Missing / unreadable source | `FileException` (via `assertFile`) |
+| Source and destination are the same file | `FileException` |
+| Existing destination with `$overwrite = false` | `FileException` |
+| Copy failure | `FileException` |
+| Missing parent directory with `$createDirectory = false` | `DirectoryException` |
+
+```php
+use function oihana\files\copyFile;
+
+copyFile( '/data/report.pdf' , '/backup/report.pdf' ) ;          // explicit target
+copyFile( '/data/report.pdf' , '/backup' ) ;                     // into a directory
+copyFile( '/data/report.pdf' , '/backup/report.pdf' , false ) ;  // throws if it already exists
+```
+
+---
+
+## `moveFile`
+
+```php
+moveFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+Moves (or renames) **one** file. Shares the destination semantics of [`copyFile`](#copyfile) (directory destination, `overwrite`, parent creation).
+
+The move uses `rename()` (**atomic on the same filesystem**). When source and destination live on **different filesystems**, `rename()` cannot span devices, so the function transparently falls back to [`copyFile`](#copyfile) + [`deleteFile`](deletion.md#deletefile).
+
+**Returns `true`** on success. Same exceptions as `copyFile` (except "same file": renaming a file onto itself is a successful no-op).
+
+```php
+use function oihana\files\moveFile;
+
+moveFile( '/tmp/upload.tmp' , '/data/final.pdf' ) ; // move + rename
+moveFile( '/data/final.pdf' , '/archive' ) ;        // into a directory
+```
+
+---
+
+## `renameFile`
+
+```php
+renameFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+**Semantic alias** of [`moveFile`](#movefile): renaming a file is the same as moving it. See `moveFile` for full behaviour.
+
+```php
+use function oihana\files\renameFile;
+
+renameFile( '/data/old-name.txt' , '/data/new-name.txt' ) ;
+```
 
 ---
 

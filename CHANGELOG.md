@@ -14,6 +14,11 @@ mirroring the existing `archive\tar` helpers.
 - **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
   the low-level `finfo` detector (returns `null` on failure, never throws)
   shared by the MIME helpers.
+- **Single-file copy/move** — `oihana\files\copyFile`, `oihana\files\moveFile`
+  and `oihana\files\renameFile` (overwrite control, directory destination,
+  on-demand parent creation, typed `FileException`/`DirectoryException`,
+  cross-filesystem move fallback). Complements the directory-level
+  `copyFilteredFiles`.
 - **MIME helper** — `oihana\files\hasMimeType( string $filePath , string|array $mimeTypes )`,
   a boolean substring-match MIME-type check (accepts a single type or a list) factored
   out of the tar/zip detection helpers.

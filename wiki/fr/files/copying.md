@@ -1,9 +1,101 @@
-# Copie filtrée
+# Copie et déplacement
 
-Deux fonctions centrales pour les workflows de **backup**, **synchronisation**, **export** et **archivage**.
+Fonctions de copie et de déplacement de fichiers, du **fichier unique** au **dossier entier** (workflows de **backup**, **synchronisation**, **export**, **archivage**).
 
+**Fichier unique :**
+- [`copyFile`](#copyfile) — copie un fichier (overwrite, destination-dossier, création du parent, exceptions typées).
+- [`moveFile`](#movefile) — déplace/renomme un fichier (`rename` atomique + repli copie/suppression inter-systèmes).
+- [`renameFile`](#renamefile) — alias sémantique de `moveFile`.
+
+**Dossier (copie filtrée) :**
 - [`copyFilteredFiles`](#copyfilteredfiles) — copie récursive avec exclusions par pattern + callback de filtrage.
 - [`copyFilteredFilesWithMetadata`](#copyfilteredfileswithmetadata) — `copyFilteredFiles` + écriture optionnelle de `.metadata.json` + garde « rien ne matche ».
+
+---
+
+## `copyFile`
+
+```php
+copyFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+Copie **un seul** fichier, avec gestion d'erreurs typée (là où [`copyFilteredFiles`](#copyfilteredfiles) reproduit toute une arborescence) :
+
+- la source est validée par [`assertFile`](assertions.md#assertfile) (doit exister et être lisible) ;
+- si `$destination` est un **dossier existant**, le fichier est copié **dedans** en conservant le nom de la source (convention `cp source dir/`) ;
+- copier un fichier **sur lui-même** est refusé (cela tronquerait la source) ;
+- si `$overwrite` vaut `false`, une destination existante lève une `FileException` ;
+- le dossier parent de la destination est créé à la demande via [`makeDirectory`](creation.md#makedirectory) quand `$createDirectory` vaut `true`.
+
+**Retourne `true`** en cas de succès.
+
+| Cas | Exception |
+|---|---|
+| Source absente / illisible | `FileException` (via `assertFile`) |
+| Source et destination identiques | `FileException` |
+| Destination existante avec `$overwrite = false` | `FileException` |
+| Échec de la copie | `FileException` |
+| Dossier parent absent avec `$createDirectory = false` | `DirectoryException` |
+
+```php
+use function oihana\files\copyFile;
+
+copyFile( '/data/report.pdf' , '/backup/report.pdf' ) ;          // cible explicite
+copyFile( '/data/report.pdf' , '/backup' ) ;                     // dans un dossier
+copyFile( '/data/report.pdf' , '/backup/report.pdf' , false ) ;  // lève si déjà présent
+```
+
+---
+
+## `moveFile`
+
+```php
+moveFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+Déplace (ou renomme) **un seul** fichier. Partage la sémantique de destination de [`copyFile`](#copyfile) (destination-dossier, `overwrite`, création du parent).
+
+Le déplacement utilise `rename()` (**atomique sur le même système de fichiers**). Quand source et destination sont sur des **systèmes de fichiers différents**, `rename()` ne peut pas franchir le périphérique : la fonction bascule alors de façon transparente sur [`copyFile`](#copyfile) + [`deleteFile`](deletion.md#deletefile).
+
+**Retourne `true`** en cas de succès. Mêmes exceptions que `copyFile` (hors « même fichier » : renommer un fichier sur lui-même est un no-op réussi).
+
+```php
+use function oihana\files\moveFile;
+
+moveFile( '/tmp/upload.tmp' , '/data/final.pdf' ) ; // déplacement + renommage
+moveFile( '/data/final.pdf' , '/archive' ) ;        // dans un dossier
+```
+
+---
+
+## `renameFile`
+
+```php
+renameFile(
+    string $source ,
+    string $destination ,
+    bool   $overwrite       = true ,
+    bool   $createDirectory = true
+) : bool
+```
+
+**Alias sémantique** de [`moveFile`](#movefile) : renommer un fichier revient à le déplacer. Voir `moveFile` pour le détail des comportements.
+
+```php
+use function oihana\files\renameFile;
+
+renameFile( '/data/old-name.txt' , '/data/new-name.txt' ) ;
+```
 
 ---
 
