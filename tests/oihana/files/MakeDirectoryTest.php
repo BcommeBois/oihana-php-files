@@ -197,4 +197,33 @@ class MakeDirectoryTest extends TestCase
             @rmdir($path);
         }
     }
+
+    /**
+     * Regression guard for the `@mkdir()` suppression: creating a directory *under an
+     * existing file* fails with `ENOTDIR`, which makes `mkdir()` emit a native
+     * `mkdir(): Not a directory` warning before the typed exception. The other failure
+     * tests use vfsStream, which does NOT surface that native warning — only a real
+     * filesystem path does. Without the `@`, this test fails under `failOnWarning=true`.
+     */
+    public function testThrowsWithoutNativeWarningWhenParentIsAFile(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('ENOTDIR semantics are not reliable on Windows.');
+        }
+
+        $file = sys_get_temp_dir() . '/oihana_mkdir_enotdir_' . uniqid();
+        file_put_contents($file, 'x');
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('Failed to create directory');
+            makeDirectory($file . '/sub');
+        }
+        finally
+        {
+            @unlink($file);
+        }
+    }
 }

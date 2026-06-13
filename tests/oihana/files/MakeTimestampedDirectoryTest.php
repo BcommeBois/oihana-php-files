@@ -127,6 +127,35 @@ class MakeTimestampedDirectoryTest extends TestCase
     }
 
     /**
+     * Regression guard for the `@mkdir()` suppression: a base path *under an existing
+     * file* fails with `ENOTDIR`, which makes `mkdir()` emit a native
+     * `mkdir(): Not a directory` warning before the typed exception. The other failure
+     * tests use vfsStream, which does NOT surface that native warning — only a real
+     * filesystem path does. Without the `@`, this test fails under `failOnWarning=true`.
+     */
+    public function testThrowsWithoutNativeWarningWhenBasePathIsUnderAFile(): void
+    {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        {
+            $this->markTestSkipped('ENOTDIR semantics are not reliable on Windows.');
+        }
+
+        $file = sys_get_temp_dir() . '/oihana_ts_enotdir_' . uniqid();
+        file_put_contents($file, 'x');
+
+        try
+        {
+            $this->expectException(DirectoryException::class);
+            $this->expectExceptionMessage('Failed to creates a timestamped directory.');
+            makeTimestampedDirectory(null, $file . '/sub');
+        }
+        finally
+        {
+            @unlink($file);
+        }
+    }
+
+    /**
      * Avec un basePath vide, le répertoire est créé relativement au cwd
      * (branche ': $directoryName' du ternaire).
      * @throws DirectoryException

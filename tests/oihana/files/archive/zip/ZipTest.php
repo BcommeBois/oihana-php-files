@@ -240,6 +240,25 @@ class ZipTest extends TestCase
     }
 
     /**
+     * Regression guard for the `@$zip->open()` suppression: targeting an archive path
+     * *under an existing file* fails with `ENOTDIR`, which makes `ZipArchive::open()`
+     * emit a native `No such file or directory` warning before the typed exception.
+     * Without the `@`, this test fails under `failOnWarning=true`.
+     *
+     * @throws DirectoryException
+     * @throws UnsupportedCompressionException
+     */
+    public function testThrowsFileExceptionWhenArchivePathIsUnderAFile(): void
+    {
+        $file = $this->tempDir . '/file.txt';
+        file_put_contents( $file , 'hello' );
+
+        $this->expectException( FileException::class );
+        $this->expectExceptionMessage( 'Cannot create the zip archive' );
+        zip( $file , $file . '/out.zip' );
+    }
+
+    /**
      * @throws DirectoryException
      * @throws UnsupportedCompressionException
      */
