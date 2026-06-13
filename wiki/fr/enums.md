@@ -10,7 +10,7 @@
 |---|---|
 | **MIME types** | [`FileMimeType`](#filemimetype), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
 | **Extensions de fichier** | [`FileExtension`](#fileextension), [`TarExtension`](#tarextension) |
-| **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat) |
+| **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat), [`FileSizeUnit`](#filesizeunit) |
 | **Options (clés de tableaux)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption), [`ZipOption`](#zipoption) |
 | **Modes / énumérations métier** | [`FindMode`](#findmode) |
 | **Résultats structurés (clés)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo), [`ZipInfo`](#zipinfo) |
@@ -146,6 +146,16 @@ FileExtension::ENCRYPTED ; // '.enc'
 **14 formats** d'image **sans préfixe MIME** (juste l'extension sans point) — `avif`, `bmp`, `cur`, `gif`, `heic`, `heif`, `ico`, `jpeg`, `jpg`, `png`, `svg`, `tif`, `tiff`, `webp`.
 
 Utilisé comme **clé** dans les mappings format → MIME, notamment par [`getImageMimeType`](files/mime.md#getimagemimetype).
+
+### `FileSizeUnit`
+
+**6 symboles d'unité** binaires (base 1024), du plus petit au plus grand — `B`, `KB`, `MB`, `GB`, `TB`, `PB`.
+
+| Méthode | Renvoie |
+|---|---|
+| `ordered()` | `[B, KB, MB, GB, TB, PB]` (index = puissance de 1024) |
+
+Utilisé par [`formatFileSize`](files/system.md#formatfilesize) pour rendre un nombre d'octets lisible.
 
 ---
 

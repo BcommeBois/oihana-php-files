@@ -10,7 +10,7 @@
 |---|---|
 | **MIME types** | [`FileMimeType`](#filemimetype), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
 | **File extensions** | [`FileExtension`](#fileextension), [`TarExtension`](#tarextension) |
-| **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat) |
+| **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat), [`FileSizeUnit`](#filesizeunit) |
 | **Options (array keys)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption), [`ZipOption`](#zipoption) |
 | **Modes / domain enums** | [`FindMode`](#findmode) |
 | **Structured results (keys)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo), [`ZipInfo`](#zipinfo) |
@@ -146,6 +146,16 @@ FileExtension::ENCRYPTED ; // '.enc'
 **14 image formats** **without MIME prefix** (just the extension without dot) — `avif`, `bmp`, `cur`, `gif`, `heic`, `heif`, `ico`, `jpeg`, `jpg`, `png`, `svg`, `tif`, `tiff`, `webp`.
 
 Used as a **key** in format → MIME mappings, notably by [`getImageMimeType`](files/mime.md#getimagemimetype).
+
+### `FileSizeUnit`
+
+**6 binary unit symbols** (base 1024), smallest to largest — `B`, `KB`, `MB`, `GB`, `TB`, `PB`.
+
+| Method | Returns |
+|---|---|
+| `ordered()` | `[B, KB, MB, GB, TB, PB]` (index = power of 1024) |
+
+Used by [`formatFileSize`](files/system.md#formatfilesize) to render a byte count as a human-readable string.
 
 ---
 

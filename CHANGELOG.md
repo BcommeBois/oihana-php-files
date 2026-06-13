@@ -14,6 +14,10 @@ mirroring the existing `archive\tar` helpers.
 - **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
   the low-level `finfo` detector (returns `null` on failure, never throws)
   shared by the MIME helpers.
+- **File size** — `oihana\files\getFileSize( string $file )` (typed wrapper around
+  `filesize`) and `oihana\files\formatFileSize( int $bytes , int $precision = 2 )`
+  (human-readable, base-1024 `B`…`PB`, units from the new `oihana\files\enums\FileSizeUnit`).
+  Complements `tarFileInfo`/`zipFileInfo` `totalSize`.
 - **Whole-file read** — `oihana\files\getFileContent( ?string $file , ?int $maxBytes = null )`,
   the read counterpart of `makeFile` (returns the full content as a string, with an
   optional defensive size cap).

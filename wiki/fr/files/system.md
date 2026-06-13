@@ -21,6 +21,8 @@ Quatorze fonctions utilitaires pour interagir avec le système d'exploitation, m
 - [`getOwnershipInfos`](#getownershipinfos) — UID/GID + noms (owner/group).
 - [`getBaseFileName`](#getbasefilename) — nom de fichier **sans extension** (gère multi-part).
 - [`getFileExtension`](#getfileextension) — extension (gère multi-part comme `.tar.gz`).
+- [`getFileSize`](#getfilesize) — taille en octets (avec exception typée).
+- [`formatFileSize`](#formatfilesize) — octets → chaîne lisible (`"1.18 MB"`).
 
 ## Chemins horodatés (générateurs purs)
 
@@ -363,6 +365,47 @@ echo getFileExtension( 'C:\\projects\\demo.tar.bz2' ) ; // '.tar.bz2'
 > // Re-construit identiquement
 > assert( $base . ( $ext ?? '' ) === basename( $path ) ) ;
 > ```
+
+---
+
+## `getFileSize`
+
+```php
+getFileSize( string $file ) : int
+```
+
+Retourne la taille d'un fichier **en octets**. Wrapper typé autour de `filesize()` : la source est d'abord validée par [`assertFile`](assertions.md#assertfile), donc un fichier absent lève une `FileException` au lieu d'un warning + `false`.
+
+**Lève `FileException`** si le fichier est absent, illisible, ou si la taille ne peut être lue.
+
+```php
+use function oihana\files\getFileSize;
+
+$bytes = getFileSize( '/data/report.pdf' ) ; // ex. 1240518
+```
+
+> 💡 Complète `tarFileInfo`/`zipFileInfo` (champ `totalSize`). Combiner avec [`formatFileSize`](#formatfilesize) pour l'affichage.
+
+---
+
+## `formatFileSize`
+
+```php
+formatFileSize( int $bytes , int $precision = 2 ) : string
+```
+
+Formate un nombre d'octets en chaîne **lisible**. Multiples binaires (base **1024**), unités issues de l'enum [`FileSizeUnit`](../enums.md#filesizeunit) (`B, KB, MB, GB, TB, PB`). Les octets s'affichent sans décimale ; les unités supérieures utilisent `$precision` décimales. Une valeur nulle ou négative donne `"0 B"`. Au-delà de `PB`, la valeur est ramenée à `PB`.
+
+```php
+use function oihana\files\formatFileSize;
+
+formatFileSize( 0 ) ;       // "0 B"
+formatFileSize( 512 ) ;     // "512 B"
+formatFileSize( 1536 ) ;    // "1.5 KB"
+formatFileSize( 1240518 ) ; // "1.18 MB"
+
+echo formatFileSize( getFileSize( '/data/report.pdf' ) ) ; // "1.18 MB"
+```
 
 ---
 

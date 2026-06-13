@@ -17,7 +17,7 @@ Les fonctions sont groupées en **9 catégories** documentées séparément :
 | **Lecture** | [reading.md](reading.md) | `getFileContent`, `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |
 | **Découverte** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories` |
 | **Copie et déplacement** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
-| **Système** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory` |
+| **Système** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getFileSize`, `formatFileSize`, `getTimestampedFile`, `getTimestampedDirectory` |
 | **MIME** | [mime.md](mime.md) | `getMimeType`, `validateMimeType`, `hasMimeType`, `getImageMimeType` |
 | **Intégrité** | [integrity.md](integrity.md) | `fileChecksum`, `filesAreEqual` |
 
