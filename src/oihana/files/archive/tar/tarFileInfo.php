@@ -9,6 +9,7 @@ use oihana\files\exceptions\FileException;
 use PharData;
 
 use function oihana\files\assertFile;
+use function oihana\files\getMimeType;
 
 /**
  * Retrieves detailed information about a tar archive file.
@@ -80,13 +81,7 @@ function tarFileInfo( string $filePath , bool $strictMode = false ): array
     ];
 
     // Get MIME type
-    $fileInfo = finfo_open( FILEINFO_MIME_TYPE );
-    if ( $fileInfo !== false )
-    {
-        $mimeType = finfo_file( $fileInfo , $filePath) ?: 'unknown';
-        finfo_close( $fileInfo );
-        $info[TarInfo::MIME_TYPE] = $mimeType;
-    }
+    $info[ TarInfo::MIME_TYPE ] = getMimeType( $filePath ) ?? 'unknown' ;
 
     // Determine compression type
     if ( str_contains( $info[ TarInfo::MIME_TYPE ] , CompressionType::GZIP ) )

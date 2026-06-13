@@ -5,6 +5,7 @@ use oihana\files\enums\ImageMimeType;
 use oihana\files\exceptions\FileException;
 
 use function oihana\files\assertFile;
+use function oihana\files\getMimeType;
 
 /**
  * Resolves and validates the MIME type of a file, typically an image.
@@ -71,10 +72,7 @@ function getImageMimeType
 
     $format = $format !== null ? strtolower(trim($format)) : null;
 
-    $finfo    = finfo_open(FILEINFO_MIME_TYPE ) ;
-    $realMime = finfo_file( $finfo , $file ) ;
-
-    finfo_close( $finfo ) ;
+    $realMime = getMimeType( $file ) ?? '' ;
 
     if ( $format && isset( $allowedFormats[ $format ] ) )
     {

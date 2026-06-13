@@ -11,6 +11,9 @@ mirroring the existing `archive\tar` helpers.
 
 ### Added
 
+- **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
+  the low-level `finfo` detector (returns `null` on failure, never throws)
+  shared by the MIME helpers.
 - **MIME helper** — `oihana\files\hasMimeType( string $filePath , string|array $mimeTypes )`,
   a boolean substring-match MIME-type check (accepts a single type or a list) factored
   out of the tar/zip detection helpers.
@@ -34,6 +37,9 @@ mirroring the existing `archive\tar` helpers.
 
 - `oihana\files\archive\tar\hasTarMimeType` and `oihana\files\archive\zip\hasZipMimeType`
   now delegate to `oihana\files\hasMimeType` (no behavior change).
+- `oihana\files\hasMimeType`, `images\getImageMimeType`, `archive\tar\tarFileInfo`
+  and `archive\zip\zipFileInfo` now delegate MIME detection to
+  `oihana\files\getMimeType` (no behavior change).
 - `oihana\files\archive\tar\tarDirectory` now delegates its staging step to
   `oihana\files\copyFilteredFilesWithMetadata` (no behavior change).
 - `composer.json` now requires `ext-zip`.

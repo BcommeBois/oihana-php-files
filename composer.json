@@ -90,6 +90,7 @@
             "src/oihana/files/getFileLines.php",
             "src/oihana/files/getFileLinesGenerator.php",
             "src/oihana/files/getHomeDirectory.php",
+            "src/oihana/files/getMimeType.php",
             "src/oihana/files/getOwnershipInfos.php" ,
             "src/oihana/files/getRoot.php",
             "src/oihana/files/getSchemeAndHierarchy.php",

@@ -8,6 +8,7 @@ use oihana\files\exceptions\FileException;
 use ZipArchive;
 
 use function oihana\files\assertFile;
+use function oihana\files\getMimeType;
 
 /**
  * Retrieves detailed information about a zip archive file.
@@ -77,13 +78,7 @@ function zipFileInfo( string $filePath , bool $strictMode = false ): array
     ];
 
     // Get MIME type
-    $fileInfo = finfo_open( FILEINFO_MIME_TYPE );
-    if ( $fileInfo !== false )
-    {
-        $mimeType = finfo_file( $fileInfo , $filePath ) ?: 'unknown';
-        finfo_close( $fileInfo );
-        $info[ ZipInfo::MIME_TYPE ] = $mimeType;
-    }
+    $info[ ZipInfo::MIME_TYPE ] = getMimeType( $filePath ) ?? 'unknown' ;
 
     // Determine compression family from the MIME type
     $info[ ZipInfo::COMPRESSION ] = str_contains( (string) $info[ ZipInfo::MIME_TYPE ] , CompressionType::ZIP )

@@ -1,12 +1,38 @@
 # MIME and validation
 
-Three functions to detect and validate MIME types of files.
+Four functions to detect and validate MIME types of files.
 
+- [`getMimeType`](#getmimetype) — detection primitive: returns a file's raw MIME or `null` (**never throws**).
 - [`validateMimeType`](#validatemimetype) — checks that a file's MIME is in an allowed list (**throws** otherwise).
 - [`hasMimeType`](#hasmimetype) — tests whether a file's MIME matches a list (**returns a `bool`**, partial match).
 - [`getImageMimeType`](#getimagemimetype) — resolves and validates an image's MIME with format/MIME mapping.
 
-> 💡 Both functions rely on the PHP **`ext-fileinfo`** extension (required by `oihana/php-files`). For the typed MIME catalogue, see [enums.md](../enums.md) (`FileMimeType`, `ImageMimeType`, `AudioMimeType`, `VideoMimeType`).
+> 💡 These functions rely on the PHP **`ext-fileinfo`** extension (required by `oihana/php-files`). For the typed MIME catalogue, see [enums.md](../enums.md) (`FileMimeType`, `ImageMimeType`, `AudioMimeType`, `VideoMimeType`).
+
+---
+
+## `getMimeType`
+
+```php
+getMimeType( string $file ) : ?string
+```
+
+Low-level primitive that detects a file's MIME via `finfo` and returns the raw string (`text/plain`, `application/zip`, …) **without any normalisation**.
+
+The function **never throws**: it returns `null` when the path is not a file or when detection fails (including an empty result). How to react (a boolean, a `'unknown'` fallback label, …) is left to the caller.
+
+```php
+use function oihana\files\getMimeType;
+
+getMimeType( '/uploads/notes.txt'   ) ; // 'text/plain'
+getMimeType( '/uploads/archive.zip' ) ; // 'application/zip'
+getMimeType( '/uploads/missing'     ) ; // null
+getMimeType( '/uploads'             ) ; // null (directory)
+```
+
+> 💡 This is the shared building block behind [`hasMimeType`](#hasmimetype), [`getImageMimeType`](#getimagemimetype),
+> [`tarFileInfo`](../archive/untar.md) and [`zipFileInfo`](../archive/unzip.md), which enrich it with a whitelist,
+> a format→MIME mapping or an `'unknown'` fallback.
 
 ---
 
@@ -97,7 +123,7 @@ Tests whether a file's MIME (detected via `finfo`) **contains** one of the given
 | Comparison | **partial** (`str_contains`) | exact (`in_array`) |
 | Missing file | `false` | `FileException` |
 
-`$mimeTypes` accepts a **single string or an array** (normalised via `oihana\core\arrays\toArray`). The partial match accepts suffixed MIME types (e.g. `application/zip; charset=binary`).
+Detection is delegated to [`getMimeType`](#getmimetype). `$mimeTypes` accepts a **single string or an array** (normalised via `oihana\core\arrays\toArray`). The partial match accepts suffixed MIME types (e.g. `application/zip; charset=binary`).
 
 ```php
 use function oihana\files\hasMimeType;
@@ -158,7 +184,7 @@ getImageMimeType(
 
 ### Technical detection
 
-Uses `finfo_open(FILEINFO_MIME_TYPE)` + `finfo_file()` — functional equivalent of `mime_content_type()` but more configurable.
+Delegates detection to [`getMimeType`](#getmimetype) (`finfo_open(FILEINFO_MIME_TYPE)` + `finfo_file()`) — functional equivalent of `mime_content_type()` but more configurable.
 
 Calls [`assertFile`](assertions.md#assertfile) upstream — throws `FileException` if the file does not exist or is not readable.
 
@@ -217,9 +243,10 @@ function handleUpload( string $uploadPath , string $declaredFormat ) {
 
 | Function             | MIME detection      | Whitelist | Format→MIME mapping | Throws |
 |----------------------|---------------------|-----------|---------------------|---|
+| `getMimeType`        | `finfo_*` | No | No | Never (`?string`) |
 | `validateMimeType`   | `mime_content_type` | Yes (mandatory) | No | If not in list |
-| `hasMimeType`        | `finfo_*` | Yes (partial match) | No | Never (`bool`) |
-| `getImageMimeType`   | `finfo_*` | Indirect (via `$allowedFormats`) | Yes | If file does not exist |
+| `hasMimeType`        | `getMimeType` | Yes (partial match) | No | Never (`bool`) |
+| `getImageMimeType`   | `getMimeType` | Indirect (via `$allowedFormats`) | Yes | If file does not exist |
 | `assertFile`         | Delegates to `validateMimeType` (3rd arg) | Yes (optional) | No | If validation fails |
 
 ---
