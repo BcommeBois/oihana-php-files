@@ -169,7 +169,7 @@ Ces classes définissent les **clés acceptées** par les fonctions qui prennent
 
 ### `FindFileOption`
 
-⚠ **Quasi-doublon de `FindFilesOption`** (mêmes 8 clés, même classe constantes). À surveiller — possible dette technique à clarifier.
+> ⚠ **Déprécié (1.2.0)** — utiliser [`FindFilesOption`](#findfilesoption). C'est un **alias de compatibilité** : ses 8 constantes sourcent directement celles de `FindFilesOption` (valeurs garanties identiques). Sera retiré dans une version majeure future.
 
 ### `MakeFileOption`
 

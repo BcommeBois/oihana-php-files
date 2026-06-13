@@ -169,7 +169,7 @@ These classes define the **keys accepted** by functions taking an options array.
 
 ### `FindFileOption`
 
-⚠ **Near-duplicate of `FindFilesOption`** (same 8 keys, same constants class). To watch — possible technical debt to clarify.
+> ⚠ **Deprecated (1.2.0)** — use [`FindFilesOption`](#findfilesoption). This is a **compatibility alias**: its 8 constants mirror `FindFilesOption`'s directly (values guaranteed identical). It will be removed in a future major release.
 
 ### `MakeFileOption`
 

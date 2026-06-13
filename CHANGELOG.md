@@ -65,6 +65,13 @@ mirroring the existing `archive\tar` helpers.
   `oihana\files\copyFilteredFilesWithMetadata` (no behavior change).
 - `composer.json` now requires `ext-zip`.
 
+### Deprecated
+
+- `oihana\files\enums\FindFileOption` is deprecated in favour of
+  `oihana\files\enums\FindFilesOption` (the one used by `findFiles`). It is now a
+  value-identical alias whose constants mirror `FindFilesOption`, and will be
+  removed in a future major release.
+
 ### Fixed
 
 - Failure paths no longer emit a stray native `E_WARNING` before throwing their
