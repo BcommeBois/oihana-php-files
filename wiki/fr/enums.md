@@ -11,9 +11,9 @@
 | **MIME types** | [`FileMimeType`](#filemimetype), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
 | **Extensions de fichier** | [`FileExtension`](#fileextension), [`TarExtension`](#tarextension) |
 | **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat) |
-| **Options (clés de tableaux)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption) |
+| **Options (clés de tableaux)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption), [`ZipOption`](#zipoption) |
 | **Modes / énumérations métier** | [`FindMode`](#findmode) |
-| **Résultats structurés (clés)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo) |
+| **Résultats structurés (clés)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo), [`ZipInfo`](#zipinfo) |
 | **État interne** | [`CanonicalizeBuffer`](#canonicalizebuffer) |
 | **Traits réutilisables** | [`ImageMimeTypeTrait`, `AudioMimeTypeTrait`, `VideoMimeTypeTrait`](#traits-mime) |
 
@@ -133,7 +133,7 @@ FileExtension::ENCRYPTED ; // '.enc'
 | `XZ` | `'xz'` |
 | `ZSTD` | `'zstd'` |
 
-> ⚠ Les 8 constantes sont définies mais **seules `NONE`, `GZIP` et `BZIP2`** sont supportées par les fonctions [`tar`](archive/tar.md) / [`untar`](archive/untar.md). Les autres lèveront `UnsupportedCompressionException`.
+> ⚠ Les 8 constantes sont définies mais **seules `NONE`, `GZIP` et `BZIP2`** sont supportées par les fonctions [`tar`](archive/tar.md) / [`untar`](archive/untar.md). Les fonctions [`zip`](archive/zip.md) / [`unzip`](archive/unzip.md) acceptent **`ZIP`** (DEFLATE) et **`NONE`** (STORE). Toute autre valeur lève `UnsupportedCompressionException`.
 
 | Méthode | Renvoie |
 |---|---|
@@ -179,6 +179,22 @@ Ces classes définissent les **clés acceptées** par les fonctions qui prennent
 
 6 clés pour [`tar`](archive/tar.md#tar) / [`tarDirectory`](archive/tar.md#tardirectory) / [`untar`](archive/untar.md#untar) : `DRY_RUN`, `EXCLUDE`, `FILTER`, `KEEP_PERMISSIONS`, `OVERWRITE`, `METADATA`.
 
+### `ZipOption`
+
+9 clés pour [`zip`](archive/zip.md#zip) / [`zipDirectory`](archive/zip.md#zipdirectory) / [`unzip`](archive/unzip.md#unzip) :
+
+| Constante | Valeur | Utilisée par |
+|---|---|---|
+| `COMPRESSION` | `'compression'` | `zip`, `zipDirectory` (DEFLATE / STORE) |
+| `DRY_RUN` | `'dryRun'` | `unzip` |
+| `EXCLUDE` | `'exclude'` | `zipDirectory` |
+| `FILTER` | `'filter'` | `zipDirectory` |
+| `KEEP_PERMISSIONS` | `'keepPermissions'` | `unzip` |
+| `MAX_ENTRIES` | `'maxEntries'` | `unzip` (anti-bombe) |
+| `MAX_SIZE` | `'maxSize'` | `unzip` (anti-bombe) |
+| `METADATA` | `'metadata'` | `zipDirectory` |
+| `OVERWRITE` | `'overwrite'` | `unzip` |
+
 ---
 
 ## Modes / énumérations métier
@@ -208,6 +224,10 @@ Ces classes définissent les **clés des tableaux retournés** par certaines fon
 ### `TarInfo`
 
 6 clés du tableau retourné par [`tarFileInfo`](archive/tar.md#tarfileinfo) : `COMPRESSION`, `EXTENSION`, `FILE_COUNT`, `IS_VALID`, `TOTAL_SIZE`, `MIME_TYPE`.
+
+### `ZipInfo`
+
+6 clés du tableau retourné par [`zipFileInfo`](archive/zip.md#zipfileinfo) : `COMPRESSION`, `EXTENSION`, `FILE_COUNT`, `IS_VALID`, `TOTAL_SIZE`, `MIME_TYPE`.
 
 ---
 

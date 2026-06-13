@@ -1,68 +1,72 @@
-# Archives — `oihana\files\archive\tar`
+# Archives — `oihana\files\archive`
 
-Le namespace `oihana\files\archive\tar` rassemble **9 fonctions standalone** pour créer, extraire et inspecter des archives **tar** (avec ou sans compression `gzip` / `bzip2`).
+Le namespace `oihana\files\archive` rassemble deux boîtes à outils symétriques de fonctions standalone :
 
-> 💡 Implémentation basée sur **`PharData`** natif (extension `ext-phar`, activée par défaut dans PHP). Pas de dépendance externe.
+- **`oihana\files\archive\tar`** — archives **tar** (avec ou sans compression `gzip` / `bzip2`), basées sur **`PharData`** (`ext-phar`).
+- **`oihana\files\archive\zip`** — archives **zip**, basées sur **`ZipArchive`** (`ext-zip`).
+
+Les deux APIs sont volontairement **parallèles** : `zip`/`unzip` reflètent `tar`/`untar`, `zipDirectory` reflète `tarDirectory`, etc.
 
 ## Catalogue
 
-| Catégorie | Fonctions |
-|---|---|
-| **Création** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory) |
-| **Extraction** | [`untar`](untar.md#untar) |
-| **Inspection** | [`tarFileInfo`](tar.md#tarfileinfo), [`tarIsCompressed`](tar.md#tariscompressed) |
-| **Validation** | [`assertTar`](untar.md#asserttar), [`hasTarExtension`](untar.md#hastarextension), [`hasTarMimeType`](untar.md#hastarmimetype), [`validateTarStructure`](untar.md#validatetarstructure) |
+| Catégorie | tar (`PharData`) | zip (`ZipArchive`) |
+|---|---|---|
+| **Création** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory) | [`zip`](zip.md#zip), [`zipDirectory`](zip.md#zipdirectory) |
+| **Extraction** | [`untar`](untar.md#untar) | [`unzip`](unzip.md#unzip) |
+| **Inspection** | [`tarFileInfo`](tar.md#tarfileinfo), [`tarIsCompressed`](tar.md#tariscompressed) | [`zipFileInfo`](zip.md#zipfileinfo) |
+| **Validation** | [`assertTar`](untar.md#asserttar), [`hasTarExtension`](untar.md#hastarextension), [`hasTarMimeType`](untar.md#hastarmimetype), [`validateTarStructure`](untar.md#validatetarstructure) | [`assertZip`](unzip.md#assertzip), [`hasZipExtension`](unzip.md#haszipextension), [`hasZipMimeType`](unzip.md#haszipmimetype), [`validateZipStructure`](unzip.md#validatezipstructure) |
+
+> ℹ️ Pas de `zipIsCompressed` : un zip est un conteneur dont la compression se décide **par entrée** (DEFLATE ou STORE), la notion globale « compressé ou non » n'a pas de sens.
 
 ## Formats supportés
 
-| Format       | Extensions reconnues          | Compression       | Mode d'écriture |
-|--------------|-------------------------------|-------------------|-----------------|
-| **tar**      | `.tar`                        | aucune            | natif           |
-| **tar.gz**   | `.tar.gz`, `.tgz`             | gzip              | natif (`ext-zlib`) |
-| **tar.bz2**  | `.tar.bz2`, `.tbz2`           | bzip2             | natif (`ext-bz2`)  |
+| Format       | Extensions reconnues          | Compression       | Backend |
+|--------------|-------------------------------|-------------------|---------|
+| **tar**      | `.tar`                        | aucune            | `PharData` |
+| **tar.gz**   | `.tar.gz`, `.tgz`             | gzip (`ext-zlib`) | `PharData` |
+| **tar.bz2**  | `.tar.bz2`, `.tbz2`           | bzip2 (`ext-bz2`) | `PharData` |
+| **zip**      | `.zip`                        | DEFLATE ou STORE (par entrée) | `ZipArchive` (`ext-zip`) |
 
-L'énumération [`CompressionType`](../enums.md#compressiontype) liste les valeurs canoniques (`gz`, `bz2`, `none`).
+L'énumération [`CompressionType`](../enums.md#compressiontype) liste les valeurs canoniques (`gzip`, `bzip2`, `none`, `zip`).
 
-## Principes
+## Principes communs
 
-1. **Pas de subprocess.** Tout passe par `PharData` — pas de `exec('tar ...')`. Avantage : portable, scriptable, testable. Inconvénient : limite de taille (mémoire/temps PHP).
-2. **Dossiers vides préservés.** Contrairement à un `cp -r` naïf, `tar` préserve les sous-dossiers vides via `addEmptyDir`.
-3. **Sécurité à l'extraction.** `untar` détecte les tentatives de **path traversal** (`..`) dans les noms d'entrées de l'archive — protection contre les attaques *Zip Slip* / *Tar Slip*.
-4. **Validation à plusieurs niveaux.** `hasTarExtension` (rapide, juste le nom), `hasTarMimeType` (lecture des premiers octets via `finfo`), `validateTarStructure` (parse + itération via `PharData`).
+1. **Pas de subprocess.** Tout passe par `PharData` / `ZipArchive` — pas de `exec('tar ...')` / `exec('zip ...')`. Portable, scriptable, testable. Inconvénient : limite de taille (mémoire/temps PHP).
+2. **Dossiers vides préservés.** `tar` comme `zip` préservent les sous-dossiers vides via `addEmptyDir`.
+3. **Sécurité à l'extraction.** `untar` et `unzip` détectent les tentatives de **path traversal** (`..`) — protection *Zip Slip* / *Tar Slip*. `unzip` ajoute des plafonds **anti-bombe** (`maxEntries`, `maxSize`).
+4. **Validation à plusieurs niveaux.** Extension (rapide) → MIME via `finfo` → structure (parse).
 
 ## Cas d'usage typique
 
 ```php
-use function oihana\files\archive\tar\{ tarDirectory , untar , tarFileInfo } ;
-use oihana\files\enums\CompressionType;
+use function oihana\files\archive\zip\{ zipDirectory , unzip , zipFileInfo } ;
+use oihana\files\enums\ZipOption;
 
-// 1. Créer une archive compressée d'un dossier
-$archive = tarDirectory(
-    '/var/www/site' ,
-    CompressionType::GZIP ,
-    '/backups/site.tar.gz' ,
-) ;
+// 1. Créer une archive d'un dossier
+$archive = zipDirectory( '/var/www/site' , null , '/backups/site.zip' ) ;
 
 // 2. Inspecter
-$info = tarFileInfo( $archive ) ;
+$info = zipFileInfo( $archive ) ;
 echo "Fichiers : {$info['fileCount']}, taille : {$info['totalSize']} bytes" ;
 
-// 3. Extraire ailleurs (avec protection path-traversal)
-untar( $archive , '/tmp/restored' ) ;
+// 3. Extraire ailleurs, avec garde-fous anti-bombe
+unzip( $archive , '/tmp/restored' , [
+    ZipOption::MAX_SIZE => 200 * 1024 * 1024 ,
+]) ;
 ```
 
 ## ⚠ Limites connues
 
-- **`validateTarStructure` ne supporte pas les tars compressés** — il faut décompresser d'abord (ce que fait `untar` en interne).
-- **Symlinks** : `PharData` les sérialise comme symlinks — l'extraction recrée le symlink, **pas la cible**. À garder en tête pour les archives portables.
-- **Grosses archives** (> quelques GB) : `PharData` charge des index en mémoire — privilégier `tar` CLI ou des outils streaming pour les très gros volumes.
-- **Compression réelle** : `PharData::compress()` peut échouer silencieusement si l'extension correspondante (`ext-zlib`, `ext-bz2`) n'est pas chargée. `tar()` lève alors `UnsupportedCompressionException`.
+- **Grosses archives** (> quelques GB) : `PharData` / `ZipArchive` chargent des index en mémoire — privilégier les outils CLI streaming pour les très gros volumes.
+- **Symlinks (tar)** : `PharData` recrée le symlink, pas la cible.
+- **`validateTarStructure`** ne supporte pas les tars compressés (décompresser d'abord).
+- **Permissions Windows (zip)** : un zip sans attributs `OPSYS_UNIX` n'a pas de mode à restaurer — `unzip(..., keepPermissions: true)` laisse alors le mode par défaut.
 
 ## Voir aussi
 
-- [Créer une archive](tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, `tarIsCompressed`.
-- [Extraire une archive](untar.md) — `untar` et les fonctions de validation.
-- [Énumérations](../enums.md) — `CompressionType`, `TarExtension`, `TarOption`, `TarInfo`.
+- [Créer un tar](tar.md) · [Extraire un tar](untar.md)
+- [Créer un zip](zip.md) · [Extraire un zip](unzip.md)
+- [Énumérations](../enums.md) — `CompressionType`, `TarExtension`, `TarOption`, `TarInfo`, `ZipOption`, `ZipInfo`.
 - [Exceptions](../exceptions.md) — `UnsupportedCompressionException`, `FileException`, `DirectoryException`.
-- [Phar](../phar/README.md) — helpers Phar utilisés en interne (`getPharCompressionType`, `preservePharFilePermissions`).
+- [Phar](../phar/README.md) — helpers Phar utilisés en interne par tar.
 - [Sommaire FR](../README.md).

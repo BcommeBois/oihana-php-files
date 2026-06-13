@@ -11,9 +11,9 @@
 | **MIME types** | [`FileMimeType`](#filemimetype), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
 | **File extensions** | [`FileExtension`](#fileextension), [`TarExtension`](#tarextension) |
 | **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat) |
-| **Options (array keys)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption) |
+| **Options (array keys)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption), [`ZipOption`](#zipoption) |
 | **Modes / domain enums** | [`FindMode`](#findmode) |
-| **Structured results (keys)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo) |
+| **Structured results (keys)** | [`OwnershipInfo`](#ownershipinfo), [`TarInfo`](#tarinfo), [`ZipInfo`](#zipinfo) |
 | **Internal state** | [`CanonicalizeBuffer`](#canonicalizebuffer) |
 | **Reusable traits** | [`ImageMimeTypeTrait`, `AudioMimeTypeTrait`, `VideoMimeTypeTrait`](#mime-traits) |
 
@@ -133,7 +133,7 @@ FileExtension::ENCRYPTED ; // '.enc'
 | `XZ` | `'xz'` |
 | `ZSTD` | `'zstd'` |
 
-> ⚠ The 8 constants are defined but **only `NONE`, `GZIP` and `BZIP2`** are supported by the [`tar`](archive/tar.md) / [`untar`](archive/untar.md) functions. The others throw `UnsupportedCompressionException`.
+> ⚠ The 8 constants are defined but **only `NONE`, `GZIP` and `BZIP2`** are supported by the [`tar`](archive/tar.md) / [`untar`](archive/untar.md) functions. The [`zip`](archive/zip.md) / [`unzip`](archive/unzip.md) functions accept **`ZIP`** (DEFLATE) and **`NONE`** (STORE). Any other value throws `UnsupportedCompressionException`.
 
 | Method | Returns |
 |---|---|
@@ -179,6 +179,22 @@ These classes define the **keys accepted** by functions taking an options array.
 
 6 keys for [`tar`](archive/tar.md#tar) / [`tarDirectory`](archive/tar.md#tardirectory) / [`untar`](archive/untar.md#untar): `DRY_RUN`, `EXCLUDE`, `FILTER`, `KEEP_PERMISSIONS`, `OVERWRITE`, `METADATA`.
 
+### `ZipOption`
+
+9 keys for [`zip`](archive/zip.md#zip) / [`zipDirectory`](archive/zip.md#zipdirectory) / [`unzip`](archive/unzip.md#unzip):
+
+| Constant | Value | Used by |
+|---|---|---|
+| `COMPRESSION` | `'compression'` | `zip`, `zipDirectory` (DEFLATE / STORE) |
+| `DRY_RUN` | `'dryRun'` | `unzip` |
+| `EXCLUDE` | `'exclude'` | `zipDirectory` |
+| `FILTER` | `'filter'` | `zipDirectory` |
+| `KEEP_PERMISSIONS` | `'keepPermissions'` | `unzip` |
+| `MAX_ENTRIES` | `'maxEntries'` | `unzip` (bomb guard) |
+| `MAX_SIZE` | `'maxSize'` | `unzip` (bomb guard) |
+| `METADATA` | `'metadata'` | `zipDirectory` |
+| `OVERWRITE` | `'overwrite'` | `unzip` |
+
 ---
 
 ## Modes / domain enums
@@ -208,6 +224,10 @@ These classes define the **keys of arrays returned** by some functions.
 ### `TarInfo`
 
 6 keys of the array returned by [`tarFileInfo`](archive/tar.md#tarfileinfo): `COMPRESSION`, `EXTENSION`, `FILE_COUNT`, `IS_VALID`, `TOTAL_SIZE`, `MIME_TYPE`.
+
+### `ZipInfo`
+
+6 keys of the array returned by [`zipFileInfo`](archive/zip.md#zipfileinfo): `COMPRESSION`, `EXTENSION`, `FILE_COUNT`, `IS_VALID`, `TOTAL_SIZE`, `MIME_TYPE`.
 
 ---
 

@@ -12,7 +12,7 @@ Aux développeurs PHP qui veulent :
 
 - manipuler des **chemins** (Unix, Windows, URL, `phar://`) de manière homogène — `joinPaths`, `normalizePath`, `canonicalizePath`, `makeAbsolute`/`makeRelative` ;
 - effectuer des opérations **fichier/dossier** robustes avec validations explicites — `assertFile`, `findFiles`, `makeDirectory`, `copyFilteredFiles`, `deleteDirectory` ;
-- créer et extraire des **archives tar/tar.gz/tar.bz2** sans dépendance externe au-delà de l'extension `phar` ;
+- créer et extraire des **archives tar/tar.gz/tar.bz2** (via `phar`) et **zip** (via `ext-zip`), sans subprocess ;
 - **chiffrer/déchiffrer** des fichiers via OpenSSL — **AES-256-GCM authentifié** (AEAD) avec dérivation de clé (Argon2id/PBKDF2) ;
 - charger une configuration **TOML** avec valeurs par défaut et fusion profonde ;
 - éviter de redéfinir partout les **types MIME** standards (image, audio, vidéo, divers) et leurs **extensions** associées.
@@ -70,9 +70,11 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 ### Archives — [`archive/`](archive/)
 
-- [Vue d'ensemble](archive/README.md) — les 9 fonctions du namespace `oihana\files\archive\tar`.
+- [Vue d'ensemble](archive/README.md) — les namespaces `oihana\files\archive\tar` (PharData) et `oihana\files\archive\zip` (ZipArchive).
 - [Créer un tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/aucune, `tarIsCompressed`.
 - [Extraire un tar](archive/untar.md) — `untar`, `validateTarStructure`, `assertTar`, `hasTarExtension`, `hasTarMimeType`.
+- [Créer un zip](archive/zip.md) — `zip`, `zipDirectory`, `zipFileInfo`, compression DEFLATE/STORE.
+- [Extraire un zip](archive/unzip.md) — `unzip` (Zip Slip + anti-bombe + `keepPermissions`), `assertZip`, `hasZipExtension`, `hasZipMimeType`, `validateZipStructure`.
 
 ### Phar — [`phar/`](phar/)
 

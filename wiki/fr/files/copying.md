@@ -1,8 +1,9 @@
 # Copie filtrée
 
-Une seule fonction, mais centrale pour les workflows de **backup**, **synchronisation** et **export**.
+Deux fonctions centrales pour les workflows de **backup**, **synchronisation**, **export** et **archivage**.
 
 - [`copyFilteredFiles`](#copyfilteredfiles) — copie récursive avec exclusions par pattern + callback de filtrage.
+- [`copyFilteredFilesWithMetadata`](#copyfilteredfileswithmetadata) — `copyFilteredFiles` + écriture optionnelle de `.metadata.json` + garde « rien ne matche ».
 
 ---
 
@@ -145,6 +146,48 @@ copyFilteredFiles(
 - **Atomicité** : la copie n'est pas transactionnelle. Si elle échoue à mi-parcours (disque plein, permission), `$destDir` contient un état partiel.
 
 > 💡 **Pour les très gros volumes**, `rsync` reste plus rapide et plus robuste. `copyFilteredFiles` est idéal pour les snapshots ponctuels < ~1 Go.
+
+---
+
+## `copyFilteredFilesWithMetadata`
+
+```php
+copyFilteredFilesWithMetadata(
+    string        $sourceDir ,
+    string        $destDir ,
+    array         $excludePatterns = [] ,
+    ?callable     $filterCallback  = null ,
+    array         $metadata        = []
+) : void
+```
+
+Étape de **staging** mutualisée par les fonctions d'archivage de dossier ([`tarDirectory`](../archive/tar.md#tardirectory) et [`zipDirectory`](../archive/zip.md#zipdirectory)). Elle :
+
+1. délègue la copie filtrée à [`copyFilteredFiles`](#copyfilteredfiles) ;
+2. écrit, si `$metadata` est non vide, un fichier `.metadata.json` (JSON joli, slashes non échappés) à la racine de `$destDir` ;
+3. **garantit que la destination est non vide** — sinon lève `RuntimeException`.
+
+> ℹ️ Embarquer des métadonnées rend la destination non vide même si **aucun** fichier source n'a matché les filtres (l'archive ne contiendra alors que `.metadata.json`).
+
+### Retour et exceptions
+
+- **Retour** : `void`.
+- **`RuntimeException`** : aucun fichier n'a matché les filtres **et** aucune métadonnée fournie (message `"No files match the filtering criteria."`).
+
+### Exemple
+
+```php
+use function oihana\files\copyFilteredFilesWithMetadata;
+
+copyFilteredFilesWithMetadata(
+    '/var/www/html' ,
+    '/tmp/staging' ,
+    [ '.git' , 'node_modules' ] ,
+    fn( string $path ): bool => str_ends_with( $path , '.php' ) ,
+    [ 'createdBy' => 'admin' , 'date' => date( 'c' ) ] ,
+) ;
+// /tmp/staging contient les .php filtrés + un .metadata.json
+```
 
 ---
 

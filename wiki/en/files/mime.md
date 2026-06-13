@@ -1,8 +1,9 @@
 # MIME and validation
 
-Two functions to detect and validate MIME types of files.
+Three functions to detect and validate MIME types of files.
 
-- [`validateMimeType`](#validatemimetype) — checks that a file's MIME is in an allowed list.
+- [`validateMimeType`](#validatemimetype) — checks that a file's MIME is in an allowed list (**throws** otherwise).
+- [`hasMimeType`](#hasmimetype) — tests whether a file's MIME matches a list (**returns a `bool`**, partial match).
 - [`getImageMimeType`](#getimagemimetype) — resolves and validates an image's MIME with format/MIME mapping.
 
 > 💡 Both functions rely on the PHP **`ext-fileinfo`** extension (required by `oihana/php-files`). For the typed MIME catalogue, see [enums.md](../enums.md) (`FileMimeType`, `ImageMimeType`, `AudioMimeType`, `VideoMimeType`).
@@ -78,6 +79,40 @@ validateMimeType( $uploadedFile , [
 > assertFile( $uploadedPath , [ ImageMimeType::JPG , ImageMimeType::PNG ] ) ;
 > // One line: exists + readable + MIME allowed
 > ```
+
+---
+
+## `hasMimeType`
+
+```php
+hasMimeType( string $filePath , string|array $mimeTypes ) : bool
+```
+
+Tests whether a file's MIME (detected via `finfo`) **contains** one of the given strings. Unlike `validateMimeType`, this function **returns a `bool`** (does not throw) and performs a **partial match** (`str_contains`).
+
+| Aspect | `hasMimeType` | `validateMimeType` |
+|---|---|---|
+| Return | `bool` | `void` (throws) |
+| Detection | `finfo_*` | `mime_content_type` |
+| Comparison | **partial** (`str_contains`) | exact (`in_array`) |
+| Missing file | `false` | `FileException` |
+
+`$mimeTypes` accepts a **single string or an array** (normalised via `oihana\core\arrays\toArray`). The partial match accepts suffixed MIME types (e.g. `application/zip; charset=binary`).
+
+```php
+use function oihana\files\hasMimeType;
+
+// Single string
+hasMimeType( '/uploads/archive.zip' , 'application/zip' ) ;        // true
+// List
+hasMimeType( '/uploads/notes.txt'   , [ 'application/zip' ] ) ;    // false
+// MIME fragment (partial match)
+hasMimeType( '/uploads/notes.txt'   , [ 'text/' ] ) ;             // true (text/plain)
+// Missing file
+hasMimeType( '/uploads/missing.bin' , [ 'text/plain' ] ) ;        // false
+```
+
+> 💡 This is the shared building block behind [`hasTarMimeType`](../archive/untar.md#hastarmimetype) and [`hasZipMimeType`](../archive/unzip.md#haszipmimetype), which call it with their default MIME lists.
 
 ---
 
@@ -183,6 +218,7 @@ function handleUpload( string $uploadPath , string $declaredFormat ) {
 | Function             | MIME detection      | Whitelist | Format→MIME mapping | Throws |
 |----------------------|---------------------|-----------|---------------------|---|
 | `validateMimeType`   | `mime_content_type` | Yes (mandatory) | No | If not in list |
+| `hasMimeType`        | `finfo_*` | Yes (partial match) | No | Never (`bool`) |
 | `getImageMimeType`   | `finfo_*` | Indirect (via `$allowedFormats`) | Yes | If file does not exist |
 | `assertFile`         | Delegates to `validateMimeType` (3rd arg) | Yes (optional) | No | If validation fails |
 

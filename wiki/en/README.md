@@ -12,7 +12,7 @@ PHP developers who want to:
 
 - manipulate **paths** (Unix, Windows, URL, `phar://`) consistently — `joinPaths`, `normalizePath`, `canonicalizePath`, `makeAbsolute`/`makeRelative`;
 - perform robust **file/directory** operations with explicit validation — `assertFile`, `findFiles`, `makeDirectory`, `copyFilteredFiles`, `deleteDirectory`;
-- create and extract **tar / tar.gz / tar.bz2 archives** without external dependencies beyond the `phar` extension;
+- create and extract **tar / tar.gz / tar.bz2 archives** (via `phar`) and **zip** (via `ext-zip`), with no subprocess;
 - **encrypt/decrypt** files with OpenSSL — **authenticated AES-256-GCM** (AEAD) with key derivation (Argon2id/PBKDF2);
 - load **TOML configuration** with default values and deep merging;
 - avoid re-declaring standard **MIME types** (image, audio, video, misc) and their **extensions** across projects.
@@ -70,9 +70,11 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 ### Archives — [`archive/`](archive/)
 
-- [Overview](archive/README.md) — the 9 functions of the `oihana\files\archive\tar` namespace.
+- [Overview](archive/README.md) — the `oihana\files\archive\tar` (PharData) and `oihana\files\archive\zip` (ZipArchive) namespaces.
 - [Creating a tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/none, `tarIsCompressed`.
 - [Extracting a tar](archive/untar.md) — `untar`, `validateTarStructure`, `assertTar`, `hasTarExtension`, `hasTarMimeType`.
+- [Creating a zip](archive/zip.md) — `zip`, `zipDirectory`, `zipFileInfo`, DEFLATE/STORE compression.
+- [Extracting a zip](archive/unzip.md) — `unzip` (Zip Slip + bomb guards + `keepPermissions`), `assertZip`, `hasZipExtension`, `hasZipMimeType`, `validateZipStructure`.
 
 ### Phar — [`phar/`](phar/)
 

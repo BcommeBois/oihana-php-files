@@ -1,8 +1,9 @@
 # Filtered copy
 
-A single function, but central for **backup**, **sync** and **export** workflows.
+Two functions central to **backup**, **sync**, **export** and **archiving** workflows.
 
 - [`copyFilteredFiles`](#copyfilteredfiles) — recursive copy with pattern exclusions + filter callback.
+- [`copyFilteredFilesWithMetadata`](#copyfilteredfileswithmetadata) — `copyFilteredFiles` + optional `.metadata.json` + "nothing matched" guard.
 
 ---
 
@@ -145,6 +146,48 @@ copyFilteredFiles(
 - **Atomicity**: the copy is not transactional. If it fails mid-way (disk full, permission), `$destDir` is left in a partial state.
 
 > 💡 **For very large volumes**, `rsync` remains faster and more robust. `copyFilteredFiles` is ideal for one-off snapshots < ~1 GB.
+
+---
+
+## `copyFilteredFilesWithMetadata`
+
+```php
+copyFilteredFilesWithMetadata(
+    string        $sourceDir ,
+    string        $destDir ,
+    array         $excludePatterns = [] ,
+    ?callable     $filterCallback  = null ,
+    array         $metadata        = []
+) : void
+```
+
+The **staging** step shared by the directory-archiving helpers ([`tarDirectory`](../archive/tar.md#tardirectory) and [`zipDirectory`](../archive/zip.md#zipdirectory)). It:
+
+1. delegates the filtered copy to [`copyFilteredFiles`](#copyfilteredfiles);
+2. writes, when `$metadata` is non-empty, a `.metadata.json` file (pretty JSON, unescaped slashes) at the root of `$destDir`;
+3. **guarantees the destination is non-empty** — otherwise throws `RuntimeException`.
+
+> ℹ️ Embedding metadata makes the destination non-empty even when **no** source file matched the filters (the archive then contains only `.metadata.json`).
+
+### Return and exceptions
+
+- **Return**: `void`.
+- **`RuntimeException`**: no file matched the filters **and** no metadata was provided (message `"No files match the filtering criteria."`).
+
+### Example
+
+```php
+use function oihana\files\copyFilteredFilesWithMetadata;
+
+copyFilteredFilesWithMetadata(
+    '/var/www/html' ,
+    '/tmp/staging' ,
+    [ '.git' , 'node_modules' ] ,
+    fn( string $path ): bool => str_ends_with( $path , '.php' ) ,
+    [ 'createdBy' => 'admin' , 'date' => date( 'c' ) ] ,
+) ;
+// /tmp/staging contains the filtered .php files + a .metadata.json
+```
 
 ---
 
