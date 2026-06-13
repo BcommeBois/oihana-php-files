@@ -19,6 +19,7 @@ Functions are grouped into **9 categories** documented separately:
 | **Copy and move** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
 | **System** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory` |
 | **MIME** | [mime.md](mime.md) | `getMimeType`, `validateMimeType`, `hasMimeType`, `getImageMimeType` |
+| **Integrity** | [integrity.md](integrity.md) | `fileChecksum`, `filesAreEqual` |
 
 ## Cross-cutting conventions
 

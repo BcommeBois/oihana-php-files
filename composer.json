@@ -86,6 +86,8 @@
             "src/oihana/files/deleteDirectory.php",
             "src/oihana/files/deleteFile.php",
             "src/oihana/files/deleteTemporaryDirectory.php",
+            "src/oihana/files/fileChecksum.php",
+            "src/oihana/files/filesAreEqual.php",
             "src/oihana/files/findFiles.php",
             "src/oihana/files/getBaseFileName.php",
             "src/oihana/files/getDirectory.php",

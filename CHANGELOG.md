@@ -14,6 +14,10 @@ mirroring the existing `archive\tar` helpers.
 - **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
   the low-level `finfo` detector (returns `null` on failure, never throws)
   shared by the MIME helpers.
+- **File integrity** — `oihana\files\fileChecksum( string $file , string $algorithm = 'sha256' )`
+  (streamed `hash_file`, validated algorithm) and
+  `oihana\files\filesAreEqual( string $a , string $b , string $algorithm = 'sha256' )`
+  (same-file / size short-circuits, then checksum comparison).
 - **Single-file copy/move** — `oihana\files\copyFile`, `oihana\files\moveFile`
   and `oihana\files\renameFile` (overwrite control, directory destination,
   on-demand parent creation, typed `FileException`/`DirectoryException`,
