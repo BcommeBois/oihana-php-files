@@ -17,12 +17,21 @@ mirroring the existing `archive\tar` helpers.
 - **Zip detection & validation** — `oihana\files\archive\zip\hasZipExtension`,
   `oihana\files\archive\zip\hasZipMimeType`, `oihana\files\archive\zip\validateZipStructure`,
   `oihana\files\archive\zip\assertZip`, `oihana\files\archive\zip\zipFileInfo`.
+- **Zip creation** — `oihana\files\archive\zip\zip` (files/dirs, preserved root,
+  empty directories, DEFLATE/STORE per-entry compression) and
+  `oihana\files\archive\zip\zipDirectory` (exclude / filter / metadata),
+  mirroring the `archive\tar` creation helpers.
+- **Directory staging helper** — `oihana\files\copyFilteredFilesWithMetadata`,
+  the filtered-copy + optional `.metadata.json` + non-empty guard shared by
+  `tarDirectory` and `zipDirectory`.
 - **Enums** — `oihana\files\enums\ZipOption`, `oihana\files\enums\ZipInfo`.
 
 ### Changed
 
 - `oihana\files\archive\tar\hasTarMimeType` and `oihana\files\archive\zip\hasZipMimeType`
   now delegate to `oihana\files\hasMimeType` (no behavior change).
+- `oihana\files\archive\tar\tarDirectory` now delegates its staging step to
+  `oihana\files\copyFilteredFilesWithMetadata` (no behavior change).
 - `composer.json` now requires `ext-zip`.
 
 ## [1.1.0] - 2026-06-09

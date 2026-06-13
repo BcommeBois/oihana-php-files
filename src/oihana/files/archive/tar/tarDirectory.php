@@ -14,7 +14,7 @@ use RuntimeException;
 
 use function oihana\reflect\helpers\getFunctionInfo;
 use function oihana\files\assertDirectory;
-use function oihana\files\copyFilteredFiles;
+use function oihana\files\copyFilteredFilesWithMetadata;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 
@@ -121,20 +121,7 @@ function tarDirectory
 
     try
     {
-        $copiedFiles = copyFilteredFiles($directory, $tempDir, $excludePatterns, $filterCallback);
-
-        if ( !empty( $metadata ) )
-        {
-            $metaJson = json_encode( $metadata , JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ;
-            file_put_contents($tempDir . DIRECTORY_SEPARATOR . '.metadata.json' , $metaJson ) ;
-            $copiedFiles = true;
-        }
-
-        if ( !$copiedFiles )
-        {
-            throw new RuntimeException("No files match the filtering criteria." ) ;
-        }
-
+        copyFilteredFilesWithMetadata( $directory , $tempDir , $excludePatterns , $filterCallback , $metadata ) ;
         return tar( $tempDir , $outputPath , $compression , $tempDir );
     }
     finally
