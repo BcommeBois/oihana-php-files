@@ -1,8 +1,9 @@
 # Création
 
-Cinq fonctions pour créer fichiers et dossiers, avec options de permissions, ownership, et nommage horodaté.
+Six fonctions pour créer fichiers et dossiers, avec options de permissions, ownership, et nommage horodaté.
 
 - [`makeFile`](#makefile) — créer ou mettre à jour un fichier avec contenu.
+- [`writeFileAtomic`](#writefileatomic) — écrire un fichier de façon **atomique** (temp + `rename`).
 - [`makeDirectory`](#makedirectory) — créer un dossier (récursif par défaut).
 - [`makeTimestampedFile`](#maketimestampedfile) — créer un fichier dont le nom contient un timestamp formaté.
 - [`makeTimestampedDirectory`](#maketimestampeddirectory) — version dossier.
@@ -98,6 +99,39 @@ makeFile( '/var/log/app.log' , $line , [
     MakeFileOption::FORCE  => false ,
 ]) ;
 ```
+
+---
+
+## `writeFileAtomic`
+
+```php
+writeFileAtomic(
+    string $file ,
+    string $content ,
+    int    $permissions = 0644
+) : string
+```
+
+Écrit un fichier de façon **atomique** : le contenu est d'abord écrit dans un fichier temporaire situé **dans le même dossier** que la cible (pour que le `rename()` final reste sur le même système de fichiers, donc atomique), puis renommé par-dessus la destination. Un lecteur concurrent voit **toujours** soit l'ancien fichier, soit le nouveau entièrement écrit — **jamais** un fichier tronqué.
+
+C'est la réponse à la limite de non-atomicité signalée dans le [guide de copie](copying.md). Le dossier parent est créé à la demande ; en cas d'échec, le fichier temporaire est nettoyé.
+
+| Cas | Exception |
+|---|---|
+| Échec d'écriture du temporaire | `FileException` |
+| Échec du `chmod` / `rename` | `FileException` |
+| Dossier parent non créable | `DirectoryException` |
+
+```php
+use function oihana\files\writeFileAtomic;
+
+writeFileAtomic( '/etc/myapp/config.json' , $json ) ;
+// les lecteurs n'observent jamais un config.json tronqué
+
+writeFileAtomic( '/etc/myapp/secret.key' , $key , 0600 ) ;
+```
+
+> 💡 Différence avec [`makeFile`](#makefile) : `makeFile` écrit directement (append, lock, owner/group, options riches) mais **non atomiquement** ; `writeFileAtomic` garantit qu'aucun état partiel n'est visible — idéal pour les fichiers de config lus en concurrence.
 
 ---
 

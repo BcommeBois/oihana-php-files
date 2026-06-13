@@ -14,6 +14,8 @@ mirroring the existing `archive\tar` helpers.
 - **MIME primitive** — `oihana\files\getMimeType( string $file ): ?string`,
   the low-level `finfo` detector (returns `null` on failure, never throws)
   shared by the MIME helpers.
+- **Atomic write** — `oihana\files\writeFileAtomic( string $file , string $content , int $permissions = 0644 )`,
+  a temp-then-`rename` writer so concurrent readers never observe a partial file.
 - **File size** — `oihana\files\getFileSize( string $file )` (typed wrapper around
   `filesize`) and `oihana\files\formatFileSize( int $bytes , int $precision = 2 )`
   (human-readable, base-1024 `B`…`PB`, units from the new `oihana\files\enums\FileSizeUnit`).

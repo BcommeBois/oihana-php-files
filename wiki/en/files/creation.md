@@ -1,8 +1,9 @@
 # Creation
 
-Five functions to create files and directories, with options for permissions, ownership, and timestamped naming.
+Six functions to create files and directories, with options for permissions, ownership, and timestamped naming.
 
 - [`makeFile`](#makefile) — create or update a file with content.
+- [`writeFileAtomic`](#writefileatomic) — write a file **atomically** (temp + `rename`).
 - [`makeDirectory`](#makedirectory) — create a directory (recursive by default).
 - [`makeTimestampedFile`](#maketimestampedfile) — create a file whose name embeds a formatted timestamp.
 - [`makeTimestampedDirectory`](#maketimestampeddirectory) — directory variant.
@@ -98,6 +99,39 @@ makeFile( '/var/log/app.log' , $line , [
     MakeFileOption::FORCE  => false ,
 ]) ;
 ```
+
+---
+
+## `writeFileAtomic`
+
+```php
+writeFileAtomic(
+    string $file ,
+    string $content ,
+    int    $permissions = 0644
+) : string
+```
+
+Writes a file **atomically**: the content is first written to a temporary file located in the **same directory** as the target (so the final `rename()` stays on the same filesystem and is therefore atomic), then renamed over the destination. A concurrent reader **always** sees either the previous file or the fully-written new one — **never** a truncated file.
+
+This addresses the non-atomicity caveat noted in the [copying guide](copying.md). The parent directory is created on demand; on failure, the temporary file is cleaned up.
+
+| Case | Exception |
+|---|---|
+| Temporary write failure | `FileException` |
+| `chmod` / `rename` failure | `FileException` |
+| Parent directory not creatable | `DirectoryException` |
+
+```php
+use function oihana\files\writeFileAtomic;
+
+writeFileAtomic( '/etc/myapp/config.json' , $json ) ;
+// readers never observe a truncated config.json
+
+writeFileAtomic( '/etc/myapp/secret.key' , $key , 0600 ) ;
+```
+
+> 💡 Difference from [`makeFile`](#makefile): `makeFile` writes directly (append, lock, owner/group, rich options) but **not atomically**; `writeFileAtomic` guarantees no partial state is ever visible — ideal for config files read concurrently.
 
 ---
 
