@@ -18,6 +18,7 @@ Functions are grouped into **9 categories** documented separately:
 | **Discovery** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories` |
 | **Copy and move** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
 | **Compression** | [compression.md](compression.md) | `gzipFile`, `gunzipFile`, `bzip2File`, `bunzip2File` |
+| **Symbolic links** | [links.md](links.md) | `createSymlink`, `isSymlink`, `readSymlink` |
 | **System** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getFileSize`, `formatFileSize`, `getTimestampedFile`, `getTimestampedDirectory` |
 | **MIME** | [mime.md](mime.md) | `getMimeType`, `validateMimeType`, `hasMimeType`, `getImageMimeType` |
 | **Integrity** | [integrity.md](integrity.md) | `fileChecksum`, `filesAreEqual` |
