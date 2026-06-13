@@ -17,6 +17,8 @@ mirroring the existing `archive\tar` helpers.
 - **Single-file compression** — `oihana\files\gzipFile`/`gunzipFile` (via `ext-zlib`) and
   `oihana\files\bzip2File`/`bunzip2File` (via `ext-bz2`): chunked, streaming, no subprocess.
   `ext-zlib`/`ext-bz2` added to `suggest`.
+- **Touch** — `oihana\files\touchFile( string $file , ?int $mtime = null , ?int $atime = null , bool $createDirectory = true )`,
+  a typed `touch` wrapper that creates the file (and parent) on demand.
 - **Atomic write** — `oihana\files\writeFileAtomic( string $file , string $content , int $permissions = 0644 )`,
   a temp-then-`rename` writer so concurrent readers never observe a partial file.
 - **File size** — `oihana\files\getFileSize( string $file )` (typed wrapper around

@@ -1,9 +1,10 @@
 # Création
 
-Six fonctions pour créer fichiers et dossiers, avec options de permissions, ownership, et nommage horodaté.
+Sept fonctions pour créer fichiers et dossiers, avec options de permissions, ownership, et nommage horodaté.
 
 - [`makeFile`](#makefile) — créer ou mettre à jour un fichier avec contenu.
 - [`writeFileAtomic`](#writefileatomic) — écrire un fichier de façon **atomique** (temp + `rename`).
+- [`touchFile`](#touchfile) — créer un fichier vide ou mettre à jour ses timestamps.
 - [`makeDirectory`](#makedirectory) — créer un dossier (récursif par défaut).
 - [`makeTimestampedFile`](#maketimestampedfile) — créer un fichier dont le nom contient un timestamp formaté.
 - [`makeTimestampedDirectory`](#maketimestampeddirectory) — version dossier.
@@ -132,6 +133,30 @@ writeFileAtomic( '/etc/myapp/secret.key' , $key , 0600 ) ;
 ```
 
 > 💡 Différence avec [`makeFile`](#makefile) : `makeFile` écrit directement (append, lock, owner/group, options riches) mais **non atomiquement** ; `writeFileAtomic` garantit qu'aucun état partiel n'est visible — idéal pour les fichiers de config lus en concurrence.
+
+---
+
+## `touchFile`
+
+```php
+touchFile(
+    string   $file ,
+    ?int     $mtime           = null ,
+    ?int     $atime           = null ,
+    bool     $createDirectory = true
+) : string
+```
+
+Crée un fichier vide s'il n'existe pas, ou met à jour ses timestamps (wrapper typé autour de `touch()`). Si `$mtime` est `null`, l'heure courante est utilisée ; si `$mtime` est fourni mais `$atime` est `null`, l'access time prend la valeur de `$mtime`. Le dossier parent est créé à la demande.
+
+**Lève `FileException`** si le `touch` échoue, **`DirectoryException`** si le parent ne peut être créé.
+
+```php
+use function oihana\files\touchFile;
+
+touchFile( '/var/run/app.lock' ) ;                  // crée ou rafraîchit à maintenant
+touchFile( '/data/marker' , strtotime('-1 day') ) ; // antidate le mtime
+```
 
 ---
 

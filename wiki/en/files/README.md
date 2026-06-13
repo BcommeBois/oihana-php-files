@@ -11,7 +11,7 @@ Functions are grouped into **9 categories** documented separately:
 | Category | Pages | Functions |
 |---|---|---|
 | **Assertions** | [assertions.md](assertions.md) | `assertFile`, `assertDirectory`, `assertWritableDirectory` |
-| **Creation** | [creation.md](creation.md) | `makeFile`, `writeFileAtomic`, `makeDirectory`, `makeTimestampedFile`, `makeTimestampedDirectory`, `makeTemporaryDirectory` |
+| **Creation** | [creation.md](creation.md) | `makeFile`, `writeFileAtomic`, `touchFile`, `makeDirectory`, `makeTimestampedFile`, `makeTimestampedDirectory`, `makeTemporaryDirectory` |
 | **Deletion** | [deletion.md](deletion.md) | `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory` |
 | **Temporary directories** | [temporary.md](temporary.md) | `getTemporaryDirectory`, `makeTemporaryDirectory`, `deleteTemporaryDirectory` (workflow) |
 | **Reading** | [reading.md](reading.md) | `getFileContent`, `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |

@@ -125,6 +125,7 @@
             "src/oihana/files/recursiveFilePaths.php",
             "src/oihana/files/shouldExcludeFile.php",
             "src/oihana/files/sortFiles.php",
+            "src/oihana/files/touchFile.php",
             "src/oihana/files/validateMimeType.php",
             "src/oihana/files/writeFileAtomic.php"
         ]
