@@ -2,11 +2,16 @@
 
 namespace oihana\files\archive\tar;
 
+use function oihana\files\hasMimeType;
+
 /**
  * Checks if a file has a tar-related extension.
  *
  * This function inspects the MIME type of the given file against a list
  * of valid tar-related MIME types to determine if the file is a tar archive.
+ *
+ * It is a thin wrapper around {@see \oihana\files\hasMimeType()} pre-configured
+ * with the common tar MIME types.
  *
  * @param string   $filePath  Path to the file.
  * @param string[] $mimeTypes Optional list of valid tar MIME types.
@@ -55,31 +60,6 @@ function hasTarMimeType( string $filePath , array $mimeTypes  =
     'application/x-compressed-tar'
 ]): bool
 {
-    if ( !is_file( $filePath ) )
-    {
-        return false;
-    }
-
-    $info = finfo_open( FILEINFO_MIME_TYPE );
-    if ( $info === false )
-    {
-        // finfo_open does not fail when ext-fileinfo is available (a hard requirement).
-        // @codeCoverageIgnoreStart
-        return false;
-        // @codeCoverageIgnoreEnd
-    }
-
-    $mimeType = finfo_file( $info , $filePath );
-    finfo_close( $info );
-
-    if ( $mimeType === false )
-    {
-        // finfo_file does not return false for an existing, readable file.
-        // @codeCoverageIgnoreStart
-        return false;
-        // @codeCoverageIgnoreEnd
-    }
-
-    return array_any( $mimeTypes , fn( $validType ) => str_contains( $mimeType , $validType ) );
+    return hasMimeType( $filePath , $mimeTypes );
 }
 

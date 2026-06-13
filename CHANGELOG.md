@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0] - Unreleased
+
+Backward-compatible release: introduces a `oihana\files\archive\zip` toolkit
+mirroring the existing `archive\tar` helpers.
+
+### Added
+
+- **MIME helper** — `oihana\files\hasMimeType( string $filePath , string|array $mimeTypes )`,
+  a boolean substring-match MIME-type check (accepts a single type or a list) factored
+  out of the tar/zip detection helpers.
+- **Zip detection & validation** — `oihana\files\archive\zip\hasZipExtension`,
+  `oihana\files\archive\zip\hasZipMimeType`, `oihana\files\archive\zip\validateZipStructure`,
+  `oihana\files\archive\zip\assertZip`, `oihana\files\archive\zip\zipFileInfo`.
+- **Enums** — `oihana\files\enums\ZipOption`, `oihana\files\enums\ZipInfo`.
+
+### Changed
+
+- `oihana\files\archive\tar\hasTarMimeType` and `oihana\files\archive\zip\hasZipMimeType`
+  now delegate to `oihana\files\hasMimeType` (no behavior change).
+- `composer.json` now requires `ext-zip`.
+
 ## [1.1.0] - 2026-06-09
 
 Backward-compatible release: new helpers, security hardening, and a test suite
