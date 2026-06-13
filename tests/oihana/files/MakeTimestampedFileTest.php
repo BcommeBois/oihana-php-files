@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\FileException;
 
 use PHPUnit\Framework\TestCase;
+use function oihana\files\makeTimestampedFile;
 
 class MakeTimestampedFileTest extends TestCase
 {

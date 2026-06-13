@@ -1,12 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use oihana\files\enums\FileExtension;
+use function oihana\files\getBaseFileName;
 
 final class GetBaseFileNameTest extends TestCase
 {

@@ -1,8 +1,9 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\TestCase;
+use function oihana\files\shouldExcludeFile;
 
 class ShouldExcludeFileTest extends TestCase
 {

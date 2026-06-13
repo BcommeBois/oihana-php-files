@@ -1,12 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\enums\OwnershipInfo;
 use oihana\files\options\OwnershipInfos;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use function oihana\files\getOwnershipInfos;
 
 #[CoversFunction('oihana\files\getOwnershipInfos')]
 final class GetOwnershipInfosTest extends TestCase

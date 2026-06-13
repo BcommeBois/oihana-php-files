@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\zip;
+namespace tests\oihana\files\archive\zip;
 
 use ZipArchive;
 
@@ -15,6 +15,7 @@ use oihana\files\exceptions\UnsupportedCompressionException;
 use RuntimeException;
 
 use function oihana\files\deleteDirectory;
+use function oihana\files\archive\zip\zipDirectory;
 
 class ZipDirectoryTest extends TestCase
 {

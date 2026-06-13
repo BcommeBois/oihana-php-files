@@ -1,11 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use oihana\files\exceptions\DirectoryException;
+use function oihana\files\copyFilteredFilesWithMetadata;
+use function oihana\files\deleteDirectory;
 
 class CopyFilteredFilesWithMetadataTest extends TestCase
 {

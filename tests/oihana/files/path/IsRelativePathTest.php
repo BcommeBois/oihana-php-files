@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files\path ;
+namespace tests\oihana\files\path;
 
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\path\isRelativePath;
 
 #[CoversFunction('oihana\files\path\isRelativePath')]
 final class IsRelativePathTest extends TestCase

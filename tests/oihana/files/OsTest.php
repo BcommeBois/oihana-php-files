@@ -1,9 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\isLinux;
+use function oihana\files\isMac;
+use function oihana\files\isOtherOS;
+use function oihana\files\isWindows;
 
 #[CoversFunction('oihana\files\isLinux')]
 #[CoversFunction('oihana\files\isMac')]

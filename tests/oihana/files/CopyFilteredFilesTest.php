@@ -1,9 +1,11 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\copyFilteredFiles;
+use function oihana\files\deleteDirectory;
 
 class CopyFilteredFilesTest extends TestCase
 {

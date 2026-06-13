@@ -1,10 +1,12 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\TestCase;
 
 use oihana\files\exceptions\DirectoryException;
+use function oihana\files\deleteDirectory;
+use function oihana\files\hasMimeType;
 
 class HasMimeTypeTest extends TestCase
 {

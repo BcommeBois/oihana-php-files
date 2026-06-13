@@ -1,10 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\enums\Char;
 use oihana\files\exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\deleteDirectory;
+use function oihana\files\getDirectory;
+use function oihana\files\makeDirectory;
 
 final class GetDirectoryTest extends TestCase
 {

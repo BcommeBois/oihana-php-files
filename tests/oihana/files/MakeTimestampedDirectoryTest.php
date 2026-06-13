@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
@@ -8,6 +8,8 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use oihana\files\exceptions\DirectoryException;
 use function oihana\core\date\formatDateTime;
+use function oihana\files\deleteDirectory;
+use function oihana\files\makeTimestampedDirectory;
 
 class MakeTimestampedDirectoryTest extends TestCase
 {

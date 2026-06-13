@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files\path ;
+namespace tests\oihana\files\path;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use InvalidArgumentException;
+use function oihana\files\path\makeRelative;
 
 #[CoversFunction('oihana\files\path\makeRelative')]
 final class MakeRelativeTest extends TestCase

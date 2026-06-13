@@ -1,11 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use InvalidArgumentException;
 use oihana\files\exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use function oihana\files\deleteDirectory;
+use function oihana\files\requireAndMergeArrays;
 
 class RequireAndMergeArraysTest extends TestCase
 {

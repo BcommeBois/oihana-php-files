@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\DirectoryException;
 
@@ -9,6 +9,8 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 
 use PHPUnit\Framework\TestCase;
+use function oihana\files\deleteDirectory;
+use function oihana\files\makeFile;
 
 class MakeFileTest extends TestCase
 {

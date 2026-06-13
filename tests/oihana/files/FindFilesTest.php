@@ -1,10 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\DirectoryException;
 use PHPUnit\Framework\TestCase;
 use SplFileInfo;
+use function oihana\files\deleteDirectory;
+use function oihana\files\findFiles;
+use function oihana\files\makeDirectory;
 
 class FindFilesTest extends TestCase
 {

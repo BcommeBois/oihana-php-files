@@ -1,12 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\FileException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function preg_quote;
+use function oihana\files\getTimestampedFile;
 
 class GetTimestampedFileTest extends TestCase
 {

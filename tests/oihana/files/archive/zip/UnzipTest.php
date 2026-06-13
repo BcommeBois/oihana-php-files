@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\zip;
+namespace tests\oihana\files\archive\zip;
 
 use ZipArchive;
 
@@ -12,6 +12,7 @@ use oihana\files\exceptions\FileException;
 
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
+use function oihana\files\archive\zip\unzip;
 
 class UnzipTest extends TestCase
 {

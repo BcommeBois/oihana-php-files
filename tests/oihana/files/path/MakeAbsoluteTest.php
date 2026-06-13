@@ -1,10 +1,12 @@
 <?php
 
-namespace oihana\files\path ;
+namespace tests\oihana\files\path;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\path\canonicalizePath;
+use function oihana\files\path\makeAbsolute;
 
 #[CoversFunction('oihana\files\path\makeAbsolute')]
 final class MakeAbsoluteTest extends TestCase

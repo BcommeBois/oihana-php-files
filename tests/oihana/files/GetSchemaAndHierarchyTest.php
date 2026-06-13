@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\getSchemeAndHierarchy;
 
 #[CoversFunction('oihana\files\getSchemeAndHierarchy')]
 final class GetSchemaAndHierarchyTest extends TestCase

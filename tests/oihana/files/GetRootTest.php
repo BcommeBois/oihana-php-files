@@ -1,10 +1,11 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\enums\Char;
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\getRoot;
 
 #[CoversFunction('oihana\files\getRoot')]
 final class GetRootTest extends TestCase

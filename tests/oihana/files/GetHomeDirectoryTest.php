@@ -1,12 +1,13 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use function oihana\files\path\canonicalizePath;
+use function oihana\files\getHomeDirectory;
 
 #[CoversFunction('oihana\files\getHomeDirectory')]
 final class GetHomeDirectoryTest extends TestCase

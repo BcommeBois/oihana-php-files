@@ -1,10 +1,14 @@
 <?php
 
-namespace oihana\files ;
+namespace tests\oihana\files;
 
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\assertFile;
+use function oihana\files\deleteDirectory;
+use function oihana\files\deleteFile;
+use function oihana\files\makeDirectory;
 
 class DeleteFileTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace oihana\files\archive\tar;
+namespace tests\oihana\files\archive\tar;
 
 use oihana\enums\Char;
 use oihana\files\enums\CompressionType;
@@ -17,6 +17,7 @@ use PharData;
 use RuntimeException;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
+use function oihana\files\archive\tar\tarDirectory;
 
 class TarDirectoryTest extends TestCase
 {

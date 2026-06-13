@@ -1,9 +1,10 @@
 <?php
 
-namespace oihana\files\path ;
+namespace tests\oihana\files\path;
 
 use PHPUnit\Framework\Attributes\CoversFunction;
 use PHPUnit\Framework\TestCase;
+use function oihana\files\path\isBasePath;
 
 #[CoversFunction('oihana\files\path\isBasePath')]
 final class IsBasePathTest extends TestCase
