@@ -1,13 +1,45 @@
 # Reading
 
-Four functions to read a file's content idiomatically and efficiently, plus to load several PHP files returning arrays.
+Five functions to read a file's content idiomatically and efficiently, plus to load several PHP files returning arrays.
 
+- [`getFileContent`](#getfilecontent) — the whole content as a `string` (read counterpart of [`makeFile`](creation.md#makefile)).
 - [`getFileLines`](#getfilelines) — all lines as an `array`.
 - [`getFileLinesGenerator`](#getfilelinesgenerator) — all lines as a `Generator` (memory-friendly).
 - [`countFileLines`](#countfilelines) — fast line count in 8 KB chunks.
 - [`requireAndMergeArrays`](#requireandmergearrays) — `require` multiple files returning `array`, then merge.
 
 > 💡 All reading functions call [`assertFile`](assertions.md#assertfile) upstream — no need to check existence beforehand.
+
+---
+
+## `getFileContent`
+
+```php
+getFileContent(
+    ?string $file ,
+    ?int    $maxBytes = null
+) : string
+```
+
+Reads the **entire content** of a file into a `string` — the read counterpart of [`makeFile`](creation.md#makefile) (where `getFileLines` reads line by line).
+
+**Parameters:**
+
+- `$file`: path (passed to `assertFile`).
+- `$maxBytes`: optional cap on the file size (in bytes). When set, the file is rejected **before** being read if its size exceeds this value, throwing `RuntimeException`. Default `null` (no limit). A defensive guard against OOM on untrusted input.
+
+**Returns:** the full content. An **empty** string for an empty file.
+
+```php
+use function oihana\files\getFileContent;
+
+$json = getFileContent( '/path/to/config.json' ) ;
+
+// Refuse files larger than 10 MiB (defensive cap on untrusted input)
+$content = getFileContent( $uploadedFile , 10 * 1024 * 1024 ) ;
+```
+
+> ⚠ **Memory**: the whole file is loaded into RAM. For streaming line-by-line processing, see [`getFileLinesGenerator`](#getfilelinesgenerator).
 
 ---
 

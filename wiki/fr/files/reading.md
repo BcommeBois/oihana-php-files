@@ -1,13 +1,45 @@
 # Lecture
 
-Quatre fonctions pour lire le contenu d'un fichier de manière idiomatique et efficace, et pour charger plusieurs fichiers PHP retournant des tableaux.
+Cinq fonctions pour lire le contenu d'un fichier de manière idiomatique et efficace, et pour charger plusieurs fichiers PHP retournant des tableaux.
 
+- [`getFileContent`](#getfilecontent) — tout le contenu en `string` (pendant lecture de [`makeFile`](creation.md#makefile)).
 - [`getFileLines`](#getfilelines) — toutes les lignes en `array`.
 - [`getFileLinesGenerator`](#getfilelinesgenerator) — toutes les lignes en `Generator` (memory-friendly).
 - [`countFileLines`](#countfilelines) — comptage rapide par chunks de 8 ko.
 - [`requireAndMergeArrays`](#requireandmergearrays) — `require` de plusieurs fichiers retournant des `array`, puis merge.
 
 > 💡 Toutes les fonctions de lecture appellent [`assertFile`](assertions.md#assertfile) en amont — tu n'as pas besoin de vérifier l'existence avant.
+
+---
+
+## `getFileContent`
+
+```php
+getFileContent(
+    ?string $file ,
+    ?int    $maxBytes = null
+) : string
+```
+
+Lit **tout le contenu** d'un fichier dans une `string` — le pendant lecture de [`makeFile`](creation.md#makefile) (là où `getFileLines` lit ligne par ligne).
+
+**Paramètres :**
+
+- `$file` : chemin (passé à `assertFile`).
+- `$maxBytes` : plafond optionnel sur la taille du fichier (en octets). Si défini, refuse tout fichier dont la taille dépasse cette valeur **avant** la lecture, en levant `RuntimeException`. Défaut `null` (pas de limite). Garde-fou anti-OOM sur des entrées non fiables.
+
+**Retour :** le contenu complet. Chaîne **vide** pour un fichier vide.
+
+```php
+use function oihana\files\getFileContent;
+
+$json = getFileContent( '/path/to/config.json' ) ;
+
+// Refuse les fichiers > 10 Mio (défense contre les OOM sur input non fiable)
+$content = getFileContent( $uploadedFile , 10 * 1024 * 1024 ) ;
+```
+
+> ⚠ **Mémoire** : le fichier entier est chargé en RAM. Pour un traitement ligne à ligne en streaming, voir [`getFileLinesGenerator`](#getfilelinesgenerator).
 
 ---
 

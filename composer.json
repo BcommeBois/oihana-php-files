@@ -91,6 +91,7 @@
             "src/oihana/files/findFiles.php",
             "src/oihana/files/getBaseFileName.php",
             "src/oihana/files/getDirectory.php",
+            "src/oihana/files/getFileContent.php",
             "src/oihana/files/getFileExtension.php",
             "src/oihana/files/getFileLines.php",
             "src/oihana/files/getFileLinesGenerator.php",

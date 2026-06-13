@@ -14,7 +14,7 @@ Functions are grouped into **9 categories** documented separately:
 | **Creation** | [creation.md](creation.md) | `makeFile`, `makeDirectory`, `makeTimestampedFile`, `makeTimestampedDirectory`, `makeTemporaryDirectory` |
 | **Deletion** | [deletion.md](deletion.md) | `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory` |
 | **Temporary directories** | [temporary.md](temporary.md) | `getTemporaryDirectory`, `makeTemporaryDirectory`, `deleteTemporaryDirectory` (workflow) |
-| **Reading** | [reading.md](reading.md) | `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |
+| **Reading** | [reading.md](reading.md) | `getFileContent`, `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |
 | **Discovery** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories` |
 | **Copy and move** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
 | **System** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory` |
