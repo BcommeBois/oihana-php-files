@@ -38,6 +38,7 @@
             "src/oihana/files/archive/zip/hasZipExtension.php",
             "src/oihana/files/archive/zip/hasZipMimeType.php",
             "src/oihana/files/archive/zip/validateZipStructure.php",
+            "src/oihana/files/archive/zip/unzip.php",
             "src/oihana/files/archive/zip/zip.php",
             "src/oihana/files/archive/zip/zipDirectory.php",
             "src/oihana/files/archive/zip/zipFileInfo.php",
