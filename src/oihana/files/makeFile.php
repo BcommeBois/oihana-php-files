@@ -170,7 +170,7 @@ function makeFile( array|string|null $fileOrOptions , ?string $content = null , 
         throw new FileException( sprintf('Failed to write to file "%s".', $filePath ) );
     }
 
-    if ( !chmod( $filePath , $permissions ) )
+    if ( !@chmod( $filePath , $permissions ) )
     {
         // chmod on a freshly written, owned file does not fail under the test runner.
         // @codeCoverageIgnoreStart

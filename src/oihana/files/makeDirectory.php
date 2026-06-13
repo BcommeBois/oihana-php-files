@@ -138,7 +138,7 @@ function makeDirectory
         return $directory ;
     }
 
-    if( !mkdir( $directory , $permissions , $recursive ) && !is_dir( $directory ) )
+    if( !@mkdir( $directory , $permissions , $recursive ) && !is_dir( $directory ) )
     {
         throw new DirectoryException( sprintf( 'Failed to create directory "%s".' , $directory ) ) ;
     }

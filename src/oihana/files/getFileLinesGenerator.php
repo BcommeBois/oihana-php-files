@@ -44,7 +44,7 @@ function getFileLinesGenerator( ?string $file , ?callable $map = null ): Generat
 {
     assertFile( $file ) ;
 
-    $handle = fopen( $file, 'r' ) ;
+    $handle = @fopen( $file, 'r' ) ;
 
     if ( $handle === false )
     {

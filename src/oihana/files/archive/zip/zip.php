@@ -140,7 +140,7 @@ function zip
 
     $zip = new ZipArchive() ;
 
-    if ( $zip->open( $finalPath , ZipArchive::CREATE | ZipArchive::OVERWRITE ) !== true )
+    if ( @$zip->open( $finalPath , ZipArchive::CREATE | ZipArchive::OVERWRITE ) !== true )
     {
         throw new FileException( sprintf('Cannot create the zip archive "%s".' , $finalPath ) ) ;
     }
