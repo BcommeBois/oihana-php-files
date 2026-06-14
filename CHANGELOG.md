@@ -4,10 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.2.0] - Unreleased
+## [1.2.0] - 2026-06-14
 
-Backward-compatible release: introduces a `oihana\files\archive\zip` toolkit
-mirroring the existing `archive\tar` helpers.
+Backward-compatible release with two themes:
+
+- a new `oihana\files\archive\zip` toolkit mirroring the existing `archive\tar` helpers;
+- a "file toolkit complements" batch of standalone helpers — single-file copy/move
+  (`copyFile`/`moveFile`/`renameFile`), whole-file read (`getFileContent`), atomic write
+  (`writeFileAtomic`), `touchFile`, integrity (`fileChecksum`/`filesAreEqual`), single-file
+  gzip/bzip2 (de)compression, file-size helpers (`getFileSize`/`formatFileSize`), disk-space
+  helpers (`getFreeDiskSpace`/`getTotalDiskSpace`/`getDiskUsage`) and symbolic-link helpers
+  (`createSymlink`/`isSymlink`/`readSymlink`), plus a shared `getMimeType` primitive.
+
+It also deprecates `FindFileOption` in favour of `FindFilesOption`. No breaking changes:
+existing files written by earlier versions and all public APIs remain compatible.
 
 ### Added
 
