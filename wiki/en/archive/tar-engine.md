@@ -34,7 +34,7 @@ without comment, using the extensions the format grew for exactly this.
 | Platform | Engine | Why |
 |---|---|---|
 | **Debian / Ubuntu / most Linux** | GNU tar | Stores names as raw bytes, exactly as `PharData` does |
-| **macOS** | `PharData` | `/usr/bin/tar` is `bsdtar` |
+| **macOS** | `PharData` | `/usr/bin/tar` is `bsdtar` — unless `gtar` is installed, [see below](#on-a-mac) |
 | **Windows** | `PharData` | `tar.exe` is `bsdtar` as well |
 | **Alpine / BusyBox** | `PharData` | Reduced implementation, fidelity unverified |
 
@@ -48,6 +48,20 @@ enters the archive as `e´te´.txt`. An archive written on a Mac and restored on
 carry different names than the originals — for a site with accented media, different URLs.
 
 Slower and identical beats faster and subtly different.
+
+### On a Mac
+
+```shell
+brew install gnu-tar
+```
+
+Homebrew installs a real GNU tar under the name `gtar`, leaving the system `/usr/bin/tar`
+untouched — in `/opt/homebrew/bin/gtar` on Apple Silicon, in `/usr/local/bin/gtar` on Intel. Both
+paths are searched: there is nothing to configure, the binary engine takes over.
+
+This is a development convenience — archives built in seconds rather than minutes, and a
+[test suite](../testing.md#running-the-tests) that no longer skips — not a change of doctrine: a
+Mac remains a development machine rather than a backup target.
 
 ## When the binary engine declines
 

@@ -36,7 +36,7 @@ pour ça.
 | Plateforme | Moteur | Pourquoi |
 |---|---|---|
 | **Debian / Ubuntu / la plupart des Linux** | GNU tar | Stocke les noms en octets bruts, exactement comme `PharData` |
-| **macOS** | `PharData` | `/usr/bin/tar` est `bsdtar` |
+| **macOS** | `PharData` | `/usr/bin/tar` est `bsdtar` — sauf `gtar` installé, [voir plus bas](#sur-un-mac) |
 | **Windows** | `PharData` | `tar.exe` est également `bsdtar` |
 | **Alpine / BusyBox** | `PharData` | Implémentation réduite, fidélité non vérifiée |
 
@@ -51,6 +51,20 @@ normalise les noms en **NFD**, si bien que `été.txt` entre dans l'archive sous
 différents des originaux — pour un site aux médias accentués, des URL différentes.
 
 Plus lent et identique vaut mieux que plus rapide et subtilement différent.
+
+### Sur un Mac
+
+```shell
+brew install gnu-tar
+```
+
+Homebrew installe un vrai GNU tar sous le nom `gtar`, sans toucher au `/usr/bin/tar` du système —
+dans `/opt/homebrew/bin/gtar` sur Apple Silicon, dans `/usr/local/bin/gtar` sur Intel. Les deux
+chemins sont cherchés : il n'y a rien à configurer, le moteur binaire prend le relais.
+
+C'est un confort de développement — des archives construites en secondes plutôt qu'en minutes, et
+la [suite de tests](../testing.md#lancer-les-tests) qui ne se skippe plus — pas un changement de
+doctrine : un Mac reste une machine de développement plutôt qu'une cible de sauvegarde.
 
 ## Quand le moteur binaire s'efface
 

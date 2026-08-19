@@ -20,7 +20,8 @@ verified on a tree of accented, CJK, quoted and spaced names, an empty directory
 a deep path: the entry lists are identical. `bsdtar`, which macOS ships as `/usr/bin/tar`,
 normalises filenames to Unicode NFD (`été.txt` becomes `e´te´.txt`), so an archive written on a
 Mac would carry different names than the originals. Slower and identical beats faster and
-subtly different, so macOS keeps `PharData`.
+subtly different, so macOS keeps `PharData` — unless a GNU tar is installed beside it
+(`brew install gnu-tar`), which the search finds as `gtar` under either Homebrew prefix.
 
 **When it declines.** The engine is chosen before anything is written and never revisited: no
 GNU tar, several paths with no common parent, or a compression whose external compressor is

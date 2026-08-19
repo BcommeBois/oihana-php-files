@@ -73,7 +73,7 @@ function tarBinary( bool $refresh = false ) :?string
         return $binary ;
     }
 
-    foreach ( [ '/usr/bin/tar' , '/bin/tar' , '/usr/local/bin/tar' , '/opt/homebrew/bin/gtar' , '/usr/bin/gtar' ] as $candidate )
+    foreach ( [ '/usr/bin/tar' , '/bin/tar' , '/usr/local/bin/tar' , '/opt/homebrew/bin/gtar' , '/usr/local/bin/gtar' , '/usr/bin/gtar' ] as $candidate )
     {
         if ( tarBinaryIsUsable( $candidate ) )
         {

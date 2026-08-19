@@ -20,6 +20,15 @@ Configuration : [phpunit.xml](../../phpunit.xml). Points clés :
 - **Périmètre de couverture** : `./src` uniquement (balise `<source>`).
 - **Mode strict** : `failOnWarning`, `failOnRisky`, `failOnSkipped`, `failOnIncomplete`, `beStrictAboutOutputDuringTests`… Un test « risqué » (sans assertion, qui produit de la sortie, qui déclenche un *warning* PHP…) fait **échouer** la suite. C'est voulu : un test qui ne vérifie rien ne protège de rien.
 
+> **Sur macOS, `composer test` peut sortir en erreur sans rien casser.** Trois tests de
+> [`TarEngineTest`](../../tests/oihana/files/archive/tar/TarEngineTest.php) exercent le moteur
+> binaire de `tar` ; sans GNU tar sur la machine ils se *skippent*, et `failOnSkipped` transforme
+> ces skips en échec de la suite : la sortie affiche « OK, but some tests were skipped! » puis
+> Composer signale un `error code 1`. Le `/usr/bin/tar` d'Apple est `bsdtar`, que la bibliothèque
+> refuse délibérément ([pourquoi](archive/tar-engine.md#quel-binaire-et-pourquoi-pas-tous)). Un
+> `brew install gnu-tar` suffit à faire passer les trois tests. La CI tourne sous Linux et n'est
+> pas concernée.
+
 ## Ce qu'on teste, et comment
 
 La librairie est faite de **fonctions autonomes** et de quelques classes ; trois niveaux de testabilité se dégagent :
