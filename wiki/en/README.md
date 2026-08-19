@@ -70,7 +70,8 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 ### Archives — [`archive/`](archive/)
 
-- [Overview](archive/README.md) — the `oihana\files\archive\tar` (PharData) and `oihana\files\archive\zip` (ZipArchive) namespaces.
+- [Overview](archive/README.md) — the `oihana\files\archive\tar` and `oihana\files\archive\zip` (ZipArchive) namespaces.
+- [How a tar gets built](archive/tar-engine.md) — the system GNU tar where there is one, `PharData` otherwise; why only GNU tar, and how to ask which engine is in place.
 - [Creating a tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/none, `tarIsCompressed`.
 - [Extracting a tar](archive/untar.md) — `untar`, `validateTarStructure`, `assertTar`, `hasTarExtension`, `hasTarMimeType`.
 - [Creating a zip](archive/zip.md) — `zip`, `zipDirectory`, `zipFileInfo`, DEFLATE/STORE compression.
