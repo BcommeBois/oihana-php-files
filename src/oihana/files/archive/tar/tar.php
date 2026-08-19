@@ -3,14 +3,11 @@
 namespace oihana\files\archive\tar;
 
 use Exception;
-use FilesystemIterator;
 
 use oihana\enums\Char;
 use Phar;
 use PharData;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
 use RuntimeException;
 
 use oihana\files\enums\CompressionType;
@@ -139,8 +136,6 @@ function tar
         makeDirectory( $tmpPath ) ;
     }
 
-    $preserveRootPath = $preserveRoot !== null ? realpath($preserveRoot) : null ;
-
     if ( $outputPath === null )
     {
         $archiveName    = 'archive_' . date('Ymd_His' ) . uniqid() ;
@@ -155,90 +150,45 @@ function tar
     $tempTarPath        = $tmpPath . 'temp_archive_' . uniqid() . TarExtension::TAR ;
     $compressedTempPath = $tempTarPath . TarExtension::getCompressionExtension( $compression ) ;
 
+    // What the archive is to hold, and under which names. Computed once, for whichever engine
+    // ends up writing it: the names are the compatibility contract with every archive already
+    // written, so they cannot be worked out twice and hope to stay the same.
+
+    $entries = tarEntries( $paths , $preserveRoot ) ;
+
+    // The system tar, when there is one it can trust. PharData writes tar archives in pure PHP
+    // and on a real tree it is not viable: 317 seconds against 1.63 on the same 96 MB, for the
+    // same 17 MB archive, and it refuses outright any path component past the 100-byte ustar
+    // limit — which one file of a stock WordPress plugin set is enough to hit.
+    //
+    // The choice is made here, before anything is written, and is not revisited afterwards.
+
+    $binary = tarBinary() ;
+
+    if ( $binary !== null && tarBinaryHandles( $entries , $compression ?? CompressionType::GZIP ) )
+    {
+        tarWithBinary( $binary , $entries , $finalPath , $compression ?? CompressionType::GZIP ) ;
+
+        return $finalPath ;
+    }
+
     try
     {
         $phar       = new PharData( $tempTarPath );
         $hasContent = false;
 
-        foreach ( $paths as $path )
+        foreach ( $entries as $entry )
         {
-            $realPath = realpath( $path ) ;
-
-            if ( $realPath === false )
+            if ( $entry[ 'directory' ] )
             {
-                // Unreachable: every $path was already proven to exist (file_exists guard above).
-                // @codeCoverageIgnoreStart
-                continue;
-                // @codeCoverageIgnoreEnd
-            }
-
-            if ( is_dir( $realPath ) )
-            {
-                $directoryIterator = new RecursiveDirectoryIterator ( $realPath, FilesystemIterator::SKIP_DOTS);
-                $iterator          = new RecursiveIteratorIterator  ( $directoryIterator , RecursiveIteratorIterator::SELF_FIRST  ) ;
-                $emptyDirs         = new RecursiveIteratorIterator  ( $directoryIterator , RecursiveIteratorIterator::CHILD_FIRST ) ;
-
-                foreach ( $emptyDirs as $fileInfo )
-                {
-                    if ( $fileInfo->isDir() )
-                    {
-                        $files = scandir( $fileInfo->getPathname() ) ;
-                        if (count( $files ) === 2 ) // only "." and ".."
-                        {
-                            $relativePath = ($preserveRootPath === $realPath)
-                                ? $emptyDirs->getSubPathName()
-                                : basename( $realPath ) . DIRECTORY_SEPARATOR . $emptyDirs->getSubPathName() ;
-                            $phar->addEmptyDir($relativePath);
-                        }
-                    }
-                }
-
-                if ( $preserveRootPath === $realPath )
-                {
-                    foreach ( $iterator as $item )
-                    {
-                        $relativePath = $iterator->getSubPathName() ;
-                        if ( $item->isDir() )
-                        {
-                            $phar->addEmptyDir( $relativePath );
-                        }
-                        else
-                        {
-                            $phar->addFile( $item->getRealPath(), $relativePath );
-                        }
-                    }
-                }
-                else
-                {
-                    $phar->addEmptyDir( basename( $realPath ) );
-                    foreach ( $iterator as $item )
-                    {
-                        $relativePath = basename( $realPath ) . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
-                        if ( $item->isDir() )
-                        {
-                            $phar->addEmptyDir( $relativePath );
-                        }
-                        else
-                        {
-                            $phar->addFile( $item->getRealPath(), $relativePath );
-                        }
-                    }
-                }
-
-                $hasContent = true ;
+                $phar->addEmptyDir( $entry[ 'name' ] ) ;
             }
             else
             {
-                $archivePath = ( $preserveRootPath !== null )
-                    ? ltrim( str_replace( $preserveRootPath , '' , $realPath ), DIRECTORY_SEPARATOR )
-                    : basename( $realPath ) ;
-
-                if ( !empty( $archivePath ) )
-                {
-                    $phar->addFile( $realPath , $archivePath ) ;
-                    $hasContent = true;
-                }
+                $phar->addFile( $entry[ 'path' ] , $entry[ 'name' ] ) ;
             }
+
+            $hasContent = true ;
         }
 
         if ( !$hasContent )

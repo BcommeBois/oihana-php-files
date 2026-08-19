@@ -4,6 +4,57 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2026-08-19
+
+`tar()` hands the work to the system `tar` when there is one worth trusting, and keeps
+`PharData` for everywhere else. Same archives, same names, same API.
+
+**Why.** `PharData` writes tar archives in pure PHP. On the same 96 MB / 7 554-file tree,
+producing the same archive, it took **311.8 seconds where GNU tar took 2.1** — and the gap
+widens with size, since it writes the tar and then reads all of it back to compress it. It also
+refuses any path component past the 100-byte `ustar` limit: one file of a stock WordPress
+plugin set is over it, so a backup of an ordinary site could not be produced at all.
+
+**Which binary.** GNU tar only. It stores names as raw bytes, exactly as `PharData` does —
+verified on a tree of accented, CJK, quoted and spaced names, an empty directory, a symlink and
+a deep path: the entry lists are identical. `bsdtar`, which macOS ships as `/usr/bin/tar`,
+normalises filenames to Unicode NFD (`été.txt` becomes `e´te´.txt`), so an archive written on a
+Mac would carry different names than the originals. Slower and identical beats faster and
+subtly different, so macOS keeps `PharData`.
+
+**When it declines.** The engine is chosen before anything is written and never revisited: no
+GNU tar, several paths with no common parent, or a compression whose external compressor is
+absent — `tar` pipes through `gzip`/`bzip2`/`xz` where `PharData` uses the PHP extensions, so a
+host with `ext-bz2` and no `bzip2` program keeps the engine that works for it. A binary that is
+present and *fails* raises instead of falling back: it is reporting something `PharData` would
+meet as well, and retrying would spend minutes reaching the same wall with the reason discarded.
+
+### Added
+
+- `tarBinary()` — the system `tar` this library will use, or `null`. Public so that an
+  application can report which engine is in place: a host that silently falls back to
+  `PharData` is a host whose backups may stop fitting in their window, and a README is read
+  once while a health check is read every day. `OIHANA_TAR_BINARY` overrides the search — a
+  path to force one, an empty value to force `PharData`.
+- `tarEntries()` / `tarEntriesByBase()` — what an archive is to contain and under which names,
+  computed once for whichever engine writes it. The naming is the compatibility contract with
+  every archive already written; two copies of those rules would drift, and the drift would
+  only show the day someone tried to restore an old backup.
+- `tarWithBinary()`, `tarCompressionFlag()`, `tarCompressorExists()`, `tarBinaryIsUsable()`.
+
+### Changed
+
+- `tar()` builds through the system binary where it can. Entry names are computed in PHP and
+  handed over with `--no-recursion` on standard input, NUL-separated, so `tar` walks nothing
+  and decides nothing — and so that sixteen thousand paths do not run into `ARG_MAX`.
+
+### Fixed
+
+- `tarEntries()` derives a member's name from the item rather than calling `getSubPathName()`
+  on `RecursiveIteratorIterator`, which does not declare it: it worked through the forwarding
+  of unknown calls to the inner iterator — valid at runtime, invisible to static analysis, and
+  one refactor away from quietly returning something else.
+
 ## [1.2.0] - 2026-06-14
 
 Backward-compatible release with two themes:
