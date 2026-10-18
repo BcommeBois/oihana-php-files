@@ -45,6 +45,13 @@ ico, tiff, heic, avif, svg, pdf, zip, gz, json, csv, txt, html and php already m
   recognize: no extension can be told from it, and a caller taking the first one named any unknown file
   `….app`. The four formats keep their type the other way: `getFromExtension( '.db' )` still returns
   `application/octet-stream`.
+- **The test suite is back to 100% line coverage.** The tar engine of 1.3.0 had left 21 lines no test
+  reached, all in `archive/tar/`: on a machine with a GNU tar the binary compresses, so PharData never
+  compressed under test; and nothing made the system tar fail, fail to start, or step aside. Tests now
+  force PharData to write `.tar.gz` and `.tar.bz2`, run a fake tar that exits with an error (the
+  half-written archive is removed, the error carries what tar said), point the engine at a tar that
+  cannot start, and empty the `PATH` of the compressor. Tests only: no behavior changes, and no line is
+  marked `@codeCoverageIgnore` to get there.
 
 ## [1.3.0] - 2026-08-19
 

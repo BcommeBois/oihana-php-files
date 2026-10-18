@@ -9,7 +9,11 @@ use oihana\files\enums\CompressionType;
 
 use function oihana\files\archive\tar\tar;
 use function oihana\files\archive\tar\tarBinary;
+use function oihana\files\archive\tar\tarBinaryHandles;
+use function oihana\files\archive\tar\tarBinaryIsUsable;
+use function oihana\files\archive\tar\tarCompressorExists;
 use function oihana\files\archive\tar\tarEntries;
+use function oihana\files\archive\tar\tarWithBinary;
 use function oihana\files\archive\tar\untar;
 
 /**
@@ -28,10 +32,16 @@ use function oihana\files\archive\tar\untar;
  */
 class TarEngineTest extends TestCase
 {
+    /**
+     * The `PATH` of the process before the test, put back after it.
+     */
+    private string|false $path ;
+
     private string $root ;
 
     protected function setUp() :void
     {
+        $this->path = getenv( 'PATH' ) ;
         $this->root = sys_get_temp_dir() . '/oihana-tar-engine-' . bin2hex( random_bytes( 6 ) ) ;
 
         mkdir( $this->root , 0700 , true ) ;
@@ -42,6 +52,7 @@ class TarEngineTest extends TestCase
         exec( sprintf( 'rm -rf %s' , escapeshellarg( $this->root ) ) ) ;
 
         putenv( 'OIHANA_TAR_BINARY' ) ;
+        putenv( $this->path === false ? 'PATH' : 'PATH=' . $this->path ) ;
 
         tarBinary( refresh: true ) ;
     }
@@ -101,6 +112,14 @@ class TarEngineTest extends TestCase
         $this->assertContains( 'empty' , $this->names( tarEntries( [ $tree ] , $tree ) ) ) ;
     }
 
+    /**
+     * A path gone between the check of `tar()` and the listing is left out, not archived empty.
+     */
+    public function testAVanishedPathIsLeftOut() :void
+    {
+        $this->assertSame( [] , tarEntries( [ $this->root . '/vanished' ] ) ) ;
+    }
+
     // ------------------------------------------------------------------ the selection
 
     public function testTheBinaryCanBeRefused() :void
@@ -115,6 +134,135 @@ class TarEngineTest extends TestCase
         putenv( 'OIHANA_TAR_BINARY=' . $this->root . '/there-is-no-tar-here' ) ;
 
         $this->assertNull( tarBinary( refresh: true ) ) ;
+    }
+
+    /**
+     * An executable file that cannot even be started — its interpreter is missing — is not asked
+     * twice : the candidate is refused, the search goes on.
+     */
+    public function testACandidateThatCannotStartIsNotUsable() :void
+    {
+        $this->requireShell() ;
+
+        $candidate = $this->script( 'broken-tar' , "#!/no/such/interpreter\n" ) ;
+
+        $this->assertFalse( tarBinaryIsUsable( $candidate ) ) ;
+    }
+
+    /**
+     * Without its compressor on the `PATH`, the system tar cannot write a compressed archive :
+     * it steps aside before anything is written, and PharData does the work.
+     */
+    public function testTheBinaryStepsAsideWithoutItsCompressor() :void
+    {
+        $empty = $this->root . '/empty-bin' ;
+
+        mkdir( $empty , 0700 ) ;
+
+        putenv( 'PATH=' . $empty ) ;
+
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        $this->assertFalse( tarCompressorExists( CompressionType::GZIP ) ) ;
+        $this->assertTrue ( tarCompressorExists( CompressionType::NONE ) , 'An uncompressed archive needs no compressor.' ) ;
+        $this->assertFalse( tarBinaryHandles( $entries , CompressionType::GZIP ) ) ;
+    }
+
+    /**
+     * A compression tar has no option for is left to PharData.
+     */
+    public function testTheBinaryStepsAsideForACompressionItCannotDo() :void
+    {
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        $this->assertFalse( tarBinaryHandles( $entries , CompressionType::ZSTD ) ) ;
+    }
+
+    // ------------------------------------------------------------------ when the system tar fails
+
+    /**
+     * A tar that is present and fails is reporting something PharData would meet as well : the
+     * half-written archive is removed, and the error carries what tar said.
+     */
+    public function testATarThatFailsLeavesNoHalfWrittenArchive() :void
+    {
+        $this->requireShell() ;
+
+        $binary  = $this->failingTar( 'boom' ) ;
+        $archive = $this->root . '/failed.tar' ;
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        try
+        {
+            tarWithBinary( $binary , $entries , $archive , CompressionType::NONE ) ;
+
+            $this->fail( 'A tar exiting with 2 must raise.' ) ;
+        }
+        catch ( RuntimeException $exception )
+        {
+            $this->assertStringContainsString( 'exited with 2: boom' , $exception->getMessage() ) ;
+        }
+
+        $this->assertFileDoesNotExist( $archive , 'The half-written archive must be removed.' ) ;
+    }
+
+    public function testATarThatFailsSilentlySaysSo() :void
+    {
+        $this->requireShell() ;
+
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'exited with 2: (no output)' ) ;
+
+        tarWithBinary( $this->failingTar( null ) , $entries , $this->root . '/failed.tar' , CompressionType::NONE ) ;
+    }
+
+    public function testATarThatCannotRunIsReported() :void
+    {
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+
+        tarWithBinary( $this->root . '/there-is-no-tar-here' , $entries , $this->root . '/never.tar' , CompressionType::NONE ) ;
+    }
+
+    // ------------------------------------------------------------------ PharData compresses
+
+    /**
+     * Where the system tar is refused or steps aside, PharData writes the tar and compresses it.
+     * On a machine with a GNU tar no other test reaches this path : the binary compresses there.
+     */
+    public function testPharDataCompressesTheArchive() :void
+    {
+        putenv( 'OIHANA_TAR_BINARY=' ) ;
+        tarBinary( refresh: true ) ;
+
+        $tree      = $this->tree() ;
+        $temporary = sys_get_temp_dir() . '/oihana/files/archive/tar/tar/temp_archive_*' ;
+        $before    = glob( $temporary ) ?: [] ;
+
+        foreach ( [ CompressionType::GZIP => '.tar.gz' , CompressionType::BZIP2 => '.tar.bz2' ] as $compression => $extension )
+        {
+            // One name per archive : PharData keeps the archives it opened by name for the whole
+            // process, and the decompressed `.tar` of the first would collide with the second.
+            $expected = $this->root . '/phar-' . $compression . $extension ;
+
+            $archive = tar( $tree , $expected , $compression , $tree ) ;
+
+            $this->assertSame( $expected , $archive ) ;
+
+            $out = $this->root . '/out-' . $compression ;
+
+            mkdir( $out , 0700 ) ;
+
+            untar( $archive , $out ) ;
+
+            $this->assertFileExists( $out . '/plain.txt'      , "The $compression archive must restore its files." ) ;
+            $this->assertFileExists( $out . '/sub/nested.txt' , "The $compression archive must restore its files." ) ;
+        }
+
+        $this->assertSame( $before , glob( $temporary ) ?: [] , 'No temporary tar may be left behind.' ) ;
     }
 
     // ------------------------------------------------------------------ the two engines agree
@@ -218,6 +366,53 @@ class TarEngineTest extends TestCase
     }
 
     // ------------------------------------------------------------------ helpers
+
+    /**
+     * A fake tar that reads its names, creates the archive it was asked for, writes `$message`
+     * on its error output when there is one, then exits with 2 — what a real tar does on a full
+     * disk.
+     */
+    private function failingTar( ?string $message ) :string
+    {
+        $say = $message === null ? '' : sprintf( "echo %s >&2\n" , escapeshellarg( $message ) ) ;
+
+        return $this->script
+        (
+            'failing-tar-' . bin2hex( random_bytes( 3 ) ) ,
+            "#!/bin/sh\n"
+            . "cat > /dev/null\n"
+            . "while [ \$# -gt 0 ]; do\n"
+            . "  if [ \"\$1\" = '--file' ]; then : > \"\$2\"; fi\n"
+            . "  shift\n"
+            . "done\n"
+            . $say
+            . "exit 2\n"
+        ) ;
+    }
+
+    /**
+     * The fake binaries are shell scripts.
+     */
+    private function requireShell() :void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' || !is_executable( '/bin/sh' ) )
+        {
+            $this->markTestSkipped( 'No /bin/sh here — the fake binaries cannot run.' ) ;
+        }
+    }
+
+    /**
+     * Writes an executable script in the test directory.
+     */
+    private function script( string $name , string $content ) :string
+    {
+        $path = $this->root . '/' . $name ;
+
+        file_put_contents( $path , $content ) ;
+        chmod( $path , 0700 ) ;
+
+        return $path ;
+    }
 
     /**
      * A GNU tar, or a skipped test.
