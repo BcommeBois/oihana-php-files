@@ -325,4 +325,57 @@ class ValidateMimeTypeTest extends TestCase
             $this->assertStringContainsString('text/plain', $message);
         }
     }
+
+    /**
+     * A minimal PCM WAV file, which finfo reports as `audio/x-wav`.
+     */
+    private function createWavFile(): string
+    {
+        $data = str_repeat( "\0" , 8 ) ;
+        $wav  = 'RIFF' . pack( 'V' , 36 + strlen( $data ) ) . 'WAVE'
+              . 'fmt ' . pack( 'VvvVVvv' , 16 , 1 , 1 , 8000 , 16000 , 2 , 16 )
+              . 'data' . pack( 'V' , strlen( $data ) ) . $data ;
+
+        return $this->createTempFile( $wav , '.wav' ) ;
+    }
+
+    /**
+     * finfo reports `audio/x-wav` for a WAV file : a list naming the format `audio/wav` accepts it.
+     * @throws FileException
+     */
+    public function testValidateMimeTypeAcceptsTheAliasOfAnAllowedFormat(): void
+    {
+        $file = $this->createWavFile() ;
+
+        $this->assertSame( 'audio/x-wav' , mime_content_type( $file ) ) ;
+
+        validateMimeType( $file , [ FileMimeType::WAV ] ) ;
+    }
+
+    /**
+     * Both sides are normalized : a list written with the alias accepts the format too.
+     * @throws FileException
+     */
+    public function testValidateMimeTypeAcceptsAFormatAllowedUnderItsAlias(): void
+    {
+        $this->expectNotToPerformAssertions() ;
+
+        validateMimeType( $this->createWavFile() , [ 'audio/x-wav' ] ) ;
+        validateMimeType( $this->createWavFile() , [ 'AUDIO/WAVE' ] ) ;
+        validateMimeType( $this->createTempFile( "<?xml version=\"1.0\"?><a/>\n" , '.xml' ) , [ FileMimeType::XML ] ) ;
+    }
+
+    /**
+     * Normalizing only brings the names of one format together : another format is still refused,
+     * and the message quotes the type as finfo reported it.
+     */
+    public function testValidateMimeTypeStillRefusesAnotherFormat(): void
+    {
+        $file = $this->createWavFile() ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessage( 'but got "audio/x-wav"' ) ;
+
+        validateMimeType( $file , [ FileMimeType::PNG , FileMimeType::MP3 ] ) ;
+    }
 }

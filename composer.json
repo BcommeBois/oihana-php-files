@@ -129,6 +129,7 @@
             "src/oihana/files/makeTemporaryDirectory.php",
             "src/oihana/files/makeTimestampedDirectory.php",
             "src/oihana/files/makeTimestampedFile.php",
+            "src/oihana/files/normalizeMimeType.php",
             "src/oihana/files/requireAndMergeArrays.php",
             "src/oihana/files/readSymlink.php",
             "src/oihana/files/recursiveFilePaths.php",

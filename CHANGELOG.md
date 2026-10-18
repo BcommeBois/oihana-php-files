@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+## [1.4.0] - 2026-10-18
+
+A format is recognized under every name it carries. `finfo` reports `audio/x-wav` for a WAV file where
+the catalogue knows `audio/wav`, `text/xml` for an XML document where it knows `application/xml`:
+read as different strings, the same file got **no extension** from `FileMimeType::getExtension()`, and
+`validateMimeType()` **refused** it against a list naming the format the other way — a list allowing
+`audio/wav` refused every WAV file. Measured on real files (PHP 8.4, fileinfo 8.4): WAV, raw AAC and XML
+were the three formats affected; ogg, opus, mp3, flac, m4a, webm, mp4, mov, png, jpeg, gif, webp, bmp,
+ico, tiff, heic, avif, svg, pdf, zip, gz, json, csv, txt, html and php already matched.
+
+### Added
+
+- **`normalizeMimeType( string $mimeType ) : string`** — brings a type name back to the reference name
+  of its format: lower-cased, parameters dropped (`audio/wav; codecs=1`), then an alias replaced by the
+  name the catalogue uses (`audio/x-wav` → `audio/wav`). A name without alias comes back cleaned.
+- **`enums\MimeTypeAlias`** — the table it reads, each alias naming the same format as its reference:
+  `audio/x-wav`, `audio/x-hx-aac-adts`, `text/xml` (reported by `finfo`); `audio/webm` → `video/webm`
+  (declared by browsers for a voice recording, the container `finfo` reports as `video/webm`); and older
+  names (`audio/wave`, `audio/vnd.wave`, `audio/x-aac`, `audio/x-flac`, `image/x-ms-bmp`,
+  `application/x-gzip`). It is a class of its own: a constant of `FileMimeType` would be read as a type
+  by `ConstantsTrait`. `MimeTypeAlias::UNKNOWN_BINARY` names `application/octet-stream`.
+
+### Fixed
+
+- **`FileMimeType::getExtension()` reads the aliases**, the case and the parameters of a type:
+  `audio/x-wav` gives `.wav`, `Text/XML; charset=utf-8` gives `.xml`.
+- **`validateMimeType()` accepts a format under any of its names.** Both the detected type and the
+  allowed ones are normalized before the comparison: `['audio/wav']` accepts a WAV reported as
+  `audio/x-wav`, and `['audio/x-wav']` one reported as `audio/wav`. Only names of the same format meet —
+  another format is still refused. Allowing `audio/webm` allows a WebM video too, the container being the
+  same. The error message still quotes the type as `finfo` reported it.
+
+### Changed
+
+- **`FileMimeType::getExtension( 'application/octet-stream' )` returns `null`**, no longer
+  `['.app', '.db', '.enc', '.tar.gz.enc']`. It is the type `finfo` reports for a content it does not
+  recognize: no extension can be told from it, and a caller taking the first one named any unknown file
+  `….app`. The four formats keep their type the other way: `getFromExtension( '.db' )` still returns
+  `application/octet-stream`.
+
 ## [1.3.0] - 2026-08-19
 
 `tar()` hands the work to the system `tar` when there is one worth trusting, and keeps

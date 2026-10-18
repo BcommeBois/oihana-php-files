@@ -60,6 +60,12 @@ use oihana\files\exceptions\FileException;
  * ```
  *
  * Notes:
+ * - Both the detected type and the allowed ones are compared by the reference name of their format
+ *   ({@see normalizeMimeType()}) : `['audio/wav']` accepts a WAV file that `finfo` reports as
+ *   `audio/x-wav`. Only names of the same format meet — an image never passes for a script. The
+ *   error message quotes the type as `finfo` reported it.
+ * - Allowing `audio/webm` allows a WebM video too : `finfo` reports `video/webm` for both, the
+ *   container being the same.
  * - This function uses `mime_content_type()`, which relies on the system's `file` command or magic database.
  * - For consistent results across platforms, ensure the PHP `fileinfo` extension is enabled.
  *
@@ -91,10 +97,12 @@ function validateMimeType( string $file , array $allowedMimeTypes ): void
     }
 
     $normalizedAllowedTypes = array_unique( array_map('strtolower', $normalizedAllowedTypes));
-    $actualMimeTypeLower    = strtolower( $actualMimeType ) ;
 
-    // Check if the actual MIME type is in the allowed list
-    if ( !in_array( $actualMimeTypeLower , $normalizedAllowedTypes , true ) )
+    // Both sides are brought back to the reference name of their format : `audio/wav` accepts a
+    // WAV that finfo reports as `audio/x-wav`, and `audio/x-wav` accepts one reported as `audio/wav`.
+    $referenceAllowedTypes = array_map( normalizeMimeType( ... ) , $normalizedAllowedTypes ) ;
+
+    if ( !in_array( normalizeMimeType( $actualMimeType ) , $referenceAllowedTypes , true ) )
     {
         throw new FileException( sprintf
         (

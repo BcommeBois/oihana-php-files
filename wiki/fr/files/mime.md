@@ -1,8 +1,9 @@
 # MIME et validation
 
-Quatre fonctions pour détecter et valider les types MIME des fichiers.
+Cinq fonctions pour détecter, comparer et valider les types MIME des fichiers.
 
 - [`getMimeType`](#getmimetype) — primitive de détection : retourne le MIME brut d'un fichier ou `null` (**ne lève jamais**).
+- [`normalizeMimeType`](#normalizemimetype) — ramène un nom de type au nom de référence de son format (`audio/x-wav` → `audio/wav`).
 - [`validateMimeType`](#validatemimetype) — vérifie que le MIME d'un fichier figure dans une liste autorisée (**lève** si non).
 - [`hasMimeType`](#hasmimetype) — teste si le MIME d'un fichier correspond à une liste (**retourne un `bool`**, match partiel).
 - [`getImageMimeType`](#getimagemimetype) — résout et valide le MIME d'une image avec mapping format/MIME.
@@ -36,6 +37,38 @@ getMimeType( '/uploads'             ) ; // null (dossier)
 
 ---
 
+## `normalizeMimeType`
+
+```php
+normalizeMimeType( string $mimeType ) : string
+```
+
+Ramène un nom de type au **nom de référence de son format** : minuscules, paramètres retirés
+(`audio/wav; codecs=1` → `audio/wav`), puis un alias de la table
+[`MimeTypeAlias::ALIASES`](../enums.md#mimetypealias) remplacé par le nom que le catalogue utilise. Un nom
+absent de la table revient nettoyé, inchangé sinon.
+
+**Pourquoi.** Un même format porte souvent plusieurs noms : `finfo` répond `audio/x-wav` pour un WAV, quand
+le catalogue connaît `audio/wav` ; `text/xml` pour un XML, quand il connaît `application/xml`. Lus comme
+des chaînes différentes, le même fichier n'avait pas d'extension (`FileMimeType::getExtension()`) et était
+**refusé** par `validateMimeType()` face à une liste qui nomme le format autrement.
+
+```php
+use function oihana\files\normalizeMimeType;
+
+normalizeMimeType( 'audio/x-wav'             ) ; // 'audio/wav'
+normalizeMimeType( 'Text/XML; charset=utf-8' ) ; // 'application/xml'
+normalizeMimeType( 'audio/webm'              ) ; // 'video/webm' — même conteneur
+normalizeMimeType( 'image/png'               ) ; // 'image/png'
+```
+
+Chaque alias désigne **le même format** que son nom de référence : normaliser ne fait jamais passer un
+format pour un autre. Seule exception à connaître : `audio/webm` (le type qu'un navigateur déclare pour un
+enregistrement vocal) mène à `video/webm`, que `finfo` répond pour le même conteneur — qu'il porte du son
+seul ou du son et des images.
+
+---
+
 ## `validateMimeType`
 
 ```php
@@ -59,7 +92,15 @@ Les listes imbriquées sont aplaties via `array_merge`, puis toutes les valeurs 
 
 ### Comparaison
 
-Match strict (`in_array(..., strict: true)`) sur le MIME en minuscules. **Pas de wildcard** (`image/*` n'est pas supporté — il faut lister les types explicitement).
+Le type détecté **et** chaque type de la liste sont ramenés au nom de référence de leur format
+([`normalizeMimeType`](#normalizemimetype)), puis comparés strictement. `['audio/wav']` accepte donc un WAV
+que `finfo` répond `audio/x-wav`, et `['audio/x-wav']` un WAV répondu `audio/wav` : seul compte le format.
+Un autre format reste refusé — une image ne passe jamais pour un script. Le message d'erreur cite le type
+**tel que `finfo` l'a répondu**.
+
+> ⚠️ Admettre `audio/webm` admet aussi une vidéo WebM : `finfo` répond `video/webm` pour les deux.
+
+**Pas de wildcard** (`image/*` n'est pas supporté — il faut lister les types explicitement).
 
 ### Exemples
 
@@ -244,7 +285,8 @@ function handleUpload( string $uploadPath , string $declaredFormat ) {
 | Fonction             | Détection MIME      | Whitelist | Mapping format→MIME | Lève exception |
 |----------------------|---------------------|-----------|---------------------|---|
 | `getMimeType`        | `finfo_*` | Non | Non | Jamais (`?string`) |
-| `validateMimeType`   | `mime_content_type` | Oui (obligatoire) | Non | Si pas dans liste |
+| `normalizeMimeType`  | — (un nom de type) | Non | Alias → nom de référence | Jamais (`string`) |
+| `validateMimeType`   | `mime_content_type` | Oui (obligatoire, noms normalisés) | Non | Si pas dans liste |
 | `hasMimeType`        | `getMimeType` | Oui (match partiel) | Non | Jamais (`bool`) |
 | `getImageMimeType`   | `getMimeType` | Indirect (via `$allowedFormats`) | Oui | Si fichier inexistant |
 | `assertFile`         | Délègue à `validateMimeType` (3e arg) | Oui (optionnel) | Non | Si validation échoue |
@@ -254,6 +296,6 @@ function handleUpload( string $uploadPath , string $declaredFormat ) {
 ## Voir aussi
 
 - [Assertions](assertions.md#assertfile) — `assertFile` avec validation MIME intégrée.
-- [Énumérations](../enums.md) — `FileMimeType` (catalogue complet), `ImageMimeType`, `AudioMimeType`, `VideoMimeType`, `ImageFormat`.
+- [Énumérations](../enums.md) — `FileMimeType` (catalogue complet), `MimeTypeAlias` (les autres noms d'un format), `ImageMimeType`, `AudioMimeType`, `VideoMimeType`, `ImageFormat`.
 - [Exceptions](../exceptions.md) — `FileException`.
 - [Vue d'ensemble](README.md).

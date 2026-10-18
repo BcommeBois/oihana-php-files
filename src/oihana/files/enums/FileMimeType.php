@@ -7,6 +7,8 @@ use oihana\files\enums\traits\ImageMimeTypeTrait;
 use oihana\files\enums\traits\VideoMimeTypeTrait;
 use oihana\reflect\traits\ConstantsTrait;
 
+use function oihana\files\normalizeMimeType;
+
 /**
  * FileExtension
  *
@@ -115,13 +117,24 @@ class FileMimeType
     private static ?array $EXTENSIONS = null ;
 
     /**
-     * Returns the mimetype(s) for a given code.
-     * @param string $mimeType The mime type to evaluates.
-     * @return string|array|null
+     * Returns the extension(s) of a MIME type.
+     *
+     * The type is normalized first ({@see normalizeMimeType()}) : its case and parameters do not
+     * count, and an alias reported by `finfo` finds the extension of its format (`audio/x-wav`
+     * gives `.wav`, `text/xml` gives `.xml`). `application/octet-stream` — the type `finfo` reports
+     * for a content it does not recognize — gives `null` : no extension can be told from it, though
+     * several formats without a type of their own (`.db`, `.enc`…) are declared with it.
+     *
+     * @param string $mimeType The MIME type to evaluate.
+     *
+     * @return string|array|null The extension, the sorted extensions when the format has several
+     *                           (`image/jpeg` gives `['.jpeg', '.jpg']`), or `null` when none is known.
      */
     public static function getExtension( string $mimeType ):string|array|null
     {
-        if( empty( $mimeType ) )
+        $mimeType = normalizeMimeType( $mimeType ) ;
+
+        if( $mimeType === '' || $mimeType === MimeTypeAlias::UNKNOWN_BINARY )
         {
             return null ;
         }

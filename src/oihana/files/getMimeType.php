@@ -8,7 +8,9 @@ namespace oihana\files ;
  * This is the low-level primitive shared by the higher-level MIME helpers
  * ({@see hasMimeType()}, {@see images\getImageMimeType()}, {@see archive\tar\tarFileInfo()},
  * {@see archive\zip\zipFileInfo()}). It returns the raw type reported by
- * `finfo` (e.g. `text/plain`, `application/zip`) without any normalization.
+ * `finfo` (e.g. `text/plain`, `application/zip`) without any normalization : the same format may be
+ * reported under another name on another host (`audio/x-wav` for `audio/wav`) — compare through
+ * {@see normalizeMimeType()}.
  *
  * The function never throws: it returns `null` when the path is not a file or
  * when detection fails (including an empty result), so callers can decide how

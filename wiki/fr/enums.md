@@ -1,6 +1,6 @@
 # Catalogue des énumérations
 
-`oihana/php-files` expose **18 classes d'énumérations** (constantes typées) + **3 traits MIME** sous `oihana\files\enums\`. Toutes sont des **classes de constantes**, pas des `enum` natifs PHP — elles utilisent le trait [`ConstantsTrait`](../getting-started/dependencies.md#oihanaphp-reflect) qui expose `enum()`, `getAll()`, etc.
+`oihana/php-files` expose **19 classes d'énumérations** (constantes typées) + **3 traits MIME** sous `oihana\files\enums\`. Toutes sont des **classes de constantes**, pas des `enum` natifs PHP — elles utilisent (sauf `MimeTypeAlias`, une simple table) le trait [`ConstantsTrait`](../getting-started/dependencies.md#oihanaphp-reflect) qui expose `enum()`, `getAll()`, etc.
 
 > 💡 Pourquoi des classes de constantes plutôt que des `enum` PHP 8.1 ? Les `enum` natifs ne permettent pas l'**héritage** ni les **constantes composées** (array). Les classes de constantes permettent par exemple `FileMimeType::AI = ['application/postscript', 'application/illustrator']` (MIME multiple) — impossible avec un `enum` natif.
 
@@ -8,7 +8,7 @@
 
 | Catégorie | Classes |
 |---|---|
-| **MIME types** | [`FileMimeType`](#filemimetype), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
+| **MIME types** | [`FileMimeType`](#filemimetype), [`MimeTypeAlias`](#mimetypealias), [`ImageMimeType`](#imagemimetype), [`AudioMimeType`](#audiomimetype), [`VideoMimeType`](#videomimetype) |
 | **Extensions de fichier** | [`FileExtension`](#fileextension), [`TarExtension`](#tarextension) |
 | **Formats & compression** | [`CompressionType`](#compressiontype), [`ImageFormat`](#imageformat), [`FileSizeUnit`](#filesizeunit) |
 | **Options (clés de tableaux)** | [`FindFilesOption`](#findfilesoption), [`FindFileOption`](#findfileoption), [`MakeFileOption`](#makefileoption), [`MakeDirectoryOption`](#makedirectoryoption), [`RecursiveFilePathsOption`](#recursivefilepathsoption), [`TarOption`](#taroption), [`ZipOption`](#zipoption) |
@@ -39,6 +39,34 @@ FileMimeType::AI ;   // ['application/postscript', 'application/illustrator']
 ```
 
 Méthodes utilitaires (héritées de `ConstantsTrait`) : `getAll()`, `enum()`, etc.
+
+`FileMimeType::getExtension( $mimeType )` rend l'extension d'un type, ou la liste triée quand le format en
+a plusieurs (`image/jpeg` → `['.jpeg', '.jpg']`). Le type est d'abord normalisé
+([`normalizeMimeType`](files/mime.md#normalizemimetype)) : la casse et les paramètres ne comptent pas, et un
+alias trouve l'extension de son format (`audio/x-wav` → `.wav`, `text/xml` → `.xml`).
+`application/octet-stream` — ce que `finfo` répond pour un contenu qu'il ne reconnaît pas — rend `null` :
+aucune extension ne s'en déduit, même si `.app`, `.db`, `.enc` et `.tar.gz.enc`, sans type propre, sont
+déclarés avec lui (`getFromExtension( '.db' )` rend toujours `application/octet-stream`).
+
+### `MimeTypeAlias`
+
+Les **autres noms** d'un même format, chacun relié au nom que `FileMimeType` utilise — la table que lit
+[`normalizeMimeType`](files/mime.md#normalizemimetype). Ce n'est pas une constante de `FileMimeType` : toutes
+les constantes d'une classe qui utilise `ConstantsTrait` sont lues comme des types.
+
+| Alias | Nom de référence | Origine |
+|---|---|---|
+| `audio/x-wav` | `audio/wav` | répondu par `finfo` (mesuré, PHP 8.4) |
+| `audio/x-hx-aac-adts` | `audio/aac` | répondu par `finfo` (mesuré) |
+| `text/xml` | `application/xml` | répondu par `finfo` (mesuré) |
+| `audio/webm` | `video/webm` | déclaré par les navigateurs pour un enregistrement vocal ; `finfo` répond `video/webm` pour le même conteneur |
+| `audio/wave`, `audio/vnd.wave` | `audio/wav` | anciens noms |
+| `audio/x-aac` | `audio/aac` | ancien nom |
+| `audio/x-flac` | `audio/flac` | ancien nom |
+| `image/x-ms-bmp` | `image/bmp` | ancien nom |
+| `application/x-gzip` | `application/gzip` | ancien nom |
+
+`MimeTypeAlias::UNKNOWN_BINARY` vaut `application/octet-stream`, le type d'un contenu non reconnu.
 
 ### `ImageMimeType`
 

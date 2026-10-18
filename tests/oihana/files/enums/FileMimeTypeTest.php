@@ -67,8 +67,35 @@ class FileMimeTypeTest extends TestCase
 
     public function testGetExtensionReturnsMultipleExtensionForKnownMime()
     {
-        $result = FileMimeType::getExtension('application/octet-stream' );
-        $this->assertEquals(['.app', '.db','.enc','.tar.gz.enc'] , $result);
+        $result = FileMimeType::getExtension( FileMimeType::JPEG );
+        $this->assertEquals( [ '.jpeg' , '.jpg' ] , $result );
+    }
+
+    /**
+     * `application/octet-stream` is what finfo reports for a content it does not recognize :
+     * no extension can be told from it, though `.app`, `.db`, `.enc` and `.tar.gz.enc` are
+     * declared with it, having no type of their own.
+     */
+    public function testGetExtensionOfAnUnknownBinaryIsNull()
+    {
+        $this->assertNull( FileMimeType::getExtension( 'application/octet-stream' ) );
+        $this->assertEquals( 'application/octet-stream' , FileMimeType::getFromExtension( FileExtension::DB ) );
+    }
+
+    /**
+     * The names finfo reports for a WAV and an XML document find the extension of their format.
+     */
+    public function testGetExtensionReadsTheAliasOfAFormat()
+    {
+        $this->assertEquals( FileExtension::WAV , FileMimeType::getExtension( 'audio/x-wav' ) );
+        $this->assertEquals( FileExtension::XML , FileMimeType::getExtension( 'text/xml'    ) );
+        $this->assertEquals( FileExtension::AAC , FileMimeType::getExtension( 'audio/x-hx-aac-adts' ) );
+    }
+
+    public function testGetExtensionIgnoresTheCaseAndTheParameters()
+    {
+        $this->assertEquals( FileExtension::XML , FileMimeType::getExtension( 'Text/XML; charset=utf-8' ) );
+        $this->assertEquals( FileExtension::PNG , FileMimeType::getExtension( 'IMAGE/PNG' ) );
     }
     public function testGetFromExtensionKnown()
     {
