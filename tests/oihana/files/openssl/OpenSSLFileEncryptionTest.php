@@ -9,6 +9,10 @@ use oihana\files\openssl\OpenSSLFileEncryption;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use function oihana\files\openssl\bestAvailableKdf;
+use function oihana\files\openssl\deriveKey;
+use function oihana\files\openssl\kdfIsAvailable;
+
 class OpenSSLFileEncryptionTest extends TestCase
 {
     private string $testDir;
@@ -301,18 +305,34 @@ class OpenSSLFileEncryptionTest extends TestCase
     // V2 format-specific tests
     // ---------------------------------------------------------------------
 
-    public function testEncryptProducesV2MagicHeader(): void
+    public function testEncryptProducesV3MagicHeader(): void
     {
         $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
         $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
 
         $data = file_get_contents( $this->encryptedFile ) ;
-        $this->assertSame( 'OPHE' , substr( $data , 0 , 4 ) , 'V2 file must start with OPHE magic' ) ;
-        $this->assertSame( 2 , ord( $data[ 4 ] ) , 'Version byte must be 2' ) ;
+        $this->assertSame( 'OPHE' , substr( $data , 0 , 4 ) , 'An encrypted file must start with the OPHE magic' ) ;
+        $this->assertSame( 3 , ord( $data[ 4 ] ) , 'Version byte must be 3' ) ;
 
         // KDF byte must be one of the known algorithms
         $kdf = ord( $data[ 5 ] ) ;
         $this->assertContains( $kdf , [ 1 , 2 ] , 'KDF byte must be Argon2id (1) or PBKDF2 (2)' ) ;
+
+        // And the byte V3 added: the block size the reader has to cut frames on.
+        $this->assertSame
+        (
+            EncryptionFormat::DEFAULT_BLOCK_SIZE_EXPONENT ,
+            ord( $data[ 6 ] ) ,
+            'Block-size exponent byte must be the default'
+        ) ;
+
+        // 'Hello, World!' is 13 bytes: one frame, so header + 13 + one tag.
+        $this->assertSame
+        (
+            EncryptionFormat::V3_HEADER_LENGTH + 13 + EncryptionFormat::GCM_TAG_LENGTH ,
+            strlen( $data ) ,
+            'A single-block file must be exactly header + ciphertext + one tag'
+        ) ;
     }
 
     public function testEncryptIsNonDeterministic(): void
@@ -343,8 +363,8 @@ class OpenSSLFileEncryptionTest extends TestCase
         $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
         $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
 
-        // Flip one byte in the ciphertext region (after the 34-byte V2 header,
-        // before the last 16 bytes which hold the tag).
+        // Flip one byte of the first frame's ciphertext: past the 31-byte V3 header,
+        // before the 16 bytes of tag that close the frame.
         $data = file_get_contents( $this->encryptedFile ) ;
         $tamperOffset = 34 ; // first byte of ciphertext
         $data[ $tamperOffset ] = chr( ord( $data[ $tamperOffset ] ) ^ 0xFF ) ;
@@ -373,19 +393,103 @@ class OpenSSLFileEncryptionTest extends TestCase
         $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
     }
 
-    public function testTruncatedV2PayloadIsRejected(): void
+    public function testTruncatedV3FileIsRejected(): void
     {
         $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
         $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
 
-        // Truncate to half its size
+        // Cut inside the header, so not even one frame is left.
         $data = file_get_contents( $this->encryptedFile ) ;
         file_put_contents( $this->encryptedFile , substr( $data , 0 , 30 ) ) ;
 
         $this->expectException( RuntimeException::class ) ;
-        $this->expectExceptionMessage( 'V2 payload is shorter' ) ;
+        $this->expectExceptionMessage( 'V3 file is shorter than a header and one frame' ) ;
 
         $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ;
+    }
+
+    /**
+     * Builds a genuine V2 file — the format this library no longer writes — so the read
+     * path that still has to open the archives of 2025 keeps being exercised by
+     * something other than its own writer.
+     */
+    private function buildV2File( string $path , string $plaintext , ?int $kdf = null ) :void
+    {
+        $salt = random_bytes( EncryptionFormat::SALT_LENGTH ) ;
+        $iv   = random_bytes( EncryptionFormat::GCM_IV_LENGTH ) ;
+        $kdf  = $kdf ?? bestAvailableKdf() ;
+        $key  = deriveKey( $this->passphrase , $salt , $kdf ) ;
+
+        $tag        = '' ;
+        $ciphertext = openssl_encrypt
+        (
+            $plaintext ,
+            EncryptionFormat::DEFAULT_CIPHER ,
+            $key ,
+            OPENSSL_RAW_DATA ,
+            $iv ,
+            $tag ,
+            '' ,
+            EncryptionFormat::GCM_TAG_LENGTH
+        ) ;
+
+        file_put_contents
+        (
+            $path ,
+            EncryptionFormat::MAGIC
+            . chr( EncryptionFormat::VERSION_V2 )
+            . chr( $kdf )
+            . $salt
+            . $iv
+            . $ciphertext
+            . $tag
+        ) ;
+    }
+
+    public function testHandBuiltV2FileStillDecrypts(): void
+    {
+        $plain = 'An archive written before V3 existed.' ;
+        $v2    = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , $plain ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+
+        $this->assertSame( $plain , file_get_contents( $crypto->decrypt( $v2 , $this->decryptedFile ) ) ) ;
+    }
+
+    public function testTruncatedV2PayloadIsRejected(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+        file_put_contents( $v2 , substr( file_get_contents( $v2 ) , 0 , 30 ) ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'V2 payload is shorter' ) ;
+
+        $crypto->decrypt( $v2 , $this->decryptedFile ) ;
+    }
+
+    public function testTamperedHandBuiltV2FileIsDetected(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+
+        $data = file_get_contents( $v2 ) ;
+        $at   = EncryptionFormat::HEADER_LENGTH + EncryptionFormat::SALT_LENGTH + EncryptionFormat::GCM_IV_LENGTH ;
+        $data[ $at ] = chr( ord( $data[ $at ] ) ^ 0xFF ) ;
+        file_put_contents( $v2 , $data ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $crypto->decrypt( $v2 , $this->decryptedFile ) ;
     }
 
     public function testDecryptLegacyV1FileStillWorks(): void
@@ -577,7 +681,7 @@ class OpenSSLFileEncryptionTest extends TestCase
      * @throws DirectoryException
      * @throws FileException
      */
-    public function testDecryptV2WrapsKdfErrorOnCorruptAlgorithmByte(): void
+    public function testDecryptWrapsKdfErrorOnCorruptAlgorithmByte(): void
     {
         $encryption = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
         $encryption->encrypt( $this->inputFile , $this->encryptedFile ) ;
@@ -646,5 +750,280 @@ class OpenSSLFileEncryptionTest extends TestCase
         file_put_contents( $blob , str_repeat( chr( 1 ) , 64 ) ) ;
 
         $this->assertTrue( $encryption->isEncryptedFile( $blob ) ) ;
+    }
+
+    // ---------------------------------------------------------------------
+    // The memory guard on the legacy read paths
+    // ---------------------------------------------------------------------
+
+    /**
+     * An instance that states its memory budget instead of inheriting the runner's.
+     *
+     * The budget is the one thing these tests cannot take from the environment: on a
+     * runner with no `memory_limit` the real budget is unknown, and on one with a
+     * limit it is hundreds of megabytes — either way the guard would never fire on a
+     * fixture small enough to belong in a test suite.
+     */
+    private function cryptoWithBudget( ?int $budget ) :OpenSSLFileEncryption
+    {
+        return new class( $this->passphrase , $this->cipher , $budget ) extends OpenSSLFileEncryption
+        {
+            public function __construct( string $passphrase , string $cipher , private readonly ?int $budget )
+            {
+                parent::__construct( $passphrase , $cipher ) ;
+            }
+
+            protected function memoryBudget() : ?int
+            {
+                return $this->budget ;
+            }
+        } ;
+    }
+
+    private function buildV1File( string $path , string $plaintext ) :void
+    {
+        $iv = random_bytes( openssl_cipher_iv_length( $this->cipher ) ) ;
+        $ct = openssl_encrypt( $plaintext , $this->cipher , $this->passphrase , OPENSSL_RAW_DATA , $iv ) ;
+
+        file_put_contents( $path , $iv . $ct ) ;
+    }
+
+    /**
+     * The failure this guard exists for did not look like a failure. Reading a V2 file
+     * past the budget either threw a fatal error naming the limit or, with
+     * `memory_limit = -1`, had the process killed by the kernel — no exception, no
+     * trace, nothing in any log but a line in `dmesg`. A backup that neither succeeded
+     * nor failed.
+     */
+    public function testAV2FileBeyondTheMemoryBudgetIsRefusedWithAnExplanation(): void
+    {
+        $v2 = $this->testDir . '/big.v2.enc' ;
+        $this->buildV2File( $v2 , str_repeat( 'x' , 4096 ) ) ;
+
+        $crypto = $this->cryptoWithBudget( 1024 ) ;
+
+        try
+        {
+            $crypto->decrypt( $v2 , $this->decryptedFile ) ;
+            $this->fail( 'A legacy file past the memory budget must be refused.' ) ;
+        }
+        catch ( RuntimeException $e )
+        {
+            $message = $e->getMessage() ;
+
+            $this->assertStringContainsString( 'is a V2 file of' , $message , 'The refusal must name the format' ) ;
+            $this->assertStringContainsString( 'memory budget here is 1024 bytes' , $message , 'and the budget it was measured against' ) ;
+            $this->assertStringContainsString( 'Raise memory_limit' , $message , 'and what the operator can do about it' ) ;
+        }
+    }
+
+    public function testAV1FileBeyondTheMemoryBudgetIsRefused(): void
+    {
+        $v1 = $this->testDir . '/big.v1.enc' ;
+        $this->buildV1File( $v1 , str_repeat( 'x' , 4096 ) ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'is a V1 file of' ) ;
+
+        $this->cryptoWithBudget( 1024 )->decrypt( $v1 , $this->decryptedFile ) ;
+    }
+
+    public function testALegacyFileWithinTheMemoryBudgetIsRead(): void
+    {
+        $plain = str_repeat( 'x' , 4096 ) ;
+        $v2    = $this->testDir . '/small.v2.enc' ;
+
+        $this->buildV2File( $v2 , $plain ) ;
+
+        $crypto = $this->cryptoWithBudget( 64 * 1024 * 1024 ) ;
+
+        $this->assertSame( $plain , file_get_contents( $crypto->decrypt( $v2 , $this->decryptedFile ) ) ) ;
+    }
+
+    /**
+     * `null` is *unknown*, not *unlimited*. Refusing on a figure nobody has would
+     * break every read that works today on a host without `/proc/meminfo`.
+     */
+    public function testAnUnknownMemoryBudgetLetsTheReadThrough(): void
+    {
+        $plain = str_repeat( 'x' , 4096 ) ;
+        $v2    = $this->testDir . '/unknown.v2.enc' ;
+
+        $this->buildV2File( $v2 , $plain ) ;
+
+        $crypto = $this->cryptoWithBudget( null ) ;
+
+        $this->assertSame( $plain , file_get_contents( $crypto->decrypt( $v2 , $this->decryptedFile ) ) ) ;
+    }
+
+    /**
+     * And the point of the whole lot: the guard is on the legacy paths only. A V3 file
+     * reads under a budget of one byte, because it never holds more than a block.
+     */
+    public function testAV3FileIsNotSubjectToTheMemoryGuard(): void
+    {
+        $plain = str_repeat( 'x' , 200_000 ) ;
+        file_put_contents( $this->inputFile , $plain ) ;
+
+        $crypto = $this->cryptoWithBudget( 1 ) ;
+        $crypto->encrypt( $this->inputFile , $this->encryptedFile ) ;
+
+        $this->assertSame( $plain , file_get_contents( $crypto->decrypt( $this->encryptedFile , $this->decryptedFile ) ) ) ;
+    }
+
+    // ---------------------------------------------------------------------
+    // The V2 read path, on files this library no longer writes
+    // ---------------------------------------------------------------------
+
+    public function testDecryptV2WrapsKdfErrorOnCorruptAlgorithmByte(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+
+        // The KDF identifier sits right after MAGIC + VERSION.
+        $data   = file_get_contents( $v2 ) ;
+        $offset = EncryptionFormat::MAGIC_LENGTH + EncryptionFormat::VERSION_LENGTH ;
+        $data[ $offset ] = chr( 99 ) ;
+        file_put_contents( $v2 , $data ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $crypto->decrypt( $v2 , $this->decryptedFile ) ;
+    }
+
+    /**
+     * The legacy path still writes its plaintext in one call, so its write failure has
+     * its own line to reach.
+     */
+    public function testDecryptV2FailsWhenTheOutputPathIsADirectory(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+
+        $dir = $this->testDir . '/legacy_out_dir' ;
+
+        if ( !is_dir( $dir ) )
+        {
+            mkdir( $dir ) ;
+        }
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/Decryption failed, file write failed/' ) ;
+
+        $crypto->decrypt( $v2 , $dir ) ;
+    }
+
+    public function testIsEncryptedFileRecognisesAV2File(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        $this->assertTrue( $crypto->isEncryptedFile( $v2 ) ) ;
+    }
+
+    public function testIsEncryptedFileRefusesAV2FileTooShortToHoldOne(): void
+    {
+        $v2 = $this->testDir . '/handmade.v2.enc' ;
+
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' ) ;
+        file_put_contents( $v2 , substr( file_get_contents( $v2 ) , 0 , 20 ) ) ;
+
+        $crypto = new OpenSSLFileEncryption( $this->passphrase , $this->cipher ) ;
+
+        $this->assertFalse( $crypto->isEncryptedFile( $v2 ) ) ;
+    }
+
+    // ---------------------------------------------------------------------
+    // A KDF the reader's own host cannot run
+    // ---------------------------------------------------------------------
+
+    /**
+     * An instance that reads as though `ext-sodium` were absent — which, since the
+     * extension is a suggestion of this package and not a requirement, is the state of
+     * any number of hosts a backup might be restored on.
+     */
+    private function cryptoWithoutSodium() :OpenSSLFileEncryption
+    {
+        return new class( $this->passphrase , $this->cipher ) extends OpenSSLFileEncryption
+        {
+            protected function isKdfAvailable( int $kdfAlgorithm ) : bool
+            {
+                return kdfIsAvailable( $kdfAlgorithm , false ) ;
+            }
+        } ;
+    }
+
+    public function testAnArgon2idV2FileWithoutSodiumNamesTheMissingExtension(): void
+    {
+        if ( !function_exists('sodium_crypto_pwhash') )
+        {
+            $this->markTestSkipped( 'Writing an Argon2id file needs the extension this test then pretends is absent.' ) ;
+        }
+
+        $v2 = $this->testDir . '/argon2id.v2.enc' ;
+        $this->buildV2File( $v2 , 'An archive written where sodium was loaded.' , EncryptionFormat::KDF_ARGON2ID ) ;
+
+        try
+        {
+            $this->cryptoWithoutSodium()->decrypt( $v2 , $this->decryptedFile ) ;
+            $this->fail( 'A KDF this host cannot run must be refused.' ) ;
+        }
+        catch ( RuntimeException $e )
+        {
+            $message = $e->getMessage() ;
+
+            $this->assertStringContainsString( 'sodium extension' , $message , 'The refusal must name what is missing' ) ;
+            $this->assertStringContainsString( 'passphrase is not in question' , $message , 'and clear the passphrase, which is where the old message sent people' ) ;
+            $this->assertStringNotContainsString( 'corrupted data' , $message , 'and must not call an intact archive corrupt' ) ;
+        }
+    }
+
+    /**
+     * The other half of the same property: PBKDF2 is `hash_pbkdf2()`, native to PHP, so
+     * a file written without sodium reads on a host without sodium.
+     */
+    public function testAPbkdf2V2FileReadsWithoutSodium(): void
+    {
+        $plain = 'An archive written where sodium was not loaded.' ;
+        $v2    = $this->testDir . '/pbkdf2.v2.enc' ;
+
+        $this->buildV2File( $v2 , $plain , EncryptionFormat::KDF_PBKDF2_SHA256 ) ;
+
+        $this->assertSame
+        (
+            $plain ,
+            file_get_contents( $this->cryptoWithoutSodium()->decrypt( $v2 , $this->decryptedFile ) )
+        ) ;
+    }
+
+    /**
+     * An unknown KDF byte must keep the generic message: it is a corrupt or forged
+     * header, not a missing extension, and a forger gets no confirmation of which byte
+     * they got wrong.
+     */
+    public function testAnUnknownKdfByteKeepsTheGenericMessageEvenWithoutSodium(): void
+    {
+        $v2 = $this->testDir . '/unknown-kdf.v2.enc' ;
+        $this->buildV2File( $v2 , 'An archive written before V3 existed.' , EncryptionFormat::KDF_PBKDF2_SHA256 ) ;
+
+        $data   = file_get_contents( $v2 ) ;
+        $offset = EncryptionFormat::MAGIC_LENGTH + EncryptionFormat::VERSION_LENGTH ;
+        $data[ $offset ] = chr( 99 ) ;
+        file_put_contents( $v2 , $data ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessage( 'Decryption failed due to incorrect passphrase or corrupted data.' ) ;
+
+        $this->cryptoWithoutSodium()->decrypt( $v2 , $this->decryptedFile ) ;
     }
 }

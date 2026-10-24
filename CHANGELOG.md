@@ -6,6 +6,97 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-24
+
+Encryption no longer reads the file it encrypts. `encrypt()` and `decrypt()` each loaded the whole
+payload into memory, and the measurement is the reason this release exists: on 2026-10-24, in a VM
+with 3.8 GB of RAM, **a 300 MB file peaked at 1.18 GB — four times its size** (the ciphertext, a
+copy of it, the plaintext, and the write), and **a 1 GB file had the process killed by the kernel's
+OOM killer**: `Out of memory: Killed process (php)` in `dmesg`, and nothing anywhere else. No
+exception, no stack trace, no log line — an operation that neither succeeded nor failed. For a
+caller archiving WordPress sites, a 2.45 GB archive asked for about 10 GB of RAM, which made
+backup, restore and archive impossible on exactly the sites that most needed them. `maxInputBytes`
+existed but defaulted to `null`, so nothing stood in the way.
+
+The new **V3** format cuts the plaintext into blocks and seals each one on its own. Measured after
+the change: a **100 MiB round trip under `memory_limit=48M` peaks at 30 MiB** and takes 1.3 s.
+
+### Added
+
+- **Format V3**, written by `encrypt()` from now on: a 31-byte header
+  (`OPHE` + version + KDF + block-size exponent + 16-byte salt + 8-byte nonce prefix) followed by
+  frames of `[encrypted block][16-byte GCM tag]`. The nonce of block *i* is the per-file prefix
+  followed by `pack('N', i)`, so no two blocks of a file share one.
+- **The associated data that makes the format whole** — `encryptionBlockAad( $header, $index,
+  $isFinal )`. A GCM tag alone proves a block was sealed with the key and nothing more; sealed with
+  no associated data, every frame authenticates on its own, and four rewrites performed **without
+  the key** go undetected: cutting the file short, swapping two frames, dropping one from the
+  middle, and splicing two files encrypted with the same passphrase. Binding the header, the block
+  index and a final-block flag refuses all four. The flag is decided **at read time** from the
+  cursor against the file size, which is what makes a truncation present a frame sealed as
+  non-final where a final one belongs.
+- **`encryptionBlockNonce( $noncePrefix, $index )`** — the counter is bounded, because
+  `pack('N', 2**32)` wraps silently to zero, and a repeated nonce under one AES-GCM key does not
+  degrade security, it collapses it.
+- **`assertBlockSizeExponent( $exponent )`** — the exponent is one byte of a header the reader
+  meets before anything has been authenticated, so a crafted file can ask for 1-byte blocks
+  (millions of tag verifications) or a 2^255-byte allocation. Bounded to 2^16–2^30 on write and on
+  read.
+- **`availableMemoryBytes()`** and **`parseMemoryLimit()`** — the memory budget of the current
+  process: `memory_limit` first, `/proc/meminfo`'s `MemAvailable` only when it is `-1`. `null`
+  means *unknown*, never *unlimited*.
+- **`kdfIsAvailable()`** — whether the KDF a file names can be run on this host. `ext-sodium` is a
+  suggestion of this package, not a requirement, so the two ends of an archive's life do not have
+  to agree on it.
+- **`OpenSSLFileEncryption::$blockSizeExponent`** (fourth constructor argument) — the block size
+  this instance writes, 8 MiB by default, validated in the constructor.
+
+### Changed
+
+- **`encrypt()` streams and produces V3.** An empty input still writes one frame — an empty block
+  and its tag. Were an empty file just a header, stripping every frame from a one-block file would
+  produce something that decrypts to nothing, in silence, which is the one truncation a per-block
+  tag cannot catch.
+- **`decrypt()` dispatches on the version** it finds, and checks the output path **before** reading
+  anything: a streaming read has already written part of its output by the time the old checks ran.
+- **Both directions write to `<destination>.part` and `rename()` it into place.** The V2
+  `decrypt()` held the whole plaintext before writing a byte, so it could not leave a partial file;
+  a streaming one can, and half a plaintext looks exactly like a whole one.
+- **`isEncryptedFile()` reads the first bytes, not the file.** Deciding what a file is takes 31
+  bytes; the previous version spent the file's size in memory to answer a yes-or-no question.
+- **A file bearing the `OPHE` magic with an unknown version is refused by name**, instead of being
+  run through the V1 path — which has no integrity check and would emit whatever AES-CBC made of it.
+
+### Fixed
+
+- **An archive whose key was derived with Argon2id is now refused by name where `ext-sodium` is
+  absent.** Measured on 2026-10-24 with `disable_functions=sodium_crypto_pwhash`: a file written
+  on a host that has the extension, read on one that does not, reported *"Decryption failed due to
+  incorrect passphrase or corrupted data"* — on an intact archive, with the right passphrase,
+  because the real cause (`deriveKey: Argon2id requested but the sodium extension is not loaded`)
+  sat in a wrapped exception that no command line prints. For someone restoring a backup, the most
+  misleading report available: it sends them after a lost secret or a corrupt file instead of an
+  extension that installs in a minute. The reader now names the extension and states that the
+  passphrase is not in question. Naming it gives nothing away — a missing extension is a property
+  of the reader's own machine — whereas *why* a tag failed stays generic, and an unknown KDF byte
+  keeps the generic message too, since that is a forged or corrupt header rather than a missing
+  implementation. Files written without sodium use PBKDF2-SHA256, which is native and reads
+  anywhere; this was never a one-way format, only a one-way message.
+- **A V1 or V2 file past the memory budget is now refused with a sentence** naming the format, the
+  size, what reading it would cost, the budget it was measured against, and what the operator can
+  do. PHP exposes no incremental AEAD API, so a single-tag blob genuinely cannot be verified in
+  pieces — what it can do is say so instead of disappearing. The guard is inert when the budget is
+  unknown, and does not apply to V3.
+
+### Compatibility
+
+- **V1 and V2 files remain readable.** `encrypt()` then `decrypt()` migrates one.
+- **A file's KDF must be runnable where it is read.** The header names the KDF, which is what lets
+  a reader pick the right one; it cannot make it available. An archive written with Argon2id needs
+  `ext-sodium` on the host that restores it.
+- **A V3 file is not readable by an earlier release of this library.** Writers and readers must be
+  upgraded together; archives already written in V2 are unaffected.
+
 ## [1.4.0] - 2026-10-18
 
 A format is recognized under every name it carries. `finfo` reports `audio/x-wav` for a WAV file where
