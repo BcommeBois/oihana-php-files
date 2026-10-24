@@ -90,7 +90,7 @@ Thrown by all functions and classes touching a directory.
 | [`makeTemporaryDirectory`](files/creation.md#maketemporarydirectory) | Temp directory creation failure. |
 | [`deleteDirectory`](files/deletion.md#deletedirectory) | `rmdir`, inner `unlink`, or assertion failure. |
 | [`getDirectory`](files/system.md#getdirectory) | If `assertable: true`, via `assertDirectory`. |
-| [`getTemporaryDirectory`](files/system.md#gettemporarydirectory) | If `assertable: true`. |
+| [`getTemporaryDirectory`](files/temporary.md#gettemporarydirectory) | If `assertable: true`. |
 | [`getTimestampedDirectory`](files/system.md#gettimestampeddirectory) | Wraps internal errors. |
 | [`tar`](archive/tar.md#tar) | Internal temp directory creation failure. |
 | [`OpenSSLFileEncryption::encrypt`](openssl/README.md) | Output directory not writable. |

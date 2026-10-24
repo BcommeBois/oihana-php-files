@@ -69,6 +69,16 @@ composer coverage:md    # regenerate build/coverage/COVERAGE.md (Markdown summar
 
 Output goes under `build/coverage/` — **gitignored, never committed**: a numbers snapshot goes stale at the next commit and pollutes diffs. We regenerate on demand. The Clover → Markdown converter lives in [`tools/clover-to-markdown.php`](../../tools/clover-to-markdown.php).
 
+## Wiki links
+
+```shell
+composer wiki:links     # every internal wiki link: the file, then the anchor
+```
+
+A broken anchor looks exactly like a working one, and reading the page will not show it. Run for the first time in 1.5.0, [`tools/check-wiki-links.php`](../../tools/check-wiki-links.php) found **eleven** links that could not resolve, none of them recent: a function pointed at the page it is not documented in, four links to a numbered section whose anchor carries the number, a `composer.json` reached one level short of the root, one `../` too many, and a French heading whose anchor carries its translation.
+
+The trap is in the algorithm: GitHub lowercases the heading, drops everything that is not a letter, a digit, a space, a hyphen or an underscore, then turns **each** space into a hyphen — without collapsing runs of them. A punctuation mark followed by a space therefore leaves a **double** hyphen. The first version of this check collapsed them and reported two perfectly good links as broken, which nearly got "fixed".
+
 ### Trend between runs
 
 Each generation timestamps the report and writes a snapshot into `build/coverage/history.json` (also gitignored). On the next run, the summary compares against the **previous recorded run** and shows a per-metric delta: `▲ +0.14 pts (+12 lines)` / `▼ -0.30 pts (-5 methods)` / `= ±0.00 pts (+0 lines)`. The log is bounded to the last 50 runs and is **purely local** (for shared tracking, publish the report via CI rather than committing it).

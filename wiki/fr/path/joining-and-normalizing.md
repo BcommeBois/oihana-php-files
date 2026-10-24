@@ -65,7 +65,7 @@ normalizePath( '/var/www/html' );
 
 **À utiliser quand :** tu veux juste unifier les séparateurs (par exemple avant un `explode('/')`), sans payer le coût de la canonicalisation complète.
 
-**À ne pas confondre avec :** `realpath()` natif PHP, qui résout aussi les symlinks et vérifie l'existence — voir le [glossaire](../getting-started/glossary.md#canonical-path).
+**À ne pas confondre avec :** `realpath()` natif PHP, qui résout aussi les symlinks et vérifie l'existence — voir le [glossaire](../getting-started/glossary.md#canonical-path-chemin-canonique).
 
 ---
 
@@ -138,4 +138,4 @@ extractCanonicalParts( '', '../../folder' );
 - [Absolu vs relatif](absolute-vs-relative.md) — conversions et détections.
 - [Inspection](inspection.md) — `splitPath` (utilisé en interne par `canonicalizePath`).
 - [Vue d'ensemble du namespace](README.md) — retour à l'index.
-- Glossaire : [Canonical path](../getting-started/glossary.md#canonical-path), [Scheme](../getting-started/glossary.md#scheme).
+- Glossaire : [Canonical path](../getting-started/glossary.md#canonical-path-chemin-canonique), [Scheme](../getting-started/glossary.md#scheme).

@@ -173,6 +173,7 @@
         "test": "./vendor/bin/phpunit",
         "doc": "rm -rf docs && mkdir docs && cp -r .phpdoc/template/assets docs/assets && ./vendor/bin/phpdoc -c phpdoc.xml -v" ,
         "coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover build/coverage/clover.xml --coverage-html build/coverage/html",
+        "wiki:links": "php tools/check-wiki-links.php",
         "coverage:md": [
             "@coverage",
             "php tools/clover-to-markdown.php build/coverage/clover.xml build/coverage/COVERAGE.md"

@@ -23,7 +23,7 @@ assertFile('/foo')       ; // FileException thrown
 
 Composer mechanism that **automatically includes** a PHP file at the start of each request (right after `vendor/autoload.php`). Used by `oihana/php-files` to make **standalone functions** (`joinPaths`, `findFiles`, etc.) available without requiring a `use function` or a manual `require` — you just call them with their fully-qualified namespace (or a `use` alias).
 
-See [`composer.json`](../../composer.json) section `autoload.files`.
+See [`composer.json`](../../../composer.json) section `autoload.files`.
 
 ## C
 

@@ -69,6 +69,16 @@ composer coverage:md    # régénère build/coverage/COVERAGE.md (résumé Markd
 
 Les sorties vont dans `build/coverage/` — **gitignoré, jamais commité** : un snapshot de chiffres se périme au commit suivant et pollue les diffs. On régénère à la demande. L'outil de conversion Clover → Markdown vit dans [`tools/clover-to-markdown.php`](../../tools/clover-to-markdown.php).
 
+## Liens du wiki
+
+```shell
+composer wiki:links     # chaque lien interne du wiki : le fichier, puis l'ancre
+```
+
+Une ancre cassée ressemble exactement à une ancre qui marche, et une relecture ne la voit pas. Au premier lancement, en 1.5.0, [`tools/check-wiki-links.php`](../../tools/check-wiki-links.php) a trouvé **onze** liens qui ne résolvaient pas, aucun récent : une fonction renvoyée vers la page où elle n'est pas documentée, quatre liens vers une section numérotée dont l'ancre porte le numéro, un `composer.json` atteint un cran trop haut, un `../` de trop, et un titre français dont l'ancre porte sa traduction.
+
+Le piège est dans l'algorithme : GitHub met le titre en minuscules, retire tout ce qui n'est ni lettre, ni chiffre, ni espace, ni tiret, ni souligné, puis remplace **chaque** espace par un tiret — sans écraser les suites d'espaces. Une ponctuation suivie d'un espace laisse donc un **double** tiret. La première version de ce contrôle les écrasait et signalait deux liens parfaitement valides, qu'on a failli « corriger ».
+
 ### Évolution entre deux runs
 
 Chaque génération horodate le rapport et écrit un snapshot dans `build/coverage/history.json` (lui aussi gitignoré). Au run suivant, le résumé compare au **run précédent enregistré** et affiche un delta par métrique : `▲ +0.14 pts (+12 lines)` / `▼ -0.30 pts (-5 methods)` / `= ±0.00 pts (+0 lines)`. L'historique est borné aux 50 derniers runs et reste **purement local** (pour un suivi partagé, publier le rapport via la CI plutôt que le committer).

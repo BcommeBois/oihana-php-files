@@ -1,6 +1,6 @@
 # Catalogue des énumérations
 
-`oihana/php-files` expose **19 classes d'énumérations** (constantes typées) + **3 traits MIME** sous `oihana\files\enums\`. Toutes sont des **classes de constantes**, pas des `enum` natifs PHP — elles utilisent (sauf `MimeTypeAlias`, une simple table) le trait [`ConstantsTrait`](../getting-started/dependencies.md#oihanaphp-reflect) qui expose `enum()`, `getAll()`, etc.
+`oihana/php-files` expose **19 classes d'énumérations** (constantes typées) + **3 traits MIME** sous `oihana\files\enums\`. Toutes sont des **classes de constantes**, pas des `enum` natifs PHP — elles utilisent (sauf `MimeTypeAlias`, une simple table) le trait [`ConstantsTrait`](getting-started/dependencies.md#oihanaphp-reflect) qui expose `enum()`, `getAll()`, etc.
 
 > 💡 Pourquoi des classes de constantes plutôt que des `enum` PHP 8.1 ? Les `enum` natifs ne permettent pas l'**héritage** ni les **constantes composées** (array). Les classes de constantes permettent par exemple `FileMimeType::AI = ['application/postscript', 'application/illustrator']` (MIME multiple) — impossible avec un `enum` natif.
 

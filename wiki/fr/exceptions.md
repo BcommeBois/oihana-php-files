@@ -90,7 +90,7 @@ Levée par toutes les fonctions et classes qui touchent à un dossier.
 | [`makeTemporaryDirectory`](files/creation.md#maketemporarydirectory) | Échec création du dossier temp. |
 | [`deleteDirectory`](files/deletion.md#deletedirectory) | Échec `rmdir`, `unlink` interne, ou assertions. |
 | [`getDirectory`](files/system.md#getdirectory) | Si `assertable: true`, via `assertDirectory`. |
-| [`getTemporaryDirectory`](files/system.md#gettemporarydirectory) | Si `assertable: true`. |
+| [`getTemporaryDirectory`](files/temporary.md#gettemporarydirectory) | Si `assertable: true`. |
 | [`getTimestampedDirectory`](files/system.md#gettimestampeddirectory) | Wrapping d'erreurs internes. |
 | [`tar`](archive/tar.md#tar) | Échec création du dossier temp interne. |
 | [`OpenSSLFileEncryption::encrypt`](openssl/README.md) | Dossier de sortie non inscriptible. |

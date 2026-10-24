@@ -70,6 +70,10 @@ one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at c
   system `tar` offers whatever program it finds. A host can write `.tar.zst` where the one beside
   it cannot, with the same code. It is also what a `doctor` command should print.
 - **`tarProcessEnvironment()`** — the environment every `tar` child is given.
+- **`tools/check-wiki-links.php`** (`composer wiki:links`) — a development tool, not library code: it
+  checks every internal link of the wiki, the files and the anchors, with GitHub's own anchor
+  algorithm. Run for the first time it found eleven links that could not resolve, none of them
+  recent, because a broken anchor looks exactly like a working one.
 - **Extraction through the system `tar`**, chosen by `untar()` before anything is written:
   `untarBinaryHandles()` answers whether there is a GNU tar **and** the program it pipes through
   (`ext-zlib` does not help: it is PharData that decompresses in PHP, not `tar`);
