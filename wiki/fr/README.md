@@ -83,7 +83,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 ### OpenSSL — [`openssl/`](openssl/)
 
-- [Vue d'ensemble](openssl/README.md) — la classe `OpenSSLFileEncryption` : chiffrement/déchiffrement de fichiers **authentifié** (AES-256-GCM, format V2 ; lecture rétro-compatible des fichiers V1).
+- [Vue d'ensemble](openssl/README.md) — la classe `OpenSSLFileEncryption` : chiffrement/déchiffrement de fichiers **authentifié**, **par blocs** et à mémoire constante (AES-256-GCM, format V3 ; lecture rétro-compatible des fichiers V2 et V1).
 
 ### TOML — [`toml/`](toml/)
 

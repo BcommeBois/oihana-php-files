@@ -83,7 +83,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 ### OpenSSL — [`openssl/`](openssl/)
 
-- [Overview](openssl/README.md) — the `OpenSSLFileEncryption` class: **authenticated** file encryption/decryption (AES-256-GCM, V2 format; backward-compatible reading of V1 files).
+- [Overview](openssl/README.md) — the `OpenSSLFileEncryption` class: **authenticated**, **chunked** file encryption/decryption at constant memory (AES-256-GCM, V3 format; backward-compatible reading of V2 and V1 files).
 
 ### TOML — [`toml/`](toml/)
 

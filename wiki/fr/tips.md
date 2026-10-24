@@ -89,13 +89,16 @@ makeFile( $path , $content , [
 
 ### OpenSSL : garanties et limites
 
-Depuis la **v1.1.0**, [`OpenSSLFileEncryption`](openssl/README.md) écrit un **format V2** qui corrige les faiblesses des versions ≤ 1.0 :
+Depuis la **v1.5.0**, [`OpenSSLFileEncryption`](openssl/README.md) écrit un **format V3 par blocs** :
 
-1. **AES-256-GCM (AEAD)** : confidentialité **et** intégrité. Toute altération du fichier chiffré fait échouer `decrypt()` avec une `RuntimeException`, au lieu de renvoyer du clair silencieusement corrompu.
-2. **KDF** : la passphrase n'est jamais utilisée comme clé brute — dérivation par **Argon2id** (avec `ext-sodium`) ou repli **PBKDF2-SHA256** (600 000 itérations), avec un **sel aléatoire par fichier**.
-3. **`random_bytes`** pour le sel et l'IV (12 octets, recommandation NIST pour GCM).
+1. **AES-256-GCM (AEAD)** : confidentialité **et** intégrité, avec un tag **par bloc**.
+2. **Chaque tag couvre l'en-tête, l'indice du bloc et un drapeau « dernier bloc »**. Sans ça, chaque trame s'authentifierait seule, et quatre réécritures faisables **sans la clé** passeraient : tronquer le fichier, échanger deux trames, en retirer une, recoller deux fichiers chiffrés avec la même passphrase.
+3. **KDF** : la passphrase n'est jamais utilisée comme clé brute — dérivation par **Argon2id** (avec `ext-sodium`) ou repli **PBKDF2-SHA256** (600 000 itérations), avec un **sel aléatoire par fichier**.
+4. **Mémoire constante** : les deux sens ne tiennent jamais plus d'un bloc. Mesuré le 2026-10-24, 100 Mio d'aller-retour sous `memory_limit=48M` plafonnent à 30 Mio — là où le format d'avant demandait quatre fois la taille du fichier et se faisait tuer par le noyau à 1 Go.
 
-Les fichiers **V1** (≤ 1.0 : CBC, sans MAC, passphrase brute) restent **lisibles** par `decrypt()` (détection automatique de l'absence du magic `OPHE\x02`), mais n'ont **aucune détection d'altération** — re-chiffre tes anciens fichiers pour bénéficier du V2.
+Les anciens formats restent **lisibles** et détectés tout seuls. Les **V2** (1.1 à 1.4) tiennent un seul tag pour tout le fichier, donc ils ne se lisent qu'en mémoire, maintenant derrière une garde qui **refuse en expliquant** au lieu de se faire tuer. Les **V1** (≤ 1.0 : CBC, sans MAC, passphrase brute) n'ont **aucune détection d'altération**. Dans les deux cas : rechiffre tes anciens fichiers pour gagner les garanties du V3.
+
+> ⚠ **`ext-sodium` est une suggestion du paquet, pas une dépendance.** Un fichier chiffré là où elle est chargée note Argon2id dans son en-tête et **ne se relit pas** là où elle manque. Depuis la 1.5.0 le refus nomme l'extension et précise que la passphrase n'est pas en cause — avant, il disait « incorrect passphrase or corrupted data » sur une archive intacte. À vérifier sur la machine qui restaure, avant d'en avoir besoin.
 
 > 💡 **Limite résiduelle** : la sécurité repose entièrement sur la **passphrase**. La librairie ne gère ni son stockage, ni sa rotation, ni les fuites par canal auxiliaire (dump mémoire). Voir [Sécurité](security.md).
 
@@ -132,13 +135,15 @@ Détails complets : [archive/untar.md § Protection contre les bombes de décomp
 
 ### Bornes de taille sur les lectures de fichiers (`maxBytes`)
 
-Trois surfaces du module **lisent un fichier entier en RAM** (par `file()` ou `file_get_contents()`). Sans plafond, un fichier d'entrée volumineux peut épuiser `memory_limit` et tuer le process. Chaque surface expose une option opt-in (défaut `null` = pas de limite) :
+Deux surfaces du module **lisent un fichier entier en RAM** (par `file()` ou `file_get_contents()`). Sans plafond, un fichier d'entrée volumineux peut épuiser `memory_limit` et tuer le process. Chaque surface expose une option opt-in (défaut `null` = pas de limite) :
 
 | Surface | Option | Comportement quand dépassé |
 |---|---|---|
 | [`getFileLines($file, $map, $maxBytes)`](files/reading.md#getfilelines) | `$maxBytes` | `RuntimeException` avant `file()` |
 | [`requireAndMergeArrays(..., $maxBytes)`](files/reading.md#requireandmergearrays) | `$maxBytes` (par fichier) | `RuntimeException` avant `require` |
 | [`new OpenSSLFileEncryption($pass, $cipher, $maxInputBytes)`](openssl/README.md#constructeur) | `$maxInputBytes` (constructeur) | `RuntimeException` au début de `encrypt()` / `decrypt()` |
+
+> 💡 Depuis la **1.5.0**, le chiffrement n'est plus l'une de ces surfaces : le format V3 travaille par blocs dans les deux sens, donc `$maxInputBytes` y relève de la politique et non de la survie. Seule la **relecture des legacy V1/V2** charge encore tout — et elle est gardée par le budget mémoire, qui refuse en expliquant.
 
 **Recommandation** : sur toute lecture dont la source n'est pas 100% maîtrisée (upload utilisateur, fichier externe, config partagée), définir un plafond ferme cohérent avec le `memory_limit` du process.
 

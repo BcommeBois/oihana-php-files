@@ -6,7 +6,7 @@ This page describes **what the library guarantees**, **what it does not guarante
 
 | Module | Security guarantees | What to watch on the caller side |
 |---|---|---|
-| [`openssl/`](openssl/README.md) | AES-256-GCM + KDF (Argon2id/PBKDF2) + GCM tag integrity; auto-detect tampering | Passphrase storage; manual rotation |
+| [`openssl/`](openssl/README.md) | Chunked AES-256-GCM + KDF (Argon2id/PBKDF2) + one GCM tag per block binding the header, the index and the end of the stream; constant memory | Passphrase storage; manual rotation; KDF availability on the machine that reads |
 | [`archive/tar/`](archive/README.md) | Path-traversal detection (`..`) in safe mode; opt-in decompression-bomb protection via `TarOption::MAX_EXTRACTED_SIZE` | Always pre-scan in `dryRun` and cap `maxExtractedSize` for untrusted archives |
 | [`path/`](path/README.md) | `isBasePath` enables anti path-traversal | **Always** canonicalise user paths before comparison |
 | [`files/`](files/README.md) | Typed assertions (`assertFile`, `assertDirectory`) | Regex patterns in `findFiles`/`shouldExcludeFile`: do not accept untrusted patterns (ReDoS) |
@@ -23,13 +23,15 @@ This section describes the **threat model** the library was designed against, an
 |---|---|---|
 | **Path traversal** (`../../etc/passwd`) in user input | `path/`, `files/`, `archive/` | `canonicalizePath` + `isBasePath` recommended; `..` detection at tar extraction (in safe mode) |
 | **Arbitrary file inclusion** (RCE via `require` on attacked path) | `requireAndMergeArrays` | Path validation + `.php` extension + `$allowedBase` |
-| **Tampering on encrypted file** | `openssl/` | GCM tag, explicit failure at `decrypt()` |
+| **Tampering on encrypted file** | `openssl/` | One GCM tag per block, explicit failure at `decrypt()` |
+| **Truncation, reordering, dropping a block, splicing** two files — all performable **without the key** | `openssl/` | Each block's AAD binds the header, the block index and a final-block flag |
 | **Passphrase brute-force** | `openssl/` | Expensive KDF (Argon2id/PBKDF2 600k) + per-file salt |
 | **Rainbow tables** on common passphrases | `openssl/` | Random 16B salt per file |
-| **Format identification** of an encrypted file | `openssl/` | Magic header `OPHE\x02` for V2; auto-detect legacy |
-| **IV reuse** (catastrophic for GCM) | `openssl/` | `random_bytes(12)` on every `encrypt()` |
+| **Format identification** of an encrypted file | `openssl/` | Magic header `OPHE\x03` for V3; auto-detect of legacy V2 and V1; an unknown version is refused rather than run through the integrity-free V1 path |
+| **Nonce reuse** (catastrophic for GCM) | `openssl/` | An 8-byte prefix drawn on every `encrypt()`, then a bounded block counter: no nonce repeats within a file, and `pack('N', …)` cannot wrap to zero without being refused |
 | **Decompression bombs** (tar bomb) — opt-in | `archive/tar/` | `TarOption::MAX_EXTRACTED_SIZE`: pre-scan + abort before any write if exceeded |
-| **OOM via oversized file** (direct reads) — opt-in | `files/`, `openssl/` | `$maxBytes` on `getFileLines`, `requireAndMergeArrays`; `$maxInputBytes` on the `OpenSSLFileEncryption` constructor: `filesize()` check before any read |
+| **OOM via oversized file** (direct reads) — opt-in | `files/` | `$maxBytes` on `getFileLines`, `requireAndMergeArrays`: size check before any read; `$maxInputBytes` on the `OpenSSLFileEncryption` constructor |
+| **OOM, then silent OOM-kill, while encrypting** | `openssl/` | Since 1.5.0 V3 works **block by block** in both directions; reading legacy V1/V2, which cannot, **refuses with an explanation** when the file exceeds the memory budget |
 
 ### ❌ **Not** covered threats
 
@@ -166,6 +168,9 @@ findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, not regex
 | 2026-06 | 1.1.0 | Documentation of the **ReDoS** surface on `findFiles` / `shouldExcludeFile` / `copyFilteredFiles` (trusted patterns only) |
 | 2026-06 | 1.1.0 | `untar`: opt-in protection against **decompression bombs** via `TarOption::MAX_EXTRACTED_SIZE` |
 | 2026-06 | 1.1.0 | Opt-in **size caps** on reads: `$maxBytes` (`getFileLines`, `requireAndMergeArrays`) and `$maxInputBytes` (`OpenSSLFileEncryption`) |
+| 2026-10 | 1.5.0 | `OpenSSLFileEncryption`: **chunked V3 format** — constant memory (100 MiB under `memory_limit=48M` → 30 MiB peak), **AAD binding the header, the block index and the final flag** (truncation, reordering, dropping, splicing: all four refused), block-size exponent bounded on read, atomic output via `.part` + `rename()` |
+| 2026-10 | 1.5.0 | Reading legacy V1/V2 is **guarded by the memory budget**: an explicit refusal replaces the OOM-kill, which left neither exception nor trace |
+| 2026-10 | 1.5.0 | An Argon2id file read without `ext-sodium` **names the missing extension** instead of reporting "incorrect passphrase or corrupted data" about an intact archive |
 
 For technical details: see [CHANGELOG.md](../../CHANGELOG.md) `Security` section.
 

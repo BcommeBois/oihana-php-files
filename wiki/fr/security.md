@@ -6,7 +6,7 @@ Cette page décrit **ce que la library garantit**, **ce qu'elle ne garantit pas*
 
 | Module | Garanties de sécurité | À surveiller côté caller |
 |---|---|---|
-| [`openssl/`](openssl/README.md) | AES-256-GCM + KDF (Argon2id/PBKDF2) + intégrité par tag GCM ; détection auto de l'altération | Stockage de la passphrase ; rotation manuelle |
+| [`openssl/`](openssl/README.md) | AES-256-GCM par blocs + KDF (Argon2id/PBKDF2) + un tag GCM par bloc liant l'en-tête, l'indice et la fin du flux ; mémoire constante | Stockage de la passphrase ; rotation manuelle ; disponibilité du KDF sur la machine qui relit |
 | [`archive/tar/`](archive/README.md) | Détection path-traversal (`..`) en mode safe ; protection bombes de décompression opt-in via `TarOption::MAX_EXTRACTED_SIZE` | Toujours pre-scan en `dryRun` et plafonner `maxExtractedSize` pour les archives non fiables |
 | [`path/`](path/README.md) | `isBasePath` permet l'anti path-traversal | Canonicaliser **toujours** les chemins user avant comparaison |
 | [`files/`](files/README.md) | Assertions typées (`assertFile`, `assertDirectory`) | Patterns regex `findFiles`/`shouldExcludeFile` : ne pas accepter de patterns non fiables (ReDoS) |
@@ -23,13 +23,15 @@ Cette section décrit le **modèle de menace** auquel la library a été conçue
 |---|---|---|
 | **Path traversal** (`../../etc/passwd`) en input user | `path/`, `files/`, `archive/` | `canonicalizePath` + `isBasePath` recommandés ; détection `..` à l'extraction tar (en mode safe) |
 | **Arbitrary file inclusion** (RCE via `require` sur chemin attaqué) | `requireAndMergeArrays` | Validation chemin + extension `.php` + `$allowedBase` |
-| **Tampering sur fichier chiffré** | `openssl/` | Tag GCM, échec explicite à `decrypt()` |
+| **Tampering sur fichier chiffré** | `openssl/` | Un tag GCM par bloc, échec explicite à `decrypt()` |
+| **Troncature, réordonnancement, suppression de bloc, recollage** de deux fichiers — tous faisables **sans la clé** | `openssl/` | L'AAD de chaque bloc lie l'en-tête, l'indice du bloc et un drapeau « dernier bloc » |
 | **Brute-force passphrase** | `openssl/` | KDF coûteuse (Argon2id/PBKDF2 600k) + sel par fichier |
 | **Rainbow tables** sur passphrases courantes | `openssl/` | Sel aléatoire 16B par fichier |
-| **Identification format** d'un fichier chiffré | `openssl/` | Magic header `OPHE\x02` pour V2 ; détection legacy auto |
-| **Réutilisation IV** (catastrophe en GCM) | `openssl/` | `random_bytes(12)` à chaque `encrypt()` |
+| **Identification format** d'un fichier chiffré | `openssl/` | Magic header `OPHE\x03` pour V3 ; détection auto des legacy V2 et V1 ; une version inconnue est refusée au lieu d'être passée au chemin V1 sans intégrité |
+| **Réutilisation de nonce** (catastrophe en GCM) | `openssl/` | Préfixe de 8 octets tiré à chaque `encrypt()`, puis un compteur de blocs borné : aucun nonce ne se répète dans un fichier, et `pack('N', …)` ne peut pas repasser à zéro sans être refusé |
 | **Decompression bombs** (tar bomb) — opt-in | `archive/tar/` | `TarOption::MAX_EXTRACTED_SIZE` : pré-scan + abandon avant écriture si dépassement |
-| **OOM via fichier volumineux** (lectures directes) — opt-in | `files/`, `openssl/` | `$maxBytes` sur `getFileLines`, `requireAndMergeArrays` ; `$maxInputBytes` sur le constructeur `OpenSSLFileEncryption` : check `filesize()` avant lecture |
+| **OOM via fichier volumineux** (lectures directes) — opt-in | `files/` | `$maxBytes` sur `getFileLines`, `requireAndMergeArrays` : check de taille avant lecture ; `$maxInputBytes` sur le constructeur `OpenSSLFileEncryption` |
+| **OOM, puis OOM-kill silencieux, au chiffrement** | `openssl/` | Depuis la 1.5.0 le V3 travaille **par blocs** dans les deux sens ; la lecture des legacy V1/V2, qui ne peut pas l'être, **refuse en expliquant** quand le fichier dépasse le budget mémoire |
 
 ### ❌ Menaces **non** couvertes
 
@@ -166,6 +168,9 @@ findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, pas regex
 | 2026-06 | 1.1.0 | Documentation de la surface **ReDoS** sur `findFiles` / `shouldExcludeFile` / `copyFilteredFiles` (patterns de confiance uniquement) |
 | 2026-06 | 1.1.0 | `untar` : protection opt-in contre les **bombes de décompression** via `TarOption::MAX_EXTRACTED_SIZE` |
 | 2026-06 | 1.1.0 | **Bornes de taille** opt-in sur les lectures : `$maxBytes` (`getFileLines`, `requireAndMergeArrays`) et `$maxInputBytes` (`OpenSSLFileEncryption`) |
+| 2026-10 | 1.5.0 | `OpenSSLFileEncryption` : **format V3 par blocs** — mémoire constante (100 Mio sous `memory_limit=48M` → pic à 30 Mio), **AAD liant l'en-tête, l'indice du bloc et le drapeau final** (troncature, réordonnancement, suppression, recollage : les quatre refusés), exposant de bloc borné à la lecture, sortie atomique par `.part` + `rename()` |
+| 2026-10 | 1.5.0 | Lecture des legacy V1/V2 **gardée par le budget mémoire** : un refus explicite remplace l'OOM-kill, qui ne laissait ni exception ni trace |
+| 2026-10 | 1.5.0 | Un fichier Argon2id lu sans `ext-sodium` **nomme l'extension manquante** au lieu d'annoncer « incorrect passphrase or corrupted data » sur une archive intacte |
 
 Pour le détail technique : voir [CHANGELOG.md](../../CHANGELOG.md) section `Security`.
 

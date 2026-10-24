@@ -42,7 +42,7 @@ See [`canonicalizePath`](../path/joining-and-normalizing.md).
 
 ### Cipher (symmetric encryption)
 
-Encryption algorithm used by `OpenSSLFileEncryption`. **New** files use **AES-256-GCM** (authenticated AEAD mode, V2 format). The constructor's `$cipher` parameter (historical default **`aes-256-cbc`**) is only used to **read legacy V1 files**; any algorithm listed by `openssl_get_cipher_methods()` is accepted for that role.
+Encryption algorithm used by `OpenSSLFileEncryption`. **New** files use **AES-256-GCM** (authenticated AEAD mode, chunked V3 format). The constructor's `$cipher` parameter (historical default **`aes-256-cbc`**) is only used to **read legacy V1 files**; any algorithm listed by `openssl_get_cipher_methods()` is accepted for that role.
 
 ## E
 
