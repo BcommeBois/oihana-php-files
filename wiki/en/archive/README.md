@@ -2,14 +2,14 @@
 
 The `oihana\files\archive` namespace bundles two symmetric toolkits of standalone functions:
 
-- **`oihana\files\archive\tar`** — **tar** archives (with or without `gzip` / `bzip2` compression), built by the system **GNU tar** where there is one, and by native **`PharData`** (`ext-phar`) otherwise. See [how a tar archive gets built](tar-engine.md).
+- **`oihana\files\archive\tar`** — **tar** archives (with or without `gzip` / `bzip2` compression), built **and extracted** by the system **GNU tar** where there is one, and by native **`PharData`** (`ext-phar`) otherwise. See [how a tar archive gets built, and extracted](tar-engine.md).
 - **`oihana\files\archive\zip`** — **zip** archives, built on native **`ZipArchive`** (`ext-zip`).
 
 Both APIs are deliberately **parallel**: `zip`/`unzip` mirror `tar`/`untar`, `zipDirectory` mirrors `tarDirectory`, and so on.
 
 ## Catalogue
 
-| Category | tar (`PharData`) | zip (`ZipArchive`) |
+| Category | tar (GNU tar, else `PharData`) | zip (`ZipArchive`) |
 |---|---|---|
 | **Creation** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory), [`tarBinary`](tar-engine.md) | [`zip`](zip.md#zip), [`zipDirectory`](zip.md#zipdirectory) |
 | **Extraction** | [`untar`](untar.md#untar) | [`unzip`](unzip.md#unzip) |
@@ -31,7 +31,7 @@ The [`CompressionType`](../enums.md#compressiontype) enum lists the canonical va
 
 ## Shared principles
 
-1. **No subprocess, with one measured exception.** `zip` goes through `ZipArchive`, and so did `tar` through `PharData` — portable, scriptable, testable, at the cost of size limits. For tar that cost turned out to be prohibitive: 311.8 seconds against 2.1 on the same 96 MB tree, and an outright refusal of any filename past 100 bytes. So **tar creation** uses the system GNU tar when one is there, and falls back to `PharData` everywhere else, producing the same archives either way. Everything else — extraction, inspection, validation, and all of `zip` — is still pure PHP. See [how a tar archive gets built](tar-engine.md).
+1. **No subprocess, with one measured exception.** `zip` goes through `ZipArchive`, and so did `tar` through `PharData` — portable, scriptable, testable, at the cost of size limits. For tar that cost turned out to be prohibitive: 311.8 seconds against 2.1 on the same 96 MB tree, and an outright refusal of any filename past 100 bytes. So **tar creation** uses the system GNU tar when one is there, and falls back to `PharData` everywhere else, producing the same archives either way. **Extraction** followed in 1.5.0, for a different reason: decompressing with `PharData` has it rewrite the archive, so the 100-byte limit applied to reading as well — the library could no longer read back some of the archives it had just written. Inspection, validation and all of `zip` are still pure PHP. See [how a tar archive gets built, and extracted](tar-engine.md).
 2. **Empty directories preserved.** Both `tar` and `zip` preserve empty sub-directories via `addEmptyDir`.
 3. **Extraction safety.** `untar` and `unzip` detect **path traversal** (`..`) attempts — *Zip Slip* / *Tar Slip* protection. `unzip` adds **bomb guards** (`maxEntries`, `maxSize`).
 4. **Multi-level validation.** Extension (fast) → MIME via `finfo` → structure (parse).

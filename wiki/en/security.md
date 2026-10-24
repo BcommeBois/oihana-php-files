@@ -7,7 +7,7 @@ This page describes **what the library guarantees**, **what it does not guarante
 | Module | Security guarantees | What to watch on the caller side |
 |---|---|---|
 | [`openssl/`](openssl/README.md) | Chunked AES-256-GCM + KDF (Argon2id/PBKDF2) + one GCM tag per block binding the header, the index and the end of the stream; constant memory | Passphrase storage; manual rotation; KDF availability on the machine that reads |
-| [`archive/tar/`](archive/README.md) | Path-traversal detection (`..`) in safe mode; opt-in decompression-bomb protection via `TarOption::MAX_EXTRACTED_SIZE` | Always pre-scan in `dryRun` and cap `maxExtractedSize` for untrusted archives |
+| [`archive/tar/`](archive/README.md) | Path-traversal detection (`..`) in the pre-scan, **and refused by GNU tar itself** in the common case; opt-in decompression-bomb protection via `TarOption::MAX_EXTRACTED_SIZE` | Always pre-scan in `dryRun` and cap `maxExtractedSize` for untrusted archives |
 | [`path/`](path/README.md) | `isBasePath` enables anti path-traversal | **Always** canonicalise user paths before comparison |
 | [`files/`](files/README.md) | Typed assertions (`assertFile`, `assertDirectory`) | Regex patterns in `findFiles`/`shouldExcludeFile`: do not accept untrusted patterns (ReDoS) |
 | [`files/requireAndMergeArrays`](files/reading.md#requireandmergearrays) | Path validation + `.php` extension + optional `$allowedBase` | Always provide `$allowedBase` when paths are not 100% trusted |
@@ -167,6 +167,7 @@ findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, not regex
 | 2026-06 | 1.1.0 | `OpenSSLFileEncryption`: V2 refactor — AES-256-GCM (AEAD), KDF (Argon2id/PBKDF2 600k), `random_bytes`, soft-break for V1 backward compatibility |
 | 2026-06 | 1.1.0 | Documentation of the **ReDoS** surface on `findFiles` / `shouldExcludeFile` / `copyFilteredFiles` (trusted patterns only) |
 | 2026-06 | 1.1.0 | `untar`: opt-in protection against **decompression bombs** via `TarOption::MAX_EXTRACTED_SIZE` |
+| 2026-10 | 1.5.0 | `untar`: extraction through the system **GNU tar** where there is one — which refuses `..` entries on its own, where the pre-scan only covered `dryRun` / `overwrite: false` mode. Both engines' guards are written once, and a listing line that cannot be parsed raises instead of being skipped |
 | 2026-06 | 1.1.0 | Opt-in **size caps** on reads: `$maxBytes` (`getFileLines`, `requireAndMergeArrays`) and `$maxInputBytes` (`OpenSSLFileEncryption`) |
 | 2026-10 | 1.5.0 | `OpenSSLFileEncryption`: **chunked V3 format** — constant memory (100 MiB under `memory_limit=48M` → 30 MiB peak), **AAD binding the header, the block index and the final flag** (truncation, reordering, dropping, splicing: all four refused), block-size exponent bounded on read, atomic output via `.part` + `rename()` |
 | 2026-10 | 1.5.0 | Reading legacy V1/V2 is **guarded by the memory budget**: an explicit refusal replaces the OOM-kill, which left neither exception nor trace |

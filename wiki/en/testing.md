@@ -74,7 +74,7 @@ Considered unreachable and annotated, for example:
 - **OS-specific branches** (e.g. a Windows absolute path while CI runs on Linux);
 - **TOCTOU** guards (a `fopen`/`file_get_contents` that would only fail after a successful `assertFile()`);
 - calls that **never fail** in the required environment (`finfo_open`, `random_bytes`, `openssl_encrypt` with valid parameters, `Phar::canCompress` with `zlib`/`bz2` present);
-- **defense-in-depth** guards already neutralized by the underlying layer (e.g. `PharData` sanitises `..` entries, making `untar`'s path-traversal guard untriggerable through a PharData-created archive).
+- **defense-in-depth** guards already neutralized by the underlying layer (e.g. `PharData` sanitises `..` entries, making `untar`'s path-traversal guard untriggerable through a PharData-created archive — since 1.5.0 one test builds the hostile archive **by hand**, `ustar` header and checksum included, since GNU tar strips `../` as it writes).
 
 State at **2026-06-09**: **100% of lines** (1416 / 1416) and **100% of methods** (38 / 38), **636 passing tests**.
 

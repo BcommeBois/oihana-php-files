@@ -1,11 +1,15 @@
-# How a tar archive gets built
+# How a tar archive gets built, and extracted
 
-[`tar`](tar.md#tar) and [`tarDirectory`](tar.md#tardirectory) hand the work to the system
-`tar` when they find a **GNU tar**, and build the archive in PHP with `PharData` otherwise.
+[`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory) and [`untar`](untar.md#untar) hand the
+work to the system `tar` when they find a **GNU tar**, and fall back to `PharData` otherwise.
 
 The archives are the same either way — same entries, same names, interchangeable with anything
-written by an earlier version of this library. Nothing changes in the API, and nothing has to
-be configured.
+written by an earlier version of this library — and so are the extracted trees. Nothing changes
+in the API, and nothing has to be configured.
+
+> The engine choice on writing dates from **1.3.0**, the one on extraction from **1.5.0**, and a
+> defect forced it: in between, the library could no longer read back some of the archives it had
+> just written. [See below](#and-on-extraction-it-is-not-about-speed).
 
 ## Why
 
@@ -28,6 +32,35 @@ truncating the name.
 That is not a corner case. A stock WordPress installation has one such file, 103 bytes, inside
 a widely used plugin — enough that the whole site could not be archived. GNU tar writes it
 without comment, using the extensions the format grew for exactly this.
+
+## And on extraction, it is not about speed
+
+On extraction `PharData` holds up perfectly well: **0.98 s against 0.82 s** for GNU tar on the
+same 57 MB archive. If extraction changed engine all the same, it was for another reason, and it
+comes down to one line — `PharData::decompress()` has `PharData` **write** a `.tar` before
+reading it.
+
+So the 100-byte limit above, which is a **writing** limit, applied to **reading** a compressed
+archive as well. Measured on 2026-10-24: a `.tar.gz` holding a 154-byte name refused to extract,
+with `filename ... is too long for tar file format`, while the **same archive uncompressed**
+extracted without trouble.
+
+Which is to say: since 1.3.0, `tar()` wrote through GNU tar archives that `untar()` could no
+longer read back. And since a stock WordPress holds such a path, a backup could be written and not
+restored — while the message itself read as a damaged archive.
+
+Three further costs came from the same rebuild:
+
+| Cost | Measurement |
+|---|---|
+| Memory | **×2.26** of a 60 MB archive, **×2.04** of a 200 MB one — some 5 GB for a 2.45 GB backup |
+| Disk | an **uncompressed** copy written beside the archive for the length of the extraction |
+| Repetition | extracting the same compressed archive twice in one process failed, the `.tar` staying registered in an internal `Phar` list |
+
+The last one is avoided rather than cleaned up: [`untarUniqueAlias`](#the-engine-functions) gives
+the archive a uniquely named hard link — no bytes copied — whose name the `.tar` inherits.
+`Phar::unlinkArchive()`, the documented way to clear that list, **corrupts the Zend heap** when
+called from `untar()`.
 
 ## Which binary, and why not all of them
 
@@ -69,11 +102,12 @@ The engine is chosen **before anything is written**, and never revisited afterwa
 aside when:
 
 - there is no GNU tar;
-- several paths are archived together and share no common parent — one `tar` invocation covers
-  one base directory, and a compressed archive cannot be appended to;
-- the compressor is missing. `tar` does not compress: it pipes through `gzip`, `bzip2` or `xz`,
-  where `PharData` uses the PHP extensions. A host with `ext-bz2` and no `bzip2` program keeps
-  the engine that works for it.
+- **on writing only**, several paths are archived together and share no common parent — one `tar`
+  invocation covers one base directory, and a compressed archive cannot be appended to;
+- the compressor is missing. `tar` neither compresses nor decompresses: it pipes through `gzip`,
+  `bzip2` or `xz`, where `PharData` uses the PHP extensions. A host with `ext-zlib` and no `gzip`
+  program therefore has a perfectly good GNU tar that cannot open a `.tar.gz`, and keeps the engine
+  that works for it.
 
 A binary that is present and **fails** raises instead of falling back. It is reporting something
 `PharData` would meet as well — a full disk, a path it may not read — and retrying in PHP would
@@ -98,6 +132,23 @@ read every day.
 
 `tarBinary()` caches its answer; pass `refresh: true` to look again.
 
+## The engine functions
+
+Rarely called directly — `tar()` and `untar()` use them — but public, and useful in a health check.
+
+| Function | Answer |
+|---|---|
+| [`tarBinary()`](#asking-which-engine-is-in-place) | the GNU tar that was found, or `null` |
+| `tarBinaryIsUsable( $path )` | is this binary an executable GNU tar — asked by running `--version` |
+| `tarBinaryHandles( $entries , $compression )` | can this binary **write** that archive |
+| `tarCompressorExists( $compression )` | is the compression program present |
+| `tarCompressionOfFile( $archive )` | how this archive is compressed, read from its **bytes** rather than its name |
+| `untarBinaryHandles( $archive )` | can this binary **extract** that archive, decompressor included |
+| `untarEntries( $binary , $archive )` | what the archive holds — names, sizes — in one streaming pass |
+| `untarAssertExtractable( $entries , $output , $overwrite , $max )` | the guards both engines share: traversal, overwrite, bomb |
+| `untarWithBinary( $binary , $archive , $output , $permissions )` | the extraction itself |
+| `untarUniqueAlias( $archive , $compression )` | a uniquely named hard link, so `PharData` can decompress twice |
+
 ## Forcing a choice
 
 `OIHANA_TAR_BINARY` overrides the search:
@@ -109,7 +160,8 @@ read every day.
 | empty | Build in PHP with `PharData` |
 
 The empty form is what this library's own test suite uses to run the same fixtures through both
-engines and compare what comes out.
+engines and compare what comes out — on writing as on extraction: the whole suite runs twice, with
+and without a binary.
 
 ## See also
 

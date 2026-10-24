@@ -21,6 +21,12 @@ existed but defaulted to `null`, so nothing stood in the way.
 The new **V3** format cuts the plaintext into blocks and seals each one on its own. Measured after
 the change: a **100 MiB round trip under `memory_limit=48M` peaks at 30 MiB** and takes 1.3 s.
 
+Fixing one half of a backup's life exposed the other. `untar()` decompressed through PharData,
+which **rebuilds the archive in memory before reading it** — so the archive this library had just
+written could not always be read back, and an extraction cost twice the archive in RAM plus an
+uncompressed copy on disk. Extraction now goes through the system `tar` wherever there is a GNU
+one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at constant memory.
+
 ### Added
 
 - **Format V3**, written by `encrypt()` from now on: a 31-byte header
@@ -50,6 +56,17 @@ the change: a **100 MiB round trip under `memory_limit=48M` peaks at 30 MiB** an
   to agree on it.
 - **`OpenSSLFileEncryption::$blockSizeExponent`** (fourth constructor argument) — the block size
   this instance writes, 8 MiB by default, validated in the constructor.
+- **Extraction through the system `tar`**, chosen by `untar()` before anything is written:
+  `untarBinaryHandles()` answers whether there is a GNU tar **and** the program it pipes through
+  (`ext-zlib` does not help: it is PharData that decompresses in PHP, not `tar`);
+  `tarCompressionOfFile()` reads how an archive is compressed from its own first bytes rather than
+  from its name; `untarEntries()` lists what an archive holds, in one streaming pass, for the three
+  guarantees that need the contents in advance; `untarWithBinary()` extracts, always with
+  `--no-same-owner` so an archive cannot decide who owns the files it is unpacked into, and with
+  `-p` only when `keepPermissions` asks; `untarAssertExtractable()` holds the guards themselves, so
+  the dry run, the refusal to overwrite and the decompression-bomb cap are enforced once for both
+  engines instead of twice; and `untarUniqueAlias()` lets the PharData path decompress the same
+  archive twice in one process.
 
 ### Changed
 
@@ -69,6 +86,31 @@ the change: a **100 MiB round trip under `memory_limit=48M` peaks at 30 MiB** an
 
 ### Fixed
 
+- **An archive this library wrote can be read back by this library.** Since 1.3.0 `tar()` writes
+  through GNU tar, which stores long names without difficulty, while `untar()` decompressed through
+  PharData — and `PharData::decompress()` has PharData **write** a new `.tar` before reading it, so
+  its writer's refusal of any path component over 100 bytes (the `ustar` limit) applied to reading
+  as well. Measured on 2026-10-24: a `.tar.gz` holding one 154-byte name failed to extract with
+  *"filename ... is too long for tar file format"*, while the same archive uncompressed extracted
+  fine — and a stock WordPress carries such a path, in `elementor-pro`. For a caller backing up
+  WordPress sites, the backup was written and could not be restored, and the message read as a
+  damaged archive. `tar` has no such limit. Where PharData is still the only engine, the refusal
+  now names the limit, says it is not damage, and names the remedy.
+- **The same compressed archive can be extracted twice in one process.** It failed on the PharData
+  path with *"a phar with that name already exists"*: `PharData::decompress()` writes a `.tar`
+  named after the archive and registers it in a list that removing the file does not clear. A
+  caller restoring several sites in one run met it on the second — the shape of the only caller
+  this library has. `Phar::unlinkArchive()` is the documented way to clear both and **corrupted the
+  Zend heap** when called from `untar()`, so the collision is avoided rather than cleaned up:
+  `untarUniqueAlias()` gives the archive a uniquely named hard link, no bytes copied whatever it
+  weighs, and the `.tar` inherits that name. Both are removed at the end.
+- **Extraction no longer costs the archive in memory, or a copy of it on disk.** The same rebuild
+  peaked at ×2.26 of a 60 MB archive and ×2.04 of a 200 MB one — about 5 GB for a 2.45 GB backup —
+  and wrote the uncompressed `.tar` beside it for the length of the extraction. Measured after the
+  change: extracting a 1 MiB archive and a 100 MiB one under `memory_limit=48M` cost the same, and
+  the difference that remains belongs to `assertTar()` asking `finfo` for the MIME type, not to the
+  extraction. Speed was never the problem: PharData extracted the same archive in 0.98 s against
+  0.82 s for `tar`.
 - **An archive whose key was derived with Argon2id is now refused by name where `ext-sodium` is
   absent.** Measured on 2026-10-24 with `disable_functions=sodium_crypto_pwhash`: a file written
   on a host that has the extension, read on one that does not, reported *"Decryption failed due to

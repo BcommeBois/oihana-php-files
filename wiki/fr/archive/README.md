@@ -2,14 +2,14 @@
 
 Le namespace `oihana\files\archive` rassemble deux boîtes à outils symétriques de fonctions standalone :
 
-- **`oihana\files\archive\tar`** — archives **tar** (avec ou sans compression `gzip` / `bzip2`), construites par le **GNU tar** du système quand il y en a un, et par **`PharData`** (`ext-phar`) sinon. Voir [comment une archive tar est construite](tar-engine.md).
+- **`oihana\files\archive\tar`** — archives **tar** (avec ou sans compression `gzip` / `bzip2`), construites **et extraites** par le **GNU tar** du système quand il y en a un, et par **`PharData`** (`ext-phar`) sinon. Voir [comment une archive tar est construite, et extraite](tar-engine.md).
 - **`oihana\files\archive\zip`** — archives **zip**, basées sur **`ZipArchive`** (`ext-zip`).
 
 Les deux APIs sont volontairement **parallèles** : `zip`/`unzip` reflètent `tar`/`untar`, `zipDirectory` reflète `tarDirectory`, etc.
 
 ## Catalogue
 
-| Catégorie | tar (`PharData`) | zip (`ZipArchive`) |
+| Catégorie | tar (GNU tar, sinon `PharData`) | zip (`ZipArchive`) |
 |---|---|---|
 | **Création** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory), [`tarBinary`](tar-engine.md) | [`zip`](zip.md#zip), [`zipDirectory`](zip.md#zipdirectory) |
 | **Extraction** | [`untar`](untar.md#untar) | [`unzip`](unzip.md#unzip) |
@@ -31,7 +31,7 @@ L'énumération [`CompressionType`](../enums.md#compressiontype) liste les valeu
 
 ## Principes communs
 
-1. **Pas de subprocess, à une exception mesurée près.** `zip` passe par `ZipArchive`, et `tar` passait par `PharData` — portable, scriptable, testable, au prix d'une limite de taille. Pour tar, ce prix s'est révélé rédhibitoire : 311,8 secondes contre 2,1 sur le même arbre de 96 Mo, et un refus pur et simple de tout nom de fichier au-delà de 100 octets. Donc la **création d'archives tar** utilise le GNU tar du système quand il y en a un, et se rabat sur `PharData` partout ailleurs, en produisant les mêmes archives dans les deux cas. Tout le reste — extraction, inspection, validation, et l'intégralité de `zip` — demeure en PHP pur. Voir [comment une archive tar est construite](tar-engine.md).
+1. **Pas de subprocess, à une exception mesurée près.** `zip` passe par `ZipArchive`, et `tar` passait par `PharData` — portable, scriptable, testable, au prix d'une limite de taille. Pour tar, ce prix s'est révélé rédhibitoire : 311,8 secondes contre 2,1 sur le même arbre de 96 Mo, et un refus pur et simple de tout nom de fichier au-delà de 100 octets. Donc la **création d'archives tar** utilise le GNU tar du système quand il y en a un, et se rabat sur `PharData` partout ailleurs, en produisant les mêmes archives dans les deux cas. Et l'**extraction** a suivi en 1.5.0, pour une raison différente : décompresser avec `PharData` lui fait réécrire l'archive, donc la limite des 100 octets s'appliquait aussi à la lecture — la bibliothèque ne savait plus relire certaines archives qu'elle venait d'écrire. L'inspection, la validation et l'intégralité de `zip` demeurent en PHP pur. Voir [comment une archive tar est construite, et extraite](tar-engine.md).
 2. **Dossiers vides préservés.** `tar` comme `zip` préservent les sous-dossiers vides via `addEmptyDir`.
 3. **Sécurité à l'extraction.** `untar` et `unzip` détectent les tentatives de **path traversal** (`..`) — protection *Zip Slip* / *Tar Slip*. `unzip` ajoute des plafonds **anti-bombe** (`maxEntries`, `maxSize`).
 4. **Validation à plusieurs niveaux.** Extension (rapide) → MIME via `finfo` → structure (parse).

@@ -8,6 +8,11 @@ Five functions to extract and validate tar archives.
 - [`hasTarMimeType`](#hastarmimetype) — MIME type check via `finfo`.
 - [`validateTarStructure`](#validatetarstructure) — parse + iteration of first entries.
 
+> 💡 Since **1.5.0**, `untar` extracts through the system `tar` wherever there is a usable one, and
+> through `PharData` otherwise. The engine is chosen **before anything is written**, both honour
+> the four options, and both produce the same tree. Why, and what it fixed:
+> [How a tar archive gets built, and extracted](tar-engine.md#and-on-extraction-it-is-not-about-speed).
+
 ---
 
 ## `untar`
@@ -50,12 +55,24 @@ Extracts a tar archive (compressed or not) into an output directory.
 
 1. `assertTar( $tarFile )` — validation.
 2. `makeDirectory( $outputPath )` — creates the output directory if needed.
-3. If the archive is compressed → `decompress()` to a temporary `.tar`.
-4. If `overwrite: false` OR `dryRun: true` OR `maxExtractedSize !== null` → first walk to detect `..`, conflicts **and accumulate uncompressed size**.
+3. Engine choice: `untarBinaryHandles( $tarFile )` — a GNU tar **and** the decompressor it needs.
+   Decided here, never revisited.
+4. **One listing pass, and only when it earns its keep**: if `overwrite: false` OR `dryRun: true`
+   OR `maxExtractedSize !== null`. That is where `..` detection, overwrite conflicts and the
+   uncompressed-size total happen, in `untarAssertExtractable()`, the same for both engines. In the
+   common case — extract this archive here — there is no second read.
 5. If `dryRun: true` → returns the list.
-6. Otherwise → `extractTo( $outputPath )`.
-7. If `keepPermissions` → permission restoration.
-8. Cleanup of the temporary `.tar` if decompression was performed.
+6. Otherwise, the extraction:
+   - **binary engine** → `untarWithBinary()`, streaming, always with `--no-same-owner` and with
+     `-p` only when `keepPermissions` asks;
+   - **`PharData`** → a uniquely named hard link ([`untarUniqueAlias`](tar-engine.md#the-engine-functions)),
+     `decompress()` to a temporary `.tar`, `extractTo()`, then permission restoration if asked.
+7. Cleanup of the temporary `.tar` and of the alias, if they were created.
+
+> ⚠ A line of the listing that cannot be parsed **raises** rather than being skipped. A
+> `maxExtractedSize` computed from a listing with a hole in it would be a cap that under-counts,
+> which is to say a guard that no longer guards. The known case is a filename containing a
+> newline: rare, legal on POSIX, and reported rather than passed over.
 
 ### Path-traversal protection
 
@@ -67,7 +84,15 @@ untar( '/uploads/malicious.tar' , '/var/www/uploads' ) ;
 // → RuntimeException: Path traversal attempt detected in tar file: ../../etc/passwd
 ```
 
-⚠ **This protection only activates if `overwrite: false` OR `dryRun: true`** — that is, in the pre-scan phase. In `overwrite: true` mode (default), it depends on `PharData::extractTo`'s behaviour (which in theory also applies protections, but less explicitly).
+⚠ **That walk only happens if `overwrite: false` OR `dryRun: true` OR `maxExtractedSize`** — that
+is, when a listing pass is being made anyway. In the common case (`overwrite: true`, no cap), the
+protection comes from the engine:
+
+- **GNU tar** strips a leading `/` and **refuses** any entry whose name contains `..`: it extracts
+  nothing and exits non-zero, which `untar` reports. Pinned by a test that builds the hostile
+  archive by hand — GNU tar strips `../` as it writes, so the archive needed to test it cannot be
+  produced by the program being tested.
+- **`PharData`** sanitises `..` entries on read, which is less explicit.
 
 > 💡 **Security recommendation**: to extract an archive from an external source (user upload, download), **always** use `dryRun: true` first to validate, then extract with `overwrite: false`. Cost: double walk, but maximum safety.
 

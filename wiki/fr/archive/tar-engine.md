@@ -1,12 +1,16 @@
-# Comment une archive tar est construite
+# Comment une archive tar est construite, et extraite
 
-[`tar`](tar.md#tar) et [`tarDirectory`](tar.md#tardirectory) confient le travail au `tar` du
-système quand elles y trouvent un **GNU tar**, et construisent l'archive en PHP avec `PharData`
+[`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory) et [`untar`](untar.md#untar) confient
+le travail au `tar` du système quand elles y trouvent un **GNU tar**, et retombent sur `PharData`
 sinon.
 
 Les archives sont les mêmes dans les deux cas — mêmes entrées, mêmes noms, interchangeables
-avec tout ce qu'une version antérieure de cette bibliothèque a écrit. Rien ne change dans l'API,
-et il n'y a rien à configurer.
+avec tout ce qu'une version antérieure de cette bibliothèque a écrit — et les arbres extraits
+aussi. Rien ne change dans l'API, et il n'y a rien à configurer.
+
+> Le choix du moteur à l'écriture date de la **1.3.0**, celui à l'extraction de la **1.5.0**, et
+> c'est un défaut qui l'a imposé : entre les deux, la bibliothèque ne savait plus relire certaines
+> archives qu'elle venait d'écrire. [Voir plus bas](#et-à-lextraction-ce-nest-pas-la-vitesse).
 
 ## Pourquoi
 
@@ -30,6 +34,36 @@ Ce n'est pas un cas d'école. Une installation WordPress standard contient un te
 103 octets, dans une extension très répandue — assez pour que le site entier ne puisse pas être
 archivé. GNU tar l'écrit sans broncher, avec les extensions que le format a justement acquises
 pour ça.
+
+## Et à l'extraction, ce n'est pas la vitesse
+
+À l'extraction, `PharData` tient parfaitement la comparaison : **0,98 s contre 0,82 s** pour GNU
+tar sur la même archive de 57 Mo. Si l'extraction a quand même changé de moteur, c'est pour une
+autre raison, et elle tient à une seule ligne — `PharData::decompress()` demande à `PharData`
+d'**écrire** un `.tar` avant de le lire.
+
+Donc la limite des 100 octets ci-dessus, qui est une limite d'**écriture**, s'appliquait aussi à
+la **lecture** d'une archive compressée. Mesuré le 2026-10-24 : un `.tar.gz` contenant un nom de
+154 octets refusait de s'extraire, avec le message
+`filename ... is too long for tar file format`, alors que la **même archive non compressée**
+s'extrayait sans problème.
+
+Autrement dit : depuis la 1.3.0, `tar()` écrivait par GNU tar des archives que `untar()` ne savait
+plus relire. Et comme un WordPress standard contient un tel chemin, une sauvegarde pouvait être
+écrite sans pouvoir être restaurée — le message, lui, se lisait comme une archive abîmée.
+
+Trois autres coûts venaient de la même reconstruction :
+
+| Coût | Mesure |
+|---|---|
+| Mémoire | **× 2,26** d'une archive de 60 Mo, **× 2,04** d'une de 200 Mo — soit ~5 Go pour une sauvegarde de 2,45 Go |
+| Disque | une copie **décompressée** écrite à côté de l'archive, le temps de l'extraction |
+| Répétition | extraire deux fois la même archive compressée dans un processus échouait, le `.tar` restant inscrit dans une liste interne de `Phar` |
+
+Le dernier est contourné plutôt que nettoyé : [`untarUniqueAlias`](#les-fonctions-du-moteur) donne
+à l'archive un lien dur à nom unique — aucun octet copié — dont le `.tar` hérite.
+`Phar::unlinkArchive()`, la méthode documentée pour vider cette liste, **corrompt le tas de Zend**
+appelée depuis `untar()`.
 
 ## Quel binaire, et pourquoi pas tous
 
@@ -72,11 +106,13 @@ Le moteur est choisi **avant que quoi que ce soit ne soit écrit**, et jamais re
 ensuite. Il s'efface quand :
 
 - il n'y a pas de GNU tar ;
-- plusieurs chemins sont archivés ensemble sans parent commun — une invocation de `tar` couvre
-  un répertoire de base, et on ne peut pas ajouter à une archive déjà compressée ;
-- le compresseur manque. `tar` ne compresse pas : il passe par `gzip`, `bzip2` ou `xz`, là où
-  `PharData` utilise les extensions PHP. Une machine avec `ext-bz2` et sans programme `bzip2`
-  garde le moteur qui fonctionne pour elle.
+- **à l'écriture seulement**, plusieurs chemins sont archivés ensemble sans parent commun — une
+  invocation de `tar` couvre un répertoire de base, et on ne peut pas ajouter à une archive déjà
+  compressée ;
+- le compresseur manque. `tar` ne compresse ni ne décompresse : il passe par `gzip`, `bzip2` ou
+  `xz`, là où `PharData` utilise les extensions PHP. Une machine avec `ext-zlib` et sans programme
+  `gzip` a donc un GNU tar parfaitement valide qui ne sait pas ouvrir un `.tar.gz`, et garde le
+  moteur qui fonctionne pour elle.
 
 Un binaire présent qui **échoue** lève au lieu de se rabattre. Il signale quelque chose que
 `PharData` rencontrerait aussi — un disque plein, un chemin illisible — et réessayer en PHP
@@ -101,6 +137,24 @@ celle-ci se lit une fois ; un contrôle de santé se lit tous les jours.
 
 `tarBinary()` met sa réponse en cache ; passer `refresh: true` pour chercher de nouveau.
 
+## Les fonctions du moteur
+
+Rarement appelées directement — `tar()` et `untar()` s'en servent — mais publiques, et utiles pour
+un contrôle de santé.
+
+| Fonction | Réponse |
+|---|---|
+| [`tarBinary()`](#savoir-quel-moteur-est-en-place) | le GNU tar trouvé, ou `null` |
+| `tarBinaryIsUsable( $chemin )` | ce binaire est-il un GNU tar exécutable — on le lui demande avec `--version` |
+| `tarBinaryHandles( $entrées , $compression )` | ce binaire peut-il **écrire** cette archive |
+| `tarCompressorExists( $compression )` | le programme de compression est-il présent |
+| `tarCompressionOfFile( $archive )` | comment cette archive est compressée, lu dans ses **octets** et non dans son nom |
+| `untarBinaryHandles( $archive )` | ce binaire peut-il **extraire** cette archive, décompresseur compris |
+| `untarEntries( $binaire , $archive )` | ce que l'archive contient — noms, tailles — en une passe de flux |
+| `untarAssertExtractable( $entrées , $sortie , $overwrite , $max )` | les gardes communes aux deux moteurs : traversée, écrasement, bombe |
+| `untarWithBinary( $binaire , $archive , $sortie , $permissions )` | l'extraction elle-même |
+| `untarUniqueAlias( $archive , $compression )` | un lien dur à nom unique, pour que `PharData` puisse décompresser deux fois |
+
 ## Forcer un choix
 
 `OIHANA_TAR_BINARY` remplace la recherche :
@@ -112,7 +166,8 @@ celle-ci se lit une fois ; un contrôle de santé se lit tous les jours.
 | vide | Construire en PHP avec `PharData` |
 
 La forme vide est celle qu'utilise la suite de tests de cette bibliothèque pour faire passer les
-mêmes arbres témoins dans les deux moteurs et comparer ce qui en sort.
+mêmes arbres témoins dans les deux moteurs et comparer ce qui en sort — à l'écriture comme à
+l'extraction : la suite entière tourne deux fois, avec et sans binaire.
 
 ## Voir aussi
 

@@ -8,6 +8,11 @@ Cinq fonctions pour extraire et valider des archives tar.
 - [`hasTarMimeType`](#hastarmimetype) — check par MIME type via `finfo`.
 - [`validateTarStructure`](#validatetarstructure) — parse + itération des premières entrées.
 
+> 💡 Depuis la **1.5.0**, `untar` extrait par le `tar` du système là où il y en a un utilisable, et
+> par `PharData` sinon. Le moteur est choisi **avant que quoi que ce soit ne soit écrit**, les deux
+> honorent les quatre options et produisent le même arbre. Pourquoi, et ce que ça a corrigé :
+> [Comment une archive tar est construite, et extraite](tar-engine.md#et-à-lextraction-ce-nest-pas-la-vitesse).
+
 ---
 
 ## `untar`
@@ -50,12 +55,26 @@ Extrait une archive tar (compressée ou non) dans un dossier de sortie.
 
 1. `assertTar( $tarFile )` — validation.
 2. `makeDirectory( $outputPath )` — création du dossier de sortie si nécessaire.
-3. Si l'archive est compressée → `decompress()` vers un `.tar` temporaire.
-4. Si `overwrite: false` OU `dryRun: true` OU `maxExtractedSize !== null` → parcours d'abord pour détecter les `..`, les conflits **et accumuler la taille décompressée**.
+3. Choix du moteur : `untarBinaryHandles( $tarFile )` — un GNU tar **et** le décompresseur qu'il
+   lui faut. Décidé ici, jamais remis en cause ensuite.
+4. **Une passe de listage, et seulement si elle sert** : si `overwrite: false` OU `dryRun: true` OU
+   `maxExtractedSize !== null`. C'est là que se jouent la détection des `..`, les conflits
+   d'écrasement et l'accumulation de la taille décompressée, par `untarAssertExtractable()`, la
+   même pour les deux moteurs. Dans le cas courant — extraire cette archive ici — il n'y a pas de
+   seconde lecture.
 5. Si `dryRun: true` → retourne la liste.
-6. Sinon → `extractTo( $outputPath )`.
-7. Si `keepPermissions` → restauration des perms.
-8. Nettoyage du `.tar` temporaire si décompression effectuée.
+6. Sinon, l'extraction :
+   - **moteur binaire** → `untarWithBinary()`, en flux, avec `--no-same-owner` toujours et `-p`
+     seulement si `keepPermissions` ;
+   - **`PharData`** → un lien dur à nom unique ([`untarUniqueAlias`](tar-engine.md#les-fonctions-du-moteur)),
+     `decompress()` vers un `.tar` temporaire, `extractTo()`, puis restauration des permissions si
+     demandée.
+7. Nettoyage du `.tar` temporaire et de l'alias, s'ils ont été créés.
+
+> ⚠ Une ligne du listage qui ne se parse pas **lève** au lieu d'être ignorée. Un
+> `maxExtractedSize` calculé sur un listage troué serait un plafond qui sous-compte, donc une garde
+> qui ne garde plus. Le cas connu est un nom de fichier contenant un retour à la ligne : rare,
+> légal sur POSIX, et signalé plutôt que passé sous silence.
 
 ### Protection path-traversal
 
@@ -67,7 +86,15 @@ untar( '/uploads/malicious.tar' , '/var/www/uploads' ) ;
 // → RuntimeException: Path traversal attempt detected in tar file: ../../etc/passwd
 ```
 
-⚠ **Cette protection s'active uniquement si `overwrite: false` OU `dryRun: true`** — c'est-à-dire dans la phase de pré-scan. En mode `overwrite: true` (défaut), elle dépend du comportement de `PharData::extractTo` (qui en théorie applique aussi des protections, mais c'est moins explicite).
+⚠ **Ce parcours-là n'a lieu que si `overwrite: false` OU `dryRun: true` OU `maxExtractedSize`**,
+c'est-à-dire quand une passe de listage est faite de toute façon. Dans le cas courant
+(`overwrite: true`, sans plafond), la protection vient du moteur :
+
+- **GNU tar** retire un `/` initial et **refuse** toute entrée dont le nom contient `..` : il
+  n'extrait rien et sort avec un statut non nul, que `untar` rapporte. Vérifié par un essai qui
+  fabrique l'archive hostile à la main — GNU tar retire les `../` à l'écriture, donc l'archive qui
+  sert à le tester ne peut pas être produite par le programme testé.
+- **`PharData`** assainit les entrées `..` à la lecture, ce qui est moins explicite.
 
 > 💡 **Recommandation sécurité** : pour extraire une archive d'origine externe (upload utilisateur, téléchargement), **toujours** utiliser `dryRun: true` d'abord pour valider, puis extraire avec `overwrite: false`. Coût : double parcours, mais sécurité maximale.
 

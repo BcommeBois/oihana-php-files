@@ -74,7 +74,7 @@ Sont considérées inatteignables et annotées, par exemple :
 - les **branches spécifiques à un OS** (ex. chemin absolu Windows alors que la CI tourne sous Linux) ;
 - les gardes **TOCTOU** (`fopen`/`file_get_contents` qui échouerait après un `assertFile()` réussi) ;
 - les appels qui **n'échouent jamais** dans l'environnement requis (`finfo_open`, `random_bytes`, `openssl_encrypt` avec des paramètres valides, `Phar::canCompress` avec `zlib`/`bz2` présents) ;
-- les gardes de **défense en profondeur** que la couche sous-jacente neutralise déjà (ex. `PharData` assainit les entrées `..`, rendant la garde anti-*path-traversal* d'`untar` non déclenchable via une archive créée par PharData).
+- les gardes de **défense en profondeur** que la couche sous-jacente neutralise déjà (ex. `PharData` assainit les entrées `..`, rendant la garde anti-*path-traversal* d'`untar` non déclenchable via une archive créée par PharData — depuis la 1.5.0, un essai fabrique l'archive hostile **à la main**, en-tête `ustar` et somme de contrôle comprises, puisque GNU tar retire les `../` à l'écriture).
 
 État au **2026-06-09** : **100 % de lignes** (1416 / 1416) et **100 % de méthodes** (38 / 38), **636 tests** verts.
 

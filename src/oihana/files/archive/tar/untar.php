@@ -3,7 +3,6 @@
 namespace oihana\files\archive\tar;
 
 use Exception;
-use oihana\enums\Char;
 use PharData;
 use RecursiveIteratorIterator;
 use RuntimeException;
@@ -22,6 +21,32 @@ use function oihana\files\phar\preservePharFilePermissions;
  * This function supports regular and compressed tar files (.tar, .tar.gz, .tar.bz2).
  * It can perform a dry run to preview extracted files, optionally preserve file permissions,
  * and control overwriting of existing files.
+ *
+ * ### Which engine extracts
+ *
+ * The system `tar` when there is a GNU one and the decompressor it needs
+ * ({@see untarBinaryHandles()}), PharData otherwise. The choice is made **before
+ * anything is written** and is not revisited, as it is for writing in {@see tar()}.
+ *
+ * It is not a question of speed: PharData extracts a plain archive at a comparable pace.
+ * It is that decompressing with PharData means having PharData **write** a new `.tar`
+ * first, and its writer refuses any path component over 100 bytes — the `ustar` limit.
+ * Since 1.3.0 `tar()` delegates to GNU tar, which stores such names without difficulty,
+ * so a `.tar.gz` this library wrote could fail to extract through this one. A stock
+ * WordPress carries such a path. The rebuild also costs about twice the archive in
+ * memory, and an uncompressed copy on disk beside it.
+ *
+ * Both engines honour the four options below and produce the same tree, which is why
+ * the guards live in one place, {@see untarAssertExtractable()}.
+ *
+ * ### Extracting the same archive twice, on the PharData path
+ *
+ * It used to fail, with *"a phar with that name already exists"*: `PharData::decompress()`
+ * writes a `.tar` named after the archive and registers it in an internal list that
+ * removing the file does not clear. `Phar::unlinkArchive()` clears both and corrupted the
+ * Zend heap when called from here, so the collision is avoided instead:
+ * {@see untarUniqueAlias()} gives the archive a uniquely named hard link — no bytes
+ * copied — and the `.tar` inherits that name. Both go at the end.
  *
  * @param string $tarFile Path to the tar archive file to extract.
  * @param string $outputPath Path to the directory where files will be extracted.
@@ -80,20 +105,59 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
     assertTar( $tarFile ) ;
     makeDirectory( $outputPath ) ;
 
+    $dryRun              = $options[ TarOption::DRY_RUN            ] ?? false ;
+    $overwrite           = $options[ TarOption::OVERWRITE          ] ?? true  ;
+    $preservePermissions = $options[ TarOption::KEEP_PERMISSIONS   ] ?? false ;
+    $maxExtractedSize    = $options[ TarOption::MAX_EXTRACTED_SIZE ] ?? null  ;
+
+    $sizeLimited = is_int( $maxExtractedSize ) && $maxExtractedSize >= 0 ;
+
+    // Listing the archive is a pass of its own, so it is only made when one of the three
+    // guarantees that need the contents in advance has been asked for. The common case —
+    // extract this archive here — reads the archive once.
+
+    $mustList = !$overwrite || $dryRun || $sizeLimited ;
+
+    // Chosen here, before anything is written, and not revisited afterwards.
+
+    $binary = untarBinaryHandles( $tarFile ) ? tarBinary() : null ;
+
     try
     {
-        $dryRun              = $options[ TarOption::DRY_RUN            ] ?? false ;
-        $overwrite           = $options[ TarOption::OVERWRITE          ] ?? true  ;
-        $preservePermissions = $options[ TarOption::KEEP_PERMISSIONS   ] ?? false ;
-        $maxExtractedSize    = $options[ TarOption::MAX_EXTRACTED_SIZE ] ?? null  ;
+        if ( $binary !== null )
+        {
+            $fileList = $mustList
+                      ? untarAssertExtractable
+                        (
+                            untarEntries( $binary , $tarFile ) ,
+                            $outputPath ,
+                            $overwrite ,
+                            $sizeLimited ? $maxExtractedSize : null
+                        )
+                      : [] ;
 
-        $isCompressed = tarIsCompressed( $tarFile ) ;
+            if ( $dryRun )
+            {
+                return $fileList ;
+            }
 
-        $phar = new PharData( $tarFile );
+            untarWithBinary( $binary , $tarFile , $outputPath , $preservePermissions ) ;
 
+            return true ;
+        }
+
+        $compression      = tarIsCompressed( $tarFile ) ? tarCompressionOfFile( $tarFile ) : null ;
+        $alias            = $compression === null ? null : untarUniqueAlias( $tarFile , $compression ) ;
         $decompressedPath = null ;
 
-        if ( $isCompressed )
+        // Decompressing through PharData means having it write a `.tar` named after the
+        // archive, and register it in a list that removing the file does not clear. Working
+        // from a uniquely named alias of the archive is what keeps a second extraction of
+        // the same archive, in the same process, from colliding with the first.
+
+        $phar = new PharData( $alias ?? $tarFile );
+
+        if ( $compression !== null )
         {
             $phar = $phar->decompress() ;
             $decompressedPath = $phar->getPath();
@@ -103,16 +167,12 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
 
         $fileList = [] ;
 
-        $sizeLimited = is_int( $maxExtractedSize ) && $maxExtractedSize >= 0 ;
-
-        if ( !$overwrite || $dryRun || $sizeLimited )
+        if ( $mustList )
         {
-            $iterator     = new RecursiveIteratorIterator( $phar ) ;
+            $entries      = [] ;
             $basePharPath = getPharBasePath( $phar ) ;
 
-            $totalSize = 0 ;
-
-            foreach ( $iterator as $file )
+            foreach ( new RecursiveIteratorIterator( $phar ) as $file )
             {
                 if ( !$file->isFile() )
                 {
@@ -122,73 +182,64 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
                     // @codeCoverageIgnoreEnd
                 }
 
-                $relativePath = str_replace($basePharPath . '/', '', $file->getPathname() ) ;
-
-                if ( str_contains( $relativePath , Char::DOUBLE_DOT ) )
-                {
-                    // Defense-in-depth: PharData sanitises '..' entries on add/read, so this
-                    // guards only externally hand-crafted archives that bypass that sanitisation.
-                    // @codeCoverageIgnoreStart
-                    throw new RuntimeException( sprintf( 'Path traversal attempt detected in tar file: %s', $relativePath ) );
-                    // @codeCoverageIgnoreEnd
-                }
-
-                $fileList[] = $relativePath ;
-
-                if ( !$overwrite )
-                {
-                    $targetPath = $outputPath . DIRECTORY_SEPARATOR . $relativePath;
-                    if ( file_exists( $targetPath ) )
-                    {
-                        throw new RuntimeException( sprintf( 'untar() failed, the file %s already exists and overwrite is disabled.', $targetPath ) ) ;
-                    }
-                }
-
-                if ( $sizeLimited )
-                {
-                    $totalSize += (int) $file->getSize() ;
-                    if ( $totalSize > $maxExtractedSize )
-                    {
-                        throw new RuntimeException
-                        (
-                            sprintf
-                            (
-                                'untar() aborted: extracted size exceeds maximum %d bytes (potential decompression bomb).',
-                                $maxExtractedSize
-                            )
-                        ) ;
-                    }
-                }
+                $entries[] =
+                [
+                    'name'      => str_replace( $basePharPath . '/' , '' , $file->getPathname() ) ,
+                    'size'      => (int) $file->getSize() ,
+                    'directory' => false ,
+                ] ;
             }
+
+            $fileList = untarAssertExtractable
+            (
+                $entries ,
+                $outputPath ,
+                $overwrite ,
+                $sizeLimited ? $maxExtractedSize : null
+            ) ;
         }
 
-        if ( $dryRun )
+        if ( !$dryRun )
         {
-            if ( $decompressedPath && file_exists( $decompressedPath ) )
+            $phar->extractTo( $outputPath , null , $overwrite );
+
+            if ( $preservePermissions )
             {
-                unlink( $decompressedPath ) ;
+                preservePharFilePermissions( $phar , $outputPath );
             }
-
-            return $fileList;
         }
 
-        $phar->extractTo( $outputPath , null , $overwrite );
+        // Clean up what decompressing left behind, once, whichever way we got here.
 
-        if ( $preservePermissions )
-        {
-            preservePharFilePermissions( $phar , $outputPath );
-        }
-
-        // Clean up extracted .tar if original was compressed
-        if ( $decompressedPath && file_exists( $decompressedPath ) )
+        if ( $decompressedPath !== null && file_exists( $decompressedPath ) )
         {
             unlink( $decompressedPath ) ;
         }
 
-        return true;
+        if ( $alias !== null && file_exists( $alias ) )
+        {
+            unlink( $alias ) ;
+        }
+
+        return $dryRun ? $fileList : true ;
     }
     catch ( Exception $exception )
     {
+        $message = $exception->getMessage() ;
+
+        // The one failure nobody could diagnose from its own words: an intact archive,
+        // refused because PharData rebuilds it to decompress it and its writer enforces
+        // the ustar limit. Read as "damaged archive", it sent people looking for a second
+        // backup. Named, it is a five-minute fix on the host.
+
+        if ( str_contains( $message , 'too long for tar file format' ) )
+        {
+            $message .= ' This is PharData refusing a name longer than the 100-byte ustar limit'
+                      . ' while rebuilding the archive to decompress it, not a damaged archive:'
+                      . ' GNU tar reads it without difficulty. Install one, or point'
+                      . ' OIHANA_TAR_BINARY at it.' ;
+        }
+
         throw new RuntimeException
         (
             sprintf
@@ -196,7 +247,7 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
                 'Failed to extract tar file %s to directory %s. Error: %s',
                 json_encode( $tarFile , JSON_UNESCAPED_SLASHES ),
                 json_encode( $outputPath , JSON_UNESCAPED_SLASHES ),
-                $exception->getMessage()
+                $message
             ) ,
             0 , $exception
         );

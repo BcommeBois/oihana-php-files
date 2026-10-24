@@ -7,7 +7,7 @@ Cette page décrit **ce que la library garantit**, **ce qu'elle ne garantit pas*
 | Module | Garanties de sécurité | À surveiller côté caller |
 |---|---|---|
 | [`openssl/`](openssl/README.md) | AES-256-GCM par blocs + KDF (Argon2id/PBKDF2) + un tag GCM par bloc liant l'en-tête, l'indice et la fin du flux ; mémoire constante | Stockage de la passphrase ; rotation manuelle ; disponibilité du KDF sur la machine qui relit |
-| [`archive/tar/`](archive/README.md) | Détection path-traversal (`..`) en mode safe ; protection bombes de décompression opt-in via `TarOption::MAX_EXTRACTED_SIZE` | Toujours pre-scan en `dryRun` et plafonner `maxExtractedSize` pour les archives non fiables |
+| [`archive/tar/`](archive/README.md) | Détection path-traversal (`..`) au pré-scan, **et refus par GNU tar lui-même** dans le cas courant ; protection bombes de décompression opt-in via `TarOption::MAX_EXTRACTED_SIZE` | Toujours pre-scan en `dryRun` et plafonner `maxExtractedSize` pour les archives non fiables |
 | [`path/`](path/README.md) | `isBasePath` permet l'anti path-traversal | Canonicaliser **toujours** les chemins user avant comparaison |
 | [`files/`](files/README.md) | Assertions typées (`assertFile`, `assertDirectory`) | Patterns regex `findFiles`/`shouldExcludeFile` : ne pas accepter de patterns non fiables (ReDoS) |
 | [`files/requireAndMergeArrays`](files/reading.md#requireandmergearrays) | Validation chemin + extension `.php` + optionnel `$allowedBase` | Toujours fournir `$allowedBase` quand les chemins ne sont pas 100% fiables |
@@ -167,6 +167,7 @@ findFiles( $dir , [ 'pattern' => "*.$ext" ] ) ;  // glob, pas regex
 | 2026-06 | 1.1.0 | `OpenSSLFileEncryption` : refactor V2 — AES-256-GCM (AEAD), KDF (Argon2id/PBKDF2 600k), `random_bytes`, soft-break pour rétro-compat V1 |
 | 2026-06 | 1.1.0 | Documentation de la surface **ReDoS** sur `findFiles` / `shouldExcludeFile` / `copyFilteredFiles` (patterns de confiance uniquement) |
 | 2026-06 | 1.1.0 | `untar` : protection opt-in contre les **bombes de décompression** via `TarOption::MAX_EXTRACTED_SIZE` |
+| 2026-10 | 1.5.0 | `untar` : extraction par le **GNU tar** du système quand il y en a un — qui refuse de lui-même les entrées en `..`, là où le pré-scan ne couvrait que les modes `dryRun` / `overwrite: false`. Les gardes des deux moteurs sont écrites une seule fois, et une ligne de listage illisible lève au lieu d'être ignorée |
 | 2026-06 | 1.1.0 | **Bornes de taille** opt-in sur les lectures : `$maxBytes` (`getFileLines`, `requireAndMergeArrays`) et `$maxInputBytes` (`OpenSSLFileEncryption`) |
 | 2026-10 | 1.5.0 | `OpenSSLFileEncryption` : **format V3 par blocs** — mémoire constante (100 Mio sous `memory_limit=48M` → pic à 30 Mio), **AAD liant l'en-tête, l'indice du bloc et le drapeau final** (troncature, réordonnancement, suppression, recollage : les quatre refusés), exposant de bloc borné à la lecture, sortie atomique par `.part` + `rename()` |
 | 2026-10 | 1.5.0 | Lecture des legacy V1/V2 **gardée par le budget mémoire** : un refus explicite remplace l'OOM-kill, qui ne laissait ni exception ni trace |

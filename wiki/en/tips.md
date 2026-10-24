@@ -104,7 +104,7 @@ The older formats remain **readable** and are detected on their own. **V2** file
 
 ### Tar: path traversal in default mode
 
-[`untar`](archive/untar.md#untar) **detects `..`** in archive entries, but **only** if `overwrite: false` or `dryRun: true`. In default mode (`overwrite: true`), protection depends on `PharData::extractTo`.
+[`untar`](archive/untar.md#untar) **detects `..`** in archive entries during the pre-scan, but that pre-scan only happens if `overwrite: false`, `dryRun: true` or `maxExtractedSize`. In default mode (`overwrite: true`, no cap), protection comes from the engine: **GNU tar refuses** any entry containing `..`, extracts nothing and exits in error, which `untar` reports; with `PharData` it depends on the sanitising `extractTo` does.
 
 **Recommendation** for archives from an external source (uploads, downloads):
 

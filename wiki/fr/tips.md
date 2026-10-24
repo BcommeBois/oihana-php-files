@@ -104,7 +104,7 @@ Les anciens formats restent **lisibles** et détectés tout seuls. Les **V2** (1
 
 ### Tar : path traversal en mode default
 
-[`untar`](archive/untar.md#untar) **détecte les `..`** dans les entrées d'archive, mais **seulement** si `overwrite: false` ou `dryRun: true`. En mode par défaut (`overwrite: true`), la protection dépend de `PharData::extractTo`.
+[`untar`](archive/untar.md#untar) **détecte les `..`** dans les entrées d'archive au pré-scan, mais ce pré-scan n'a lieu que si `overwrite: false`, `dryRun: true` ou `maxExtractedSize`. En mode par défaut (`overwrite: true`, sans plafond), la protection vient du moteur : **GNU tar refuse** toute entrée contenant `..`, n'extrait rien et sort en erreur, que `untar` rapporte ; avec `PharData`, elle dépend de l'assainissement que fait `extractTo`.
 
 **Recommandation** pour les archives d'origine externe (uploads, téléchargements) :
 
