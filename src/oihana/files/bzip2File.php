@@ -40,7 +40,11 @@ function bzip2File( string $source , ?string $destination = null , bool $overwri
 
     if ( !function_exists( 'bzopen' ) )
     {
-        // ext-bz2 is present in the test environment.
+        // Covered by tests\oihana\files\Bzip2ExtensionTest, which stages a host without the
+        // functions in a child started with `disable_functions=bzopen,…` — coverage does not
+        // follow a subprocess, so the line reads as untested here while being asserted there.
+        // Without this guard PHP dies on `Call to undefined function bzopen()`: a fatal error,
+        // so nothing to catch and nothing for a caller to report.
         // @codeCoverageIgnoreStart
         throw new FileException( 'The "bz2" PHP extension is required to bzip2 files.' ) ;
         // @codeCoverageIgnoreEnd

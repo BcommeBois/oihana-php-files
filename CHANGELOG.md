@@ -110,6 +110,15 @@ one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at c
   WordPress sites, the backup was written and could not be restored, and the message read as a
   damaged archive. `tar` has no such limit. Where PharData is still the only engine, the refusal
   now names the limit, says it is not damage, and names the remedy.
+- **The test suite passes on a host without `ext-bz2`.** The extension is a suggestion of this
+  package, and on a Debian with `php-cli` and no `php-bz2`, six `Bzip2FileTest` tests failed —
+  carried since it stopped being a requirement. Skipping them would have fixed nothing:
+  `failOnSkipped` is on, so a skip fails the suite just the same. What is true on such a host is
+  that `bzip2File()` and `bunzip2File()` refuse by naming the extension rather than dying on an
+  undefined `bzopen()`, so that is what those tests now assert there, and the normal behaviour
+  here — green in both environments without a single skip. The guards themselves were never
+  exercised, being `@codeCoverageIgnore`d as *"ext-bz2 is present in the test environment"*; a new
+  test stages a host without them in a child started with `disable_functions=bzopen,…`.
 - **`tar` can find its compressor.** `proc_open()` given an environment **replaces** the whole of
   it, and `tar` compresses nothing itself: `--xz` makes it spawn `xz` through a shell. With no
   `PATH`, that shell fell back to a built-in default — `/usr/bin:/bin` on a Mac — so `gzip` and

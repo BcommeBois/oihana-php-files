@@ -20,14 +20,31 @@ Configuration : [phpunit.xml](../../phpunit.xml). Points clés :
 - **Périmètre de couverture** : `./src` uniquement (balise `<source>`).
 - **Mode strict** : `failOnWarning`, `failOnRisky`, `failOnSkipped`, `failOnIncomplete`, `beStrictAboutOutputDuringTests`… Un test « risqué » (sans assertion, qui produit de la sortie, qui déclenche un *warning* PHP…) fait **échouer** la suite. C'est voulu : un test qui ne vérifie rien ne protège de rien.
 
-> **Sur macOS, `composer test` peut sortir en erreur sans rien casser.** Trois tests de
-> [`TarEngineTest`](../../tests/oihana/files/archive/tar/TarEngineTest.php) exercent le moteur
-> binaire de `tar` ; sans GNU tar sur la machine ils se *skippent*, et `failOnSkipped` transforme
-> ces skips en échec de la suite : la sortie affiche « OK, but some tests were skipped! » puis
-> Composer signale un `error code 1`. Le `/usr/bin/tar` d'Apple est `bsdtar`, que la bibliothèque
-> refuse délibérément ([pourquoi](archive/tar-engine.md#quel-binaire-et-pourquoi-pas-tous)). Un
-> `brew install gnu-tar` suffit à faire passer les trois tests. La CI tourne sous Linux et n'est
-> pas concernée.
+### Un *skip* est un échec, donc on n'en écrit pas
+
+`failOnSkipped` a une conséquence qu'on oublie : un test qui se saute fait échouer la suite. La
+règle qui en découle, posée en 1.5.0 : **là où la bibliothèque a quelque chose à dire sans
+l'outil, le test affirme ce qu'elle dit au lieu de se sauter.**
+
+Le cas qui l'a imposée : `ext-bz2` est une *suggestion* du paquet, et sur une Debian avec
+`php-cli` sans `php-bz2`, six tests de `Bzip2FileTest` échouaient — depuis que l'extension est
+passée en suggestion. Les sauter n'aurait rien réglé, `failOnSkipped` les aurait comptés comme
+des échecs. Ce qui est vrai sur une telle machine, c'est que `bzip2File()` et `bunzip2File()`
+**refusent en nommant l'extension** au lieu de mourir sur un `bzopen()` indéfini. C'est donc ce
+que ces tests affirment là-bas, et le comportement normal ici — la suite est verte dans les deux
+environnements, sans un seul *skip*. Vérifié en lançant la suite entière avec
+`php -d disable_functions=bzopen,…`.
+
+Il reste deux familles de *skips*, et aucune ne se déclenche sur les plateformes de ce projet :
+Windows (les tests de permissions) et une machine sans GNU tar.
+
+> **Sur macOS, `composer test` peut sortir en erreur sans rien casser.** Les tests qui exercent le
+> moteur binaire de `tar` — [`TarEngineTest`](../../tests/oihana/files/archive/tar/TarEngineTest.php)
+> et, depuis la 1.5.0, ceux de l'extraction — se *skippent* sans GNU tar sur la machine, donc la
+> sortie affiche « OK, but some tests were skipped! » puis Composer signale un `error code 1`. Le
+> `/usr/bin/tar` d'Apple est `bsdtar`, que la bibliothèque refuse délibérément
+> ([pourquoi](archive/tar-engine.md#quel-binaire-et-pourquoi-pas-tous)). Un `brew install gnu-tar`
+> suffit. La CI tourne sous Linux et n'est pas concernée.
 
 ## Ce qu'on teste, et comment
 
