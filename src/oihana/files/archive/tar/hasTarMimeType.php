@@ -10,7 +10,7 @@ use function oihana\files\hasMimeType;
  * This function inspects the MIME type of the given file against a list
  * of valid tar-related MIME types to determine if the file is a tar archive.
  *
- * It is a thin wrapper around {@see \oihana\files\hasMimeType()} pre-configured
+ * It is a thin wrapper around {@see hasMimeType} pre-configured
  * with the common tar MIME types.
  *
  * @param string   $filePath  Path to the file.
@@ -57,7 +57,11 @@ function hasTarMimeType( string $filePath , array $mimeTypes  =
     'application/x-gzip',
     'application/x-bzip2',
     'application/bzip2',
-    'application/x-compressed-tar'
+    'application/x-compressed-tar',
+    // What `finfo` reports for the two formats the system tar writes since 1.5.0,
+    // verified on real archives: `application/x-xz` and `application/zstd`.
+    'application/x-xz',
+    'application/zstd'
 ]): bool
 {
     return hasMimeType( $filePath , $mimeTypes );

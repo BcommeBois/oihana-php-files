@@ -5,12 +5,16 @@ namespace tests\oihana\files\archive\tar;
 use oihana\files\enums\CompressionType;
 use PHPUnit\Framework\TestCase;
 
+use Random\RandomException;
 use function oihana\files\archive\tar\tarCompressionOfFile;
 
 class TarCompressionOfFileTest extends TestCase
 {
     private string $root ;
 
+    /**
+     * @throws RandomException
+     */
     protected function setUp() :void
     {
         $this->root = sys_get_temp_dir() . '/oihana-tar-compression-' . bin2hex( random_bytes( 6 ) ) ;
@@ -55,6 +59,33 @@ class TarCompressionOfFileTest extends TestCase
             CompressionType::BZIP2 ,
             tarCompressionOfFile( $this->file( 'a.tar.bz2' , 'BZh9' . str_repeat( "\0" , 40 ) ) )
         ) ;
+    }
+
+    public function testXzIsRecognised(): void
+    {
+        $this->assertSame
+        (
+            CompressionType::XZ ,
+            tarCompressionOfFile( $this->file( 'a.tar.xz' , "\xfd7zXZ\x00" . str_repeat( "\0" , 40 ) ) )
+        ) ;
+    }
+
+    public function testZstdIsRecognised(): void
+    {
+        $this->assertSame
+        (
+            CompressionType::ZSTD ,
+            tarCompressionOfFile( $this->file( 'a.tar.zst' , "\x28\xb5\x2f\xfd" . str_repeat( "\0" , 40 ) ) )
+        ) ;
+    }
+
+    /**
+     * xz's magic is six bytes, the longest of the four, so the read has to be long enough
+     * for it — and a file of five bytes must not be mistaken for one.
+     */
+    public function testAFileShorterThanTheXzMagicIsNotXz(): void
+    {
+        $this->assertNull( tarCompressionOfFile( $this->file( 'short.xz' , "\xfd7zX" ) ) ) ;
     }
 
     public function testAnUncompressedArchiveReportsNoCompression(): void

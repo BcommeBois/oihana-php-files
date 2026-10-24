@@ -25,9 +25,11 @@ Les deux APIs sont volontairement **parallèles** : `zip`/`unzip` reflètent `ta
 | **tar**      | `.tar`                        | aucune            | GNU tar, sinon `PharData` |
 | **tar.gz**   | `.tar.gz`, `.tgz`             | gzip (`ext-zlib`) | GNU tar, sinon `PharData` |
 | **tar.bz2**  | `.tar.bz2`, `.tbz2`           | bzip2 (`ext-bz2`) | GNU tar, sinon `PharData` |
+| **tar.xz**   | `.tar.xz`, `.txz`             | xz (programme `xz`) | **GNU tar seulement** |
+| **tar.zst**  | `.tar.zst`                    | zstd (programme `zstd`) | **GNU tar seulement** |
 | **zip**      | `.zip`                        | DEFLATE ou STORE (par entrée) | `ZipArchive` (`ext-zip`) |
 
-L'énumération [`CompressionType`](../enums.md#compressiontype) liste les valeurs canoniques (`gzip`, `bzip2`, `none`, `zip`).
+L'énumération [`CompressionType`](../enums.md#compressiontype) liste les valeurs canoniques. `xz` et `zstd` n'existent que par le `tar` du système : `PharData` compresse par les extensions PHP, et PHP n'en a pour aucun des deux. Une archive `.tar.zst` écrite sur un serveur est donc **illisible** sur une machine sans GNU tar, et `untar` le dit au lieu de laisser `Phar` parler d'un format que personne n'a mentionné.
 
 ## Principes communs
 

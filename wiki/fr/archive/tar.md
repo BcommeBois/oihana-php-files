@@ -28,14 +28,14 @@ tar(
 |------------------|---------------------|-------|
 | `$paths`         | `string \| string[]` | Chemin(s) absolu(s) à inclure (fichiers OU dossiers, mélange autorisé). |
 | `$outputPath`    | `?string`           | Chemin final de l'archive. Si `null`, un nom auto-généré est utilisé dans `sys_get_temp_dir()`. |
-| `$compression`   | `?string`           | `CompressionType::GZIP` (défaut), `BZIP2`, ou `NONE`. |
+| `$compression`   | `?string`           | `CompressionType::GZIP` (défaut), `BZIP2`, `XZ`, `ZSTD` ou `NONE`. `XZ` et `ZSTD` demandent le `tar` du système **et** leur programme — [`tarWritableCompressions()`](tar-engine.md#les-fonctions-du-moteur) dit ce que cette machine sait écrire. |
 | `$preserveRoot`  | `?string`           | Si défini (chemin absolu), les entrées sont stockées **relativement à ce dossier** — utile pour préserver la structure. |
 
 ### Retour et exceptions
 
 - **Retour** : chemin complet de l'archive créée.
 - **`FileException`** : un des `$paths` n'existe pas.
-- **`UnsupportedCompressionException`** : compression non supportée par le système (ex. `bz2` sans `ext-bz2`).
+- **`UnsupportedCompressionException`** : compression que **cette machine** ne sait pas écrire. Le message nomme ce qui manque — `xz needs the system GNU tar and its xz program` — ou dit que le format n'est pas écrit du tout (`lzma`, que `xz` remplace, et `lz4`, pour lequel GNU tar n'a pas de drapeau), et dans les deux cas ce que cette machine écrit.
 - **`DirectoryException`** : impossible de créer le dossier temporaire.
 - **`RuntimeException`** : aucun fichier ajouté, ou erreur de renommage.
 

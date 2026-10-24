@@ -19,6 +19,8 @@ namespace oihana\files\archive\tar;
  * var_dump( tarIsCompressed( 'archive.tar.gz'   ) ); // true
  * var_dump( tarIsCompressed( 'archive.tgz'      ) ); // true
  * var_dump( tarIsCompressed( 'archive.tar.bz2'  ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tar.xz'   ) ); // true
+ * var_dump( tarIsCompressed( 'archive.tar.zst'  ) ); // true
  * var_dump( tarIsCompressed( 'archive.tbz2'     ) ); // true
  * var_dump( tarIsCompressed( 'archive.tar'      ) ); // false
  * var_dump( tarIsCompressed( 'archive.zip'      ) ); // false
@@ -31,5 +33,5 @@ namespace oihana\files\archive\tar;
  */
 function tarIsCompressed( string $tarFile ) :bool
 {
-    return preg_match('/\.tar\.(gz|bz2)|\.tgz|\.tbz2$/i', $tarFile) === 1;
+    return preg_match('/\.tar\.(gz|bz2|xz|zst)|\.tgz|\.tbz2|\.txz$/i', $tarFile) === 1;
 }

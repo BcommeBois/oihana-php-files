@@ -12,12 +12,12 @@ use oihana\files\enums\CompressionType;
  * but an archive handed to {@see untar()} may be named anything, and the system `tar`
  * has to be told nothing it cannot verify. Three bytes settle it.
  *
- * **Scope: gzip, bzip2, or none.** These are the compressions this library writes
- * ({@see \oihana\files\enums\TarExtension::getExtensionForCompression()}) and the only
- * ones {@see \oihana\files\archive\tar\hasTarExtension()} lets through, so an `xz`
- * archive never reaches here. Recognising one would be a branch no caller could take —
- * the kind of dead code this file deliberately avoids. The day `.tar.xz` is accepted
- * upstream, this function gets one line and one test.
+ * **Scope: gzip, bzip2, xz, zstd, or none** — the compressions this library writes
+ * ({@see \oihana\files\enums\TarExtension::getExtensionForCompression()}) and the ones
+ * {@see hasTarExtension} lets through. `xz` and `zstd`
+ * joined in 1.5.0, and this function is one of the six places that had to follow for an
+ * archive to be readable as well as writable: a format written and not read back is the
+ * defect that lot was fixing.
  *
  * @param string $tarFile Path to the archive.
  *
@@ -30,6 +30,7 @@ use oihana\files\enums\CompressionType;
  * use function oihana\files\archive\tar\tarCompressionOfFile;
  *
  * tarCompressionOfFile('/tmp/site.tar.gz') ;  // 'gzip'
+ * tarCompressionOfFile('/tmp/site.tar.zst') ; // 'zstd'
  * tarCompressionOfFile('/tmp/site.tar') ;     // null
  * ```
  *
@@ -46,7 +47,8 @@ function tarCompressionOfFile( string $tarFile ) :?string
         return null ;
     }
 
-    $magic = @fread( $handle , 3 ) ;
+    // Six bytes: the longest magic to recognise is xz's `fd 37 7a 58 5a 00`.
+    $magic = @fread( $handle , 6 ) ;
 
     fclose( $handle ) ;
 
@@ -66,6 +68,16 @@ function tarCompressionOfFile( string $tarFile ) :?string
     if ( str_starts_with( $magic , 'BZh' ) )
     {
         return CompressionType::BZIP2 ;
+    }
+
+    if ( str_starts_with( $magic , "\xfd7zXZ" ) )
+    {
+        return CompressionType::XZ ;
+    }
+
+    if ( str_starts_with( $magic , "\x28\xb5\x2f\xfd" ) )
+    {
+        return CompressionType::ZSTD ;
     }
 
     return null ;

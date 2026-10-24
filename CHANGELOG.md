@@ -56,6 +56,20 @@ one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at c
   to agree on it.
 - **`OpenSSLFileEncryption::$blockSizeExponent`** (fourth constructor argument) — the block size
   this instance writes, 8 MiB by default, validated in the constructor.
+- **`xz` and `zstd` archives**, written and read back. `tar` had carried `--xz` for two releases
+  without `tar()` ever being able to reach it, and gained `--zstd` in one line; the work was the
+  other direction. `hasTarExtension()`, `hasTarMimeType()`, `tarIsCompressed()`,
+  `tarCompressionOfFile()`, `tarFileInfo()` and `untar()` each had to learn the two formats,
+  because a format written and not read back is the defect the rest of this release was spent
+  fixing. **Both need the system `tar` and the matching program** — `Phar` compresses through PHP
+  extensions and PHP has none for either — so an `xz` or `zstd` archive is readable where there is
+  a GNU tar, and `untar()` says exactly that where there is not. `lzma` and `lz4` are deliberately
+  absent: `xz` superseded the first, and GNU tar has no flag for the second.
+- **`tarWritableCompressions()`** — what this host can actually write, which is not a property of
+  this library but of the machine: PharData offers `gzip` and `bzip2` through PHP extensions, the
+  system `tar` offers whatever program it finds. A host can write `.tar.zst` where the one beside
+  it cannot, with the same code. It is also what a `doctor` command should print.
+- **`tarProcessEnvironment()`** — the environment every `tar` child is given.
 - **Extraction through the system `tar`**, chosen by `untar()` before anything is written:
   `untarBinaryHandles()` answers whether there is a GNU tar **and** the program it pipes through
   (`ext-zlib` does not help: it is PharData that decompresses in PHP, not `tar`);
@@ -96,6 +110,20 @@ one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at c
   WordPress sites, the backup was written and could not be restored, and the message read as a
   damaged archive. `tar` has no such limit. Where PharData is still the only engine, the refusal
   now names the limit, says it is not damage, and names the remedy.
+- **`tar` can find its compressor.** `proc_open()` given an environment **replaces** the whole of
+  it, and `tar` compresses nothing itself: `--xz` makes it spawn `xz` through a shell. With no
+  `PATH`, that shell fell back to a built-in default — `/usr/bin:/bin` on a Mac — so `gzip` and
+  `bzip2` were found and anything installed elsewhere was not, on a host where
+  `tarCompressorExists()` had just found it on this process's own `PATH` and answered yes. The
+  check looked at one environment and the work ran in another. It went unnoticed because `tar()`
+  refused `xz` before ever reaching the binary; `--zstd` would have met it on the first call.
+- **A compression `tar()` cannot write is refused by name, and about the right thing.** The
+  refusal used to come out of `TarExtension::getCompressionExtension()` while it assembled a
+  temporary path for the PharData branch — seventeen lines before the engines had been looked at —
+  so *"Compression type 'xz' is not supported"* was said of a library whose system `tar` could
+  write it perfectly well. That path is now computed inside the branch that uses it, and the
+  refusal names what is missing (`xz needs the system GNU tar and its xz program`) or that the
+  format is not written at all, and in both cases what this host does write.
 - **The same compressed archive can be extracted twice in one process.** It failed on the PharData
   path with *"a phar with that name already exists"*: `PharData::decompress()` writes a `.tar`
   named after the archive and registers it in a list that removing the file does not clear. A
@@ -133,6 +161,10 @@ one, and the whole pipeline — archive, encrypt, decrypt, extract — runs at c
 ### Compatibility
 
 - **V1 and V2 files remain readable.** `encrypt()` then `decrypt()` migrates one.
+- **An `xz` or `zstd` archive needs a GNU tar to be read.** PharData decompresses through PHP
+  extensions, which cover `gzip` and `bzip2` only. A `.tar.zst` written on a server is unreadable
+  on a host with no system `tar` — the same shape of trap as an Argon2id archive on a host without
+  `ext-sodium`, and said as plainly.
 - **A file's KDF must be runnable where it is read.** The header names the KDF, which is what lets
   a reader pick the right one; it cannot make it available. An archive written with Argon2id needs
   `ext-sodium` on the host that restores it.

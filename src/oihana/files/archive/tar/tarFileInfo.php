@@ -92,6 +92,14 @@ function tarFileInfo( string $filePath , bool $strictMode = false ): array
     {
         $info[ TarInfo::COMPRESSION ] = CompressionType::BZIP2 ;
     }
+    elseif ( str_contains( $info[ TarInfo::MIME_TYPE ] , CompressionType::XZ ) )
+    {
+        $info[ TarInfo::COMPRESSION ] = CompressionType::XZ ;
+    }
+    elseif ( str_contains( $info[ TarInfo::MIME_TYPE ] , 'zstd' ) )
+    {
+        $info[ TarInfo::COMPRESSION ] = CompressionType::ZSTD ;
+    }
     else
     {
         $info[ TarInfo::COMPRESSION ] = CompressionType::NONE ;
@@ -116,7 +124,7 @@ function tarFileInfo( string $filePath , bool $strictMode = false ): array
         }
         // PharData does not throw when iterating an already-validated tar archive.
         // @codeCoverageIgnoreStart
-        catch ( Exception $e )
+        catch ( Exception )
         {
             // Keep is_valid as true but don't populate detailed info
         }

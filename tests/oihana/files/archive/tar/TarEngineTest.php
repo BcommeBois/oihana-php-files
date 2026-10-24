@@ -170,12 +170,31 @@ class TarEngineTest extends TestCase
 
     /**
      * A compression tar has no option for is left to PharData.
+     *
+     * `zstd` used to be the example here, until 1.5.0 gave `tar` its `--zstd` flag. `lz4`
+     * took its place and will keep it: GNU tar has no flag for it, only the general
+     * `-I` form, which this library does not use.
      */
     public function testTheBinaryStepsAsideForACompressionItCannotDo() :void
     {
         $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
 
-        $this->assertFalse( tarBinaryHandles( $entries , CompressionType::ZSTD ) ) ;
+        $this->assertFalse( tarBinaryHandles( $entries , CompressionType::LZ4 ) ) ;
+    }
+
+    /**
+     * And the one it can do since 1.5.0, as long as the program is there.
+     */
+    public function testTheBinaryHandlesZstdWhenItsProgramIsThere() :void
+    {
+        $entries = tarEntries( [ $this->tree() ] , $this->root . '/tree' ) ;
+
+        $this->assertSame
+        (
+            tarCompressorExists( CompressionType::ZSTD ) ,
+            tarBinaryHandles( $entries , CompressionType::ZSTD ) ,
+            'The answer must follow the presence of the zstd program, not be assumed'
+        ) ;
     }
 
     // ------------------------------------------------------------------ when the system tar fails

@@ -105,9 +105,20 @@ aside when:
 - **on writing only**, several paths are archived together and share no common parent — one `tar`
   invocation covers one base directory, and a compressed archive cannot be appended to;
 - the compressor is missing. `tar` neither compresses nor decompresses: it pipes through `gzip`,
-  `bzip2` or `xz`, where `PharData` uses the PHP extensions. A host with `ext-zlib` and no `gzip`
-  program therefore has a perfectly good GNU tar that cannot open a `.tar.gz`, and keeps the engine
-  that works for it.
+  `bzip2`, `xz` or `zstd`, where `PharData` uses the PHP extensions. A host with `ext-zlib` and no
+  `gzip` program therefore has a perfectly good GNU tar that cannot open a `.tar.gz`, and keeps the
+  engine that works for it.
+
+For `xz` and `zstd` there is no fallback: `PharData` knows neither. Those two formats exist **only**
+through the system `tar`, on writing as on reading, and both ends say so plainly rather than letting
+`Phar` speak about a format nobody mentioned. It is the same cross-host trap as an Argon2id archive
+on a host without `ext-sodium`.
+
+> ⚠ `proc_open()` given an environment **replaces** the process's own. Since `tar` spawns its
+> compressor through a shell, a child with no `PATH` fell back to the shell's default —
+> `/usr/bin:/bin` on a Mac — and found `gzip` while missing an `xz` installed elsewhere, on a host
+> where `tarCompressorExists()` had just found it on **this** process's `PATH`. The check looked at
+> one environment and the work ran in another. Fixed in 1.5.0 by `tarProcessEnvironment()`.
 
 A binary that is present and **fails** raises instead of falling back. It is reporting something
 `PharData` would meet as well — a full disk, a path it may not read — and retrying in PHP would
@@ -139,6 +150,8 @@ Rarely called directly — `tar()` and `untar()` use them — but public, and us
 | Function | Answer |
 |---|---|
 | [`tarBinary()`](#asking-which-engine-is-in-place) | the GNU tar that was found, or `null` |
+| `tarWritableCompressions()` | what **this host** can write — `['none','gzip','bzip2']` with no binary, plus `xz` and `zstd` with one |
+| `tarProcessEnvironment()` | the environment every `tar` child is given: `LC_ALL=C` and this process's `PATH` |
 | `tarBinaryIsUsable( $path )` | is this binary an executable GNU tar — asked by running `--version` |
 | `tarBinaryHandles( $entries , $compression )` | can this binary **write** that archive |
 | `tarCompressorExists( $compression )` | is the compression program present |

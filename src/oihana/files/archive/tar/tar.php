@@ -127,6 +127,30 @@ function tar
         }
     }
 
+    $compression ??= CompressionType::GZIP ;
+
+    // Refused here, by name, and about this host rather than about this library.
+    //
+    // This used to come out of TarExtension::getCompressionExtension() while it assembled
+    // a temporary path for the PharData branch — seventeen lines before the engines had
+    // been looked at, so "Compression type 'xz' is not supported" was said of a library
+    // whose system tar could write it perfectly well. What varies is the machine: PharData
+    // offers gzip and bzip2 through PHP extensions, `tar` offers whatever program it finds.
+
+    $writable = tarWritableCompressions() ;
+
+    if ( !in_array( $compression , $writable , true ) )
+    {
+        throw new UnsupportedCompressionException( sprintf
+        (
+            in_array( $compression , [ CompressionType::XZ , CompressionType::ZSTD ] , true )
+                ? '%1$s needs the system GNU tar and its %1$s program, and one of them is missing here. This host writes: %2$s.'
+                : 'tar() does not write %1$s archives. This host writes: %2$s.' ,
+            $compression ,
+            implode( ', ' , $writable )
+        )) ;
+    }
+
     $tmpPath = getFunctionInfo('oihana\files\archive\tar\tar' )[ 'name' ] ;
 
     $tmpPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . str_replace( Char::BACK_SLASH , DIRECTORY_SEPARATOR , $tmpPath ) . DIRECTORY_SEPARATOR ;
@@ -147,8 +171,7 @@ function tar
         $finalPath = $outputPath;
     }
 
-    $tempTarPath        = $tmpPath . 'temp_archive_' . uniqid() . TarExtension::TAR ;
-    $compressedTempPath = $tempTarPath . TarExtension::getCompressionExtension( $compression ) ;
+    $tempTarPath = $tmpPath . 'temp_archive_' . uniqid() . TarExtension::TAR ;
 
     // What the archive is to hold, and under which names. Computed once, for whichever engine
     // ends up writing it: the names are the compatibility contract with every archive already
@@ -165,12 +188,19 @@ function tar
 
     $binary = tarBinary() ;
 
-    if ( $binary !== null && tarBinaryHandles( $entries , $compression ?? CompressionType::GZIP ) )
+    if ( $binary !== null && tarBinaryHandles( $entries , $compression ) )
     {
-        tarWithBinary( $binary , $entries , $finalPath , $compression ?? CompressionType::GZIP ) ;
+        tarWithBinary( $binary , $entries , $finalPath , $compression ) ;
 
         return $finalPath ;
     }
+
+    // Only the PharData branch writes a compressed temporary file, and only it knows the
+    // extension of one — which is why this is computed here and not above. Asked earlier,
+    // for a compression PharData cannot write, it refused an archive the binary was about
+    // to produce.
+
+    $compressedTempPath = $tempTarPath . TarExtension::getCompressionExtension( $compression ) ;
 
     try
     {

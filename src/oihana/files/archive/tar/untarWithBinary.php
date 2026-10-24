@@ -68,7 +68,7 @@ function untarWithBinary( string $binary , string $tarFile , string $outputPath 
 
     $descriptors = [ 1 => [ 'pipe' , 'w' ] , 2 => [ 'pipe' , 'w' ] ] ;
 
-    $process = @proc_open( $command , $descriptors , $pipes , null , [ 'LC_ALL' => 'C' ] ) ;
+    $process = @proc_open( $command , $descriptors , $pipes , null , tarProcessEnvironment() ) ;
 
     // Reachable only if the process table is exhausted; tarBinary() has already run this
     // very binary to identify it.

@@ -114,7 +114,7 @@ function tarBinaryIsUsable( string $candidate ) :bool
         $descriptors ,
         $pipes ,
         null ,
-        [ 'LC_ALL' => 'C' ]
+        tarProcessEnvironment()
     ) ;
 
     if ( !is_resource( $process ) )

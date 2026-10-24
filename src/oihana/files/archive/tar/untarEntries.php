@@ -61,7 +61,7 @@ function untarEntries( string $binary , string $tarFile ) :array
         $descriptors ,
         $pipes ,
         null ,
-        [ 'LC_ALL' => 'C' ]
+        tarProcessEnvironment()
     ) ;
 
     // Reachable only if the process table is exhausted; tarBinary() has already run this

@@ -28,14 +28,14 @@ tar(
 |------------------|---------------------|--------|
 | `$paths`         | `string \| string[]` | Absolute path(s) to include (files OR directories, mixing allowed). |
 | `$outputPath`    | `?string`           | Final archive path. If `null`, an auto-generated name is used in `sys_get_temp_dir()`. |
-| `$compression`   | `?string`           | `CompressionType::GZIP` (default), `BZIP2`, or `NONE`. |
+| `$compression`   | `?string`           | `CompressionType::GZIP` (default), `BZIP2`, `XZ`, `ZSTD` or `NONE`. `XZ` and `ZSTD` need the system `tar` **and** their program — [`tarWritableCompressions()`](tar-engine.md#the-engine-functions) tells what this host can write. |
 | `$preserveRoot`  | `?string`           | If set (absolute path), entries are stored **relative to this directory** — useful to preserve structure. |
 
 ### Return and exceptions
 
 - **Returns**: full path of the created archive.
 - **`FileException`**: one of `$paths` does not exist.
-- **`UnsupportedCompressionException`**: compression not supported (e.g. `bz2` without `ext-bz2`).
+- **`UnsupportedCompressionException`**: a compression **this host** cannot write. The message names what is missing — `xz needs the system GNU tar and its xz program` — or says the format is not written at all (`lzma`, superseded by `xz`, and `lz4`, for which GNU tar has no flag), and in both cases what this host does write.
 - **`DirectoryException`**: cannot create the temp directory.
 - **`RuntimeException`**: no files added, or rename failure.
 

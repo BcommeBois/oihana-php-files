@@ -4,6 +4,7 @@ namespace oihana\files\archive\tar;
 
 use oihana\enums\Char;
 use oihana\files\enums\FileExtension;
+use oihana\files\enums\TarExtension;
 
 /**
  * Checks if a file has a tar-related extension.
@@ -56,7 +57,14 @@ function hasTarExtension( string $filePath , array $tarExtensions  =
     FileExtension::GZ ,
     FileExtension::TAR_GZ ,
     FileExtension::TAR_BZ2 ,
-    FileExtension::BZ2
+    FileExtension::BZ2 ,
+    // Written by the system tar since 1.5.0, so they have to be recognised as tar
+    // archives or the library could no longer read back what it writes. Taken from
+    // TarExtension, which is the catalogue of tar extensions — `.gz` and `.bz2` above
+    // are not, which is exactly why they surprise.
+    TarExtension::TAR_XZ ,
+    TarExtension::TXZ ,
+    TarExtension::TAR_ZST
 ]): bool
 {
     $extension = Char::DOT . strtolower( pathinfo( $filePath , PATHINFO_EXTENSION ) );

@@ -44,6 +44,8 @@ class TarExtension
         {
             CompressionType::GZIP  => FileExtension::TAR_GZ   ,
             CompressionType::BZIP2 => FileExtension::TAR_BZ2  ,
+            CompressionType::XZ    => self::TAR_XZ            ,
+            CompressionType::ZSTD  => self::TAR_ZST           ,
             CompressionType::NONE  => FileExtension::TAR      ,
             default                => throw new UnsupportedCompressionException( sprintf( "Compression type '%s' is not supported", $compression ) )
         } ;

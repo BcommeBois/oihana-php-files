@@ -7,6 +7,7 @@ use PharData;
 use RecursiveIteratorIterator;
 use RuntimeException;
 
+use oihana\files\enums\CompressionType;
 use oihana\files\enums\TarOption;
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
@@ -146,7 +147,22 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
             return true ;
         }
 
-        $compression      = tarIsCompressed( $tarFile ) ? tarCompressionOfFile( $tarFile ) : null ;
+        $compression = tarIsCompressed( $tarFile ) ? tarCompressionOfFile( $tarFile ) : null ;
+
+        // PharData decompresses through PHP extensions, and PHP has none for xz or zstd.
+        // Said here, before anything is attempted, rather than left to come out of Phar as
+        // a sentence about a format nobody mentioned: an archive the system tar wrote is
+        // readable where there is a system tar, and this host has none.
+
+        if ( $compression !== null && $compression !== CompressionType::GZIP && $compression !== CompressionType::BZIP2 )
+        {
+            throw new RuntimeException( sprintf
+            (
+                'this is a %1$s archive, and reading one needs the system GNU tar and its %1$s program — PharData reads gzip and bzip2 only. Install them, or point OIHANA_TAR_BINARY at a GNU tar.' ,
+                $compression
+            )) ;
+        }
+
         $alias            = $compression === null ? null : untarUniqueAlias( $tarFile , $compression ) ;
         $decompressedPath = null ;
 

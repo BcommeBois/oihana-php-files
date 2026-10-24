@@ -23,7 +23,10 @@ class HasTarExtensionTest extends TestCase
             ['file.TAR.GZ'         , true  ] , // uppercase double extension
             ['file.zip'            , false ] ,
             ['archive.rar'         , false ] ,
-            ['data.tar.xz'         , false ] , // not in default list
+            ['data.tar.xz'         , true  ] , // written by the system tar since 1.5.0
+            ['data.txz'            , true  ] ,
+            ['data.tar.zst'        , true  ] ,
+            ['data.tar.lzma'       , false ] , // a format this library does not write
             ['just.a.file'         , false ] ,
         ];
     }

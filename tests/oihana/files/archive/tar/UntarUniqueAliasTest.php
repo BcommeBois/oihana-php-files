@@ -71,10 +71,14 @@ class UntarUniqueAliasTest extends TestCase
         $this->assertSame( $this->root , dirname( untarUniqueAlias( $this->archive , CompressionType::GZIP ) ) ) ;
     }
 
+    /**
+     * `xz` was the example here until 1.5.0 gave it an extension. `lz4` has none, and this
+     * library does not write it.
+     */
     public function testACompressionWithNoKnownExtensionIsRefused(): void
     {
         $this->expectException( UnsupportedCompressionException::class ) ;
 
-        untarUniqueAlias( $this->archive , CompressionType::XZ ) ;
+        untarUniqueAlias( $this->archive , CompressionType::LZ4 ) ;
     }
 }

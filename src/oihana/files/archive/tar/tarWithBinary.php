@@ -61,7 +61,7 @@ function tarWithBinary( string $binary , array $entries , string $finalPath , st
 
     $descriptors = [ 0 => [ 'pipe' , 'r' ] , 1 => [ 'pipe' , 'w' ] , 2 => [ 'pipe' , 'w' ] ] ;
 
-    $process = @proc_open( $arguments , $descriptors , $pipes , null , [ 'LC_ALL' => 'C' ] ) ;
+    $process = @proc_open( $arguments , $descriptors , $pipes , null , tarProcessEnvironment() ) ;
 
     if ( !is_resource( $process ) )
     {
@@ -121,6 +121,7 @@ function tarCompressionFlag( string $compression ) :?string
         CompressionType::GZIP  => '--gzip'  ,
         CompressionType::BZIP2 => '--bzip2' ,
         CompressionType::XZ    => '--xz'    ,
+        CompressionType::ZSTD  => '--zstd'  ,
         CompressionType::LZMA  => '--lzma'  ,
         default                => null      ,
     } ;
@@ -149,6 +150,7 @@ function tarCompressorExists( string $compression ) :bool
         CompressionType::GZIP  => 'gzip'  ,
         CompressionType::BZIP2 => 'bzip2' ,
         CompressionType::XZ    => 'xz'    ,
+        CompressionType::ZSTD  => 'zstd'  ,
         CompressionType::LZMA  => 'lzma'  ,
         default                => null    ,
     } ;

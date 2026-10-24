@@ -109,10 +109,23 @@ ensuite. Il s'efface quand :
 - **à l'écriture seulement**, plusieurs chemins sont archivés ensemble sans parent commun — une
   invocation de `tar` couvre un répertoire de base, et on ne peut pas ajouter à une archive déjà
   compressée ;
-- le compresseur manque. `tar` ne compresse ni ne décompresse : il passe par `gzip`, `bzip2` ou
-  `xz`, là où `PharData` utilise les extensions PHP. Une machine avec `ext-zlib` et sans programme
-  `gzip` a donc un GNU tar parfaitement valide qui ne sait pas ouvrir un `.tar.gz`, et garde le
-  moteur qui fonctionne pour elle.
+- le compresseur manque. `tar` ne compresse ni ne décompresse : il passe par `gzip`, `bzip2`,
+  `xz` ou `zstd`, là où `PharData` utilise les extensions PHP. Une machine avec `ext-zlib` et sans
+  programme `gzip` a donc un GNU tar parfaitement valide qui ne sait pas ouvrir un `.tar.gz`, et
+  garde le moteur qui fonctionne pour elle.
+
+Pour `xz` et `zstd`, il n'y a pas de repli : `PharData` ne connaît ni l'un ni l'autre. Ces deux
+formats n'existent donc **que** par le `tar` du système, à l'écriture comme à la lecture, et les
+deux bouts le disent clairement plutôt que de laisser `Phar` parler d'un format que personne n'a
+mentionné. C'est le même piège inter-machines qu'une archive Argon2id sur une machine sans
+`ext-sodium`.
+
+> ⚠ `proc_open()` à qui l'on donne un environnement **remplace** celui du processus. Comme `tar`
+> lance son compresseur par un shell, un enfant sans `PATH` retombait sur le défaut du shell —
+> `/usr/bin:/bin` sur un Mac — et trouvait `gzip` sans trouver `xz` installé ailleurs, alors que
+> `tarCompressorExists()` venait de le trouver sur le `PATH` de **ce** processus. Le contrôle
+> regardait un environnement et le travail tournait dans un autre. Corrigé en 1.5.0 par
+> `tarProcessEnvironment()`.
 
 Un binaire présent qui **échoue** lève au lieu de se rabattre. Il signale quelque chose que
 `PharData` rencontrerait aussi — un disque plein, un chemin illisible — et réessayer en PHP
@@ -145,6 +158,8 @@ un contrôle de santé.
 | Fonction | Réponse |
 |---|---|
 | [`tarBinary()`](#savoir-quel-moteur-est-en-place) | le GNU tar trouvé, ou `null` |
+| `tarWritableCompressions()` | ce que **cette machine** sait écrire — `['none','gzip','bzip2']` sans binaire, plus `xz` et `zstd` avec |
+| `tarProcessEnvironment()` | l'environnement donné à chaque `tar` lancé : `LC_ALL=C` et le `PATH` de ce processus |
 | `tarBinaryIsUsable( $chemin )` | ce binaire est-il un GNU tar exécutable — on le lui demande avec `--version` |
 | `tarBinaryHandles( $entrées , $compression )` | ce binaire peut-il **écrire** cette archive |
 | `tarCompressorExists( $compression )` | le programme de compression est-il présent |

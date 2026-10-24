@@ -22,12 +22,14 @@ Both APIs are deliberately **parallel**: `zip`/`unzip` mirror `tar`/`untar`, `zi
 
 | Format       | Recognised extensions          | Compression       | Backend |
 |--------------|--------------------------------|-------------------|---------|
-| **tar**      | `.tar`                         | none              | GNU tar, else `PharData` |
-| **tar.gz**   | `.tar.gz`, `.tgz`              | gzip (`ext-zlib`) | GNU tar, else `PharData` |
-| **tar.bz2**  | `.tar.bz2`, `.tbz2`            | bzip2 (`ext-bz2`) | GNU tar, else `PharData` |
+| **tar**      | `.tar`                        | none              | GNU tar, else `PharData` |
+| **tar.gz**   | `.tar.gz`, `.tgz`             | gzip (`ext-zlib`) | GNU tar, else `PharData` |
+| **tar.bz2**  | `.tar.bz2`, `.tbz2`           | bzip2 (`ext-bz2`) | GNU tar, else `PharData` |
+| **tar.xz**   | `.tar.xz`, `.txz`              | xz (`xz` program) | **GNU tar only** |
+| **tar.zst**  | `.tar.zst`                     | zstd (`zstd` program) | **GNU tar only** |
 | **zip**      | `.zip`                         | DEFLATE or STORE (per entry) | `ZipArchive` (`ext-zip`) |
 
-The [`CompressionType`](../enums.md#compressiontype) enum lists the canonical values (`gzip`, `bzip2`, `none`, `zip`).
+The [`CompressionType`](../enums.md#compressiontype) enum lists the canonical values. `xz` and `zstd` exist only through the system `tar`: `PharData` compresses through PHP extensions, and PHP has none for either. A `.tar.zst` written on a server is therefore **unreadable** on a host with no GNU tar, and `untar` says so instead of letting `Phar` speak about a format nobody mentioned.
 
 ## Shared principles
 

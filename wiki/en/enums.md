@@ -161,7 +161,9 @@ FileExtension::ENCRYPTED ; // '.enc'
 | `XZ` | `'xz'` |
 | `ZSTD` | `'zstd'` |
 
-> ⚠ The 8 constants are defined but **only `NONE`, `GZIP` and `BZIP2`** are supported by the [`tar`](archive/tar.md) / [`untar`](archive/untar.md) functions. The [`zip`](archive/zip.md) / [`unzip`](archive/unzip.md) functions accept **`ZIP`** (DEFLATE) and **`NONE`** (STORE). Any other value throws `UnsupportedCompressionException`.
+> ⚠ The 8 constants are **format names**, not the list of what this library writes. [`tar`](archive/tar.md) / [`untar`](archive/untar.md) accept `NONE`, `GZIP`, `BZIP2`, and since 1.5.0 `XZ` and `ZSTD` — those two **only where there is a GNU tar and their program**, so the answer depends on the host: [`tarWritableCompressions()`](archive/tar-engine.md#the-engine-functions) gives it. `LZMA` and `LZ4` are never written (`xz` superseded the first, GNU tar has no flag for the second). The [`zip`](archive/zip.md) / [`unzip`](archive/unzip.md) functions accept **`ZIP`** (DEFLATE) and **`NONE`** (STORE). Any other value throws `UnsupportedCompressionException`.
+
+> 💡 `getFastCompressionTypes()` and `getHighRatioCompressionTypes()` sort formats by property, and say nothing about what `tar()` can produce: `LZ4` is in the first and is written by nobody here.
 
 | Method | Returns |
 |---|---|
