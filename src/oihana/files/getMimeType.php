@@ -50,7 +50,6 @@ function getMimeType( string $file ): ?string
     }
 
     $mimeType = finfo_file( $finfo , $file ) ;
-    finfo_close( $finfo ) ;
 
     return $mimeType === false || $mimeType === '' ? null : $mimeType ;
 }

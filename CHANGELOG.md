@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-10-29
+
+### Fixed
+
+- `getMimeType()` no longer calls `finfo_close()`. Since PHP 8.1 `finfo_open()` returns a `finfo`
+  object that PHP frees on its own, so the call did nothing; PHP 8.5 deprecates it and printed
+  `Deprecated: finfo_close() is deprecated since 8.5` on every MIME detection — every `untar()`,
+  `unzip()` and archive check. A new test, `SourceHasNoFinfoCloseTest`, reads all of `src/` with
+  its comments stripped and fails if `finfo_close(` comes back.
+
 ## [1.5.0] - 2026-10-24
 
 Encryption no longer reads the file it encrypts. `encrypt()` and `decrypt()` each loaded the whole
