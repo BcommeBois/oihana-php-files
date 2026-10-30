@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
+- `unzip()` restores symbolic links. An entry whose stored Unix mode carries the link type bits —
+  what `zip()` now writes for every link — is recreated with `symlink()`, its content read as the
+  target. A link is the one entry whose content is itself a path, so the Zip Slip guard, which reads
+  entry names, does not cover it: a link to `/etc` or to `../..` would hand every entry written
+  after it a way out of the destination. A target that is absolute, or that escapes the destination
+  once resolved from the link's own directory, is refused with a `FileException`. `keepPermissions`
+  leaves links alone, since `chmod()` follows a link and would change its target's permissions.
+
 - `copyFilteredFiles()` takes a `followLinks` parameter (default `false`), on the model of
   `findFiles()`. Left alone, a symbolic link is reproduced as a link, with the target it was written
   with, and the target is never read. Passed `true`, the links are read instead: a linked directory
@@ -17,6 +25,24 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   as `findFiles()`.
 
 ### Fixed
+
+- `zip()` no longer dies on a symbolic link, and stores links as links. `getRealPath()` answers
+  `false` for a link pointing at nothing, and `ZipArchive::addFile()` refuses `false` with
+
+      ValueError: ZipArchive::addFile(): Argument #1 ($filepath) must not be empty
+
+  a `ValueError` no caller could catch as a `FileException`: archiving a tree holding one broken
+  link stopped the program. The two links that did work were not stored either — a linked directory
+  became an empty directory entry and the content it pointed at was lost without a word, while a
+  linked file became a regular entry holding its target's bytes, read from outside the archived
+  tree. A link is now stored as a link, the target it was written with as the entry's content and
+  the Unix type bits in its external attributes, the way `tar()` already kept them, and its target
+  is never read. `isLink()` is tested before `isDir()`, as in `deleteDirectory()`.
+
+  A path passed directly in `$paths` is still resolved, so archiving a link on its own archives what
+  it points at. An absolute target is stored faithfully but `unzip()` refuses to recreate it, since
+  it leaves the extraction directory; an archive whose links are relative to the tree round-trips
+  without reservation.
 
 - `copyFilteredFiles()` no longer writes the host's absolute paths into the destination. The
   relative path of an entry was cut from `getRealPath()`, which for a link resolves outside the

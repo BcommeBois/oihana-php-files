@@ -241,4 +241,146 @@ class UnzipTest extends TestCase
         $this->assertTrue( $result );
         $this->assertFileExists( $this->outputDir . '/plain.txt' );
     }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testKeepPermissionsLeavesALinkAlone(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // chmod() follows a link, so applying the mode stored with a link would change the
+        // permissions of the file it points at.
+
+        $archive = $this->makeZipWithLink( 'link.txt' , 'target.txt' , [ 'target.txt' => 'data' ] ) ;
+
+        unzip( $archive , $this->outputDir , [ ZipOption::KEEP_PERMISSIONS => true ] ) ;
+
+        $this->assertTrue( is_link( $this->outputDir . '/link.txt' ) ) ;
+        $this->assertSame( 0644 , fileperms( $this->outputDir . '/target.txt' ) & 0o7777 ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testOverwriteReplacesAnExistingLinkWithoutTouchingItsTarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $archive = $this->makeZipWithLink( 'link.txt' , 'target.txt' , [ 'target.txt' => 'from the archive' ] ) ;
+
+        makeDirectory( $this->outputDir ) ;
+        file_put_contents( $this->outputDir . '/elsewhere.txt' , 'untouched' ) ;
+        symlink( 'elsewhere.txt' , $this->outputDir . '/link.txt' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+
+        $this->assertSame( 'target.txt' , readlink( $this->outputDir . '/link.txt' ) ) ;
+        $this->assertSame( 'untouched' , file_get_contents( $this->outputDir . '/elsewhere.txt' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testRefusesALinkEscapingTheDestination(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $archive = $this->makeZipWithLink( 'link.txt' , '../../escaped.txt' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/symbolic link to "\.\.\/\.\.\/escaped\.txt", which escapes the destination/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testRefusesALinkToAnAbsolutePath(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // A link to "/etc" would let every entry written after it out of the destination, and the
+        // Zip Slip guard reads entry names only, never an entry's content.
+
+        $archive = $this->makeZipWithLink( 'link.txt' , '/etc/passwd' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/symbolic link to the absolute path "\/etc\/passwd"/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testRefusesALinkWithoutATarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $archive = $this->makeZipWithLink( 'link.txt' , '' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/symbolic link without a target/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testRestoresASymbolicLink(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $archive = $this->makeZipWithLink( 'sub/link.txt' , 'real.txt' , [ 'sub/real.txt' => 'real' ] ) ;
+
+        $result = unzip( $archive , $this->outputDir ) ;
+
+        $this->assertTrue( $result ) ;
+        $this->assertTrue( is_link( $this->outputDir . '/sub/link.txt' ) ) ;
+        $this->assertSame( 'real.txt' , readlink( $this->outputDir . '/sub/link.txt' ) ) ;
+        $this->assertSame( 'real' , file_get_contents( $this->outputDir . '/sub/link.txt' ) ) ;
+    }
+
+    /**
+     * Builds an archive holding one symbolic link entry — its target as the entry's content and
+     * the Unix link type bits in its external attributes, the way zip() stores a link — plus any
+     * regular files given.
+     *
+     * @param array<string,string> $files Map of entry name => content.
+     */
+    private function makeZipWithLink( string $link , string $target , array $files = [] ): string
+    {
+        $path = $this->tempDir . DIRECTORY_SEPARATOR . 'with-link.zip' ;
+        $zip  = new ZipArchive() ;
+        $zip->open( $path , ZipArchive::CREATE | ZipArchive::OVERWRITE ) ;
+
+        foreach ( $files as $entry => $content )
+        {
+            $zip->addFromString( $entry , $content ) ;
+            $zip->setExternalAttributesName( $entry , ZipArchive::OPSYS_UNIX , 0644 << 16 ) ;
+        }
+
+        $zip->addFromString( $link , $target ) ;
+        $zip->setExternalAttributesName( $link , ZipArchive::OPSYS_UNIX , 0o120777 << 16 ) ;
+        $zip->close() ;
+
+        return $path ;
+    }
+
+    private function skipWhenSymlinksAreUnreliable(): void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )
+        {
+            $this->markTestSkipped( 'Symbolic link tests are not reliable on Windows.' ) ;
+        }
+    }
 }

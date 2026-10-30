@@ -10,6 +10,7 @@ use oihana\files\exceptions\FileException;
 
 use function oihana\files\makeDirectory;
 use function oihana\files\path\canonicalizePath;
+use function oihana\files\path\isAbsolutePath;
 use function oihana\files\path\isBasePath;
 use function oihana\files\path\joinPaths;
 
@@ -19,6 +20,12 @@ use function oihana\files\path\joinPaths;
  * This function mirrors {@see \oihana\files\archive\tar\untar()}. It guards against path
  * traversal (Zip Slip) and decompression bombs, can preview the contents without writing
  * anything (dry run), and can refuse to overwrite existing files.
+ *
+ * **Symbolic links are restored as links.** An entry whose stored Unix mode carries the link type
+ * bits — what {@see zip()} writes for every link it meets — is recreated with `symlink()` and its
+ * content read as the target. Such a target is refused when it is absolute or when it escapes the
+ * destination directory, since a link is the one entry whose content is itself a path and the Zip
+ * Slip guard on entry names does not cover it.
  *
  * @param string $zipFile    Path to the zip archive to extract.
  * @param string $outputPath Directory where the archive is extracted. Created if missing.
@@ -33,14 +40,16 @@ use function oihana\files\path\joinPaths;
  *     (decompression-bomb guard). Default: null (no limit).
  *   - **keepPermissions**: If true, restores the Unix file mode stored in each entry's external
  *     attributes (`OPSYS_UNIX`) via `chmod()`. Entries without Unix permissions are left with the
- *     default mode. Best-effort: a failing `chmod()` is ignored. Default: false.
+ *     default mode, and a symbolic link is left alone, since `chmod()` would follow it and change
+ *     the permissions of its target. Best-effort: a failing `chmod()` is ignored. Default: false.
  *
  * @return true|string[] Returns true on successful extraction, or the list of file entries
  *                       (relative to the archive root) when dryRun is enabled.
  *
  * @throws FileException If the archive does not exist, cannot be opened, an entry escapes the
- *                       destination (Zip Slip), a bomb guard trips, or a target already exists
- *                       while overwrite is disabled.
+ *                       destination (Zip Slip), an entry is a symbolic link whose target is
+ *                       absolute or escapes the destination, a link cannot be created, a bomb
+ *                       guard trips, or a target already exists while overwrite is disabled.
  * @throws DirectoryException If the destination directory (or an entry's parent) cannot be created.
  *
  * @example
@@ -120,6 +129,21 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
 
             $isDir = str_ends_with( $name , '/' ) ;
 
+            // The Unix mode an entry carries says what the entry is, not only how it may be read:
+            // the type bits tell a symbolic link from a regular file, and zip() writes them for
+            // every link it stores.
+
+            $mode  = 0 ;
+            $opSys = 0 ;
+            $attr  = 0 ;
+
+            if ( $zip->getExternalAttributesIndex( $i , $opSys , $attr ) && $opSys === ZipArchive::OPSYS_UNIX )
+            {
+                $mode = $attr >> 16 ;
+            }
+
+            $isLink = !$isDir && ( $mode & 0o170000 ) === 0o120000 ;
+
             if ( !$isDir )
             {
                 $entries[] = $name ;
@@ -134,6 +158,54 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
             {
                 makeDirectory( $target ) ;
             }
+            else if ( $isLink )
+            {
+                $linkTarget = (string) $zip->getFromIndex( $i ) ;
+
+                // A link is the one entry whose content is itself a path, so the Zip Slip guard
+                // above, which reads entry names, does not cover it: a link to "/etc" or to
+                // "../.." hands every entry written afterwards a way out of the destination.
+
+                if ( $linkTarget === '' )
+                {
+                    throw new FileException( sprintf('The entry "%s" is a symbolic link without a target.' , $name ) ) ;
+                }
+
+                if ( isAbsolutePath( $linkTarget ) )
+                {
+                    throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to the absolute path "%s".' , $name , $linkTarget ) ) ;
+                }
+
+                if ( !isBasePath( $base , canonicalizePath( joinPaths( dirname( $target ) , $linkTarget ) ) ) )
+                {
+                    throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to "%s", which escapes the destination directory.' , $name , $linkTarget ) ) ;
+                }
+
+                if ( !$overwrite && ( is_link( $target ) || file_exists( $target ) ) )
+                {
+                    throw new FileException( sprintf('The target file "%s" already exists.' , $target ) ) ;
+                }
+
+                makeDirectory( dirname( $target ) ) ;
+
+                // symlink() writes over nothing, so whatever stands there goes first. It is
+                // unlinked, never followed, so a link already in place keeps its own target.
+
+                if ( is_link( $target ) || file_exists( $target ) )
+                {
+                    @unlink( $target ) ;
+                }
+
+                if ( !@symlink( $linkTarget , $target ) )
+                {
+                    throw new FileException( sprintf('Failed to create the symbolic link "%s" to "%s".' , $target , $linkTarget ) ) ;
+                }
+
+                // chmod() follows a link to whatever it points at, so the mode stored with a link
+                // is not applied: it would change the permissions of its target instead.
+
+                continue ;
+            }
             else
             {
                 if ( !$overwrite && file_exists( $target ) )
@@ -145,19 +217,10 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
                 file_put_contents( $target , $zip->getFromIndex( $i ) ) ;
             }
 
-            if ( $keepPermissions )
+            if ( $keepPermissions && ( $mode & 0o7777 ) !== 0 )
             {
-                $opSys = 0 ;
-                $attr  = 0 ;
-                if ( $zip->getExternalAttributesIndex( $i , $opSys , $attr ) && $opSys === ZipArchive::OPSYS_UNIX )
-                {
-                    $mode = ( $attr >> 16 ) & 0o7777 ;
-                    if ( $mode !== 0 )
-                    {
-                        // @-suppressed: chmod() warns when the caller does not own the target; best-effort only.
-                        @chmod( $target , $mode ) ;
-                    }
-                }
+                // @-suppressed: chmod() warns when the caller does not own the target; best-effort only.
+                @chmod( $target , $mode & 0o7777 ) ;
             }
         }
 

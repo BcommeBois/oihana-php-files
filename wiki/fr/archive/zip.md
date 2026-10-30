@@ -50,6 +50,9 @@ zip(
    - Si défini ET correspond au dossier passé → chemins relatifs à ce dossier (pas de préfixe).
    - Si non défini → chemins préfixés par `basename($path)` (typique pour archiver plusieurs dossiers).
 4. **Compression `NONE`** : chaque entrée est marquée `ZipArchive::CM_STORE` (utile pour des fichiers déjà compressés — jpeg, mp4 — où le DEFLATE n'apporte rien).
+5. **Liens symboliques stockés comme liens** : un lien rencontré dans un dossier parcouru est stocké tel quel — la cible telle qu'elle a été écrite comme contenu de l'entrée, et les bits de type Unix dans ses attributs externes, comme `tar` le fait déjà. Sa cible n'est **jamais lue** : rien d'extérieur à l'arbre archivé n'entre dans l'archive, et un lien orphelin ne fait plus planter la fonction. [`unzip`](unzip.md#unzip) les relit comme liens. En revanche, un chemin passé **directement** dans `$paths` est résolu, comme il l'a toujours été : archiver un lien seul archive ce qu'il désigne.
+
+> ⚠ Un lien dont la cible est **absolue** est stocké fidèlement, mais [`unzip`](unzip.md#unzip) refusera de le recréer : la cible sort du dossier d'extraction. Une archive dont les liens sont relatifs à l'arbre se restaure sans réserve.
 
 ### Exemples
 

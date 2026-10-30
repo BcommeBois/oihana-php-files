@@ -47,6 +47,8 @@ Extracts a zip archive into an output directory. Mirror of [`untar`](untar.md#un
   - **too many entries** (`maxEntries` exceeded);
   - **total uncompressed size greater than `maxSize`** (decompression bomb);
   - **Zip Slip**: an entry escapes the destination directory;
+  - **Zip Slip through a link**: an entry is a symbolic link whose target is **absolute** or **escapes** the destination directory;
+  - a symbolic link **without a target**, or one that cannot be created;
   - overwrite attempt with `overwrite: false`.
 - **`DirectoryException`**: cannot create `$outputPath` (or the parent directory of an entry).
 
@@ -56,7 +58,20 @@ Extracts a zip archive into an output directory. Mirror of [`untar`](untar.md#un
 2. `makeDirectory( $outputPath )` — creates the output directory.
 3. `ZipArchive::open()` — actual opening (failure → `FileException`).
 4. Pre-scan **`maxEntries`** then **`maxSize`** (sum of uncompressed sizes) — **before** any write.
-5. For each entry: **Zip Slip** check, then (outside `dryRun`) directory creation or file write, and optional permission restoration.
+5. For each entry: **Zip Slip** check on the name, a read of the stored Unix mode to tell whether the entry is a link, then (outside `dryRun`) directory creation, **link recreation** once its target is checked, or file write, and optional permission restoration.
+
+### Symbolic links
+
+An entry whose Unix mode carries the link type bits — what [`zip`](zip.md#zip) writes for every link — is recreated with `symlink()`, its content read as the target.
+
+A link is the **one entry whose content is itself a path**, and the Zip Slip guard reads entry **names** only, so it does not cover this case. A link to `/etc` or to `../..` would hand every entry written after it a way out of the destination directory. Two refusals, both as `FileException`:
+
+- **absolute target** → refused;
+- **target escaping the destination directory** once resolved from the link's own directory → refused.
+
+A dangling link — whose target is not in the archive — is recreated as it stands: a valid link pointing at nothing, as it was on the original disk.
+
+`keepPermissions` **leaves links alone**: `chmod()` follows a link and would change the permissions of its target.
 6. Returns the list (`dryRun` mode) or `true`.
 
 ### Zip Slip protection

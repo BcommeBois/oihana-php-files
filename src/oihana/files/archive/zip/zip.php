@@ -27,6 +27,12 @@ use function oihana\files\makeDirectory;
  *
  * Empty directories are preserved in the archive.
  *
+ * **Symbolic links met inside a directory are stored as links**, with the target they were written
+ * with, and never read: the archive holds the link, not a copy of what it points at, and nothing
+ * outside the archived tree is read. {@see unzip()} reads them back as links. A path passed
+ * directly in `$paths` is resolved instead, as it always was, so archiving a link on its own
+ * archives what it points at.
+ *
  * @param string|string[] $paths
  *   Absolute path(s) to file(s) or directory(ies) to include in the archive.
  *
@@ -165,37 +171,45 @@ function zip
             $directoryIterator = new RecursiveDirectoryIterator( $realPath , FilesystemIterator::SKIP_DOTS ) ;
             $iterator          = new RecursiveIteratorIterator( $directoryIterator , RecursiveIteratorIterator::SELF_FIRST ) ;
 
-            if ( $preserveRootPath === $realPath )
+            $prefix = '' ;
+
+            if ( $preserveRootPath !== $realPath )
             {
-                foreach ( $iterator as $item )
-                {
-                    $relativePath = $iterator->getSubPathName() ;
-                    if ( $item->isDir() )
-                    {
-                        $zip->addEmptyDir( $relativePath ) ;
-                    }
-                    else
-                    {
-                        $zip->addFile( $item->getRealPath() , $relativePath ) ;
-                        $entries[] = $relativePath ;
-                    }
-                }
-            }
-            else
-            {
+                $prefix = basename( $realPath ) . DIRECTORY_SEPARATOR ;
                 $zip->addEmptyDir( basename( $realPath ) ) ;
-                foreach ( $iterator as $item )
+            }
+
+            foreach ( $iterator as $item )
+            {
+                $relativePath = $prefix . $iterator->getSubPathName() ;
+
+                // isLink() comes before isDir(), as in deleteDirectory(): isDir() answers true for
+                // a link to a directory. A link is stored as a link — the target it was written
+                // with as the entry's content, and the Unix type bits in the entry's external
+                // attributes, the way tar keeps them and unzip() reads them back. The target is
+                // never read, so nothing outside the archived tree ends up in the archive, and
+                // getRealPath() is never asked for it: that call answers false for a link pointing
+                // at nothing, and ZipArchive::addFile() refuses false with a ValueError that no
+                // caller could catch as a FileException.
+
+                if ( $item->isLink() )
                 {
-                    $relativePath = basename( $realPath ) . DIRECTORY_SEPARATOR . $iterator->getSubPathName() ;
-                    if ( $item->isDir() )
-                    {
-                        $zip->addEmptyDir( $relativePath ) ;
-                    }
-                    else
-                    {
-                        $zip->addFile( $item->getRealPath() , $relativePath ) ;
-                        $entries[] = $relativePath ;
-                    }
+                    $zip->addFromString( $relativePath , readlink( $item->getPathname() ) ) ;
+
+                    // 0o120000 are the Unix type bits for a symbolic link, 0o777 its mode, and the
+                    // whole mode goes in the high half of the external attributes.
+                    $zip->setExternalAttributesName( $relativePath , ZipArchive::OPSYS_UNIX , 0o120777 << 16 ) ;
+
+                    $entries[] = $relativePath ;
+                }
+                else if ( $item->isDir() )
+                {
+                    $zip->addEmptyDir( $relativePath ) ;
+                }
+                else
+                {
+                    $zip->addFile( $item->getPathname() , $relativePath ) ;
+                    $entries[] = $relativePath ;
                 }
             }
 

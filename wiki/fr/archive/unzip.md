@@ -47,6 +47,8 @@ Extrait une archive zip dans un dossier de sortie. Miroir de [`untar`](untar.md#
   - **trop d'entrées** (`maxEntries` dépassé) ;
   - **taille décompressée totale supérieure à `maxSize`** (bombe de décompression) ;
   - **Zip Slip** : une entrée s'échappe du dossier de destination ;
+  - **Zip Slip par un lien** : une entrée est un lien symbolique dont la cible est **absolue** ou **sort** du dossier de destination ;
+  - un lien symbolique **sans cible**, ou impossible à créer ;
   - tentative d'écrasement avec `overwrite: false`.
 - **`DirectoryException`** : impossible de créer `$outputPath` (ou le dossier parent d'une entrée).
 
@@ -56,7 +58,20 @@ Extrait une archive zip dans un dossier de sortie. Miroir de [`untar`](untar.md#
 2. `makeDirectory( $outputPath )` — création du dossier de sortie.
 3. `ZipArchive::open()` — ouverture réelle (échec → `FileException`).
 4. Pré-scan **`maxEntries`** puis **`maxSize`** (somme des tailles décompressées) — **avant** toute écriture.
-5. Pour chaque entrée : vérification **Zip Slip**, puis (hors `dryRun`) création du dossier ou écriture du fichier, et restauration éventuelle des permissions.
+5. Pour chaque entrée : vérification **Zip Slip** sur le nom, lecture du mode Unix stocké pour savoir si l'entrée est un lien, puis (hors `dryRun`) création du dossier, **recréation du lien** après vérification de sa cible, ou écriture du fichier, et restauration éventuelle des permissions.
+
+### Liens symboliques
+
+Une entrée dont le mode Unix porte les bits de type d'un lien — ce que [`zip`](zip.md#zip) écrit pour chaque lien — est recréée avec `symlink()`, son contenu lu comme cible.
+
+Un lien est la **seule entrée dont le contenu est lui-même un chemin**, et la garde Zip Slip ne lit que les **noms** d'entrées : elle ne couvre donc pas ce cas. Un lien vers `/etc` ou vers `../..` ouvrirait une sortie du dossier de destination à toutes les entrées écrites après lui. Deux refus, tous deux en `FileException` :
+
+- **cible absolue** → refusée ;
+- **cible qui sort du dossier de destination** une fois résolue depuis le dossier du lien → refusée.
+
+Un lien orphelin — dont la cible n'est pas dans l'archive — est recréé tel quel : c'est un lien valide qui ne pointe sur rien, comme sur le disque d'origine.
+
+`keepPermissions` **ne touche pas aux liens** : `chmod()` suit le lien et changerait les permissions de sa cible.
 6. Retourne la liste (mode `dryRun`) ou `true`.
 
 ### Protection Zip Slip
