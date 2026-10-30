@@ -6,7 +6,39 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- `copyFilteredFiles()` takes a `followLinks` parameter (default `false`), on the model of
+  `findFiles()`. Left alone, a symbolic link is reproduced as a link, with the target it was written
+  with, and the target is never read. Passed `true`, the links are read instead: a linked directory
+  is walked and a linked file copied, as if the link were the thing it points at. A link pointing at
+  a directory that holds it is refused with a `DirectoryException` naming the link, since the walk
+  would not end; two links pointing at each other's branch are still not detected, the same caveat
+  as `findFiles()`.
+
 ### Fixed
+
+- `copyFilteredFiles()` no longer writes the host's absolute paths into the destination. The
+  relative path of an entry was cut from `getRealPath()`, which for a link resolves outside the
+  source directory, so the prefix did not match and the "relative" path became the target's whole
+  absolute path. A source holding one link to a directory and one link to a file produced this:
+
+      /private/var/folders/nq/lv9f7jcn4gq_pfc7nrsk928c0000gn/T/repro-3b3d15/outside/
+      /private/var/folders/nq/lv9f7jcn4gq_pfc7nrsk928c0000gn/T/repro-3b3d15/plain.txt
+
+  — eight empty directories naming the filesystem of the machine that ran the copy, the linked
+  file's content at the end of that path rather than under the link's name, and the linked
+  directory's own content nowhere, since the walk does not follow links. The walk now mirrors the
+  path it travelled, so a link lands where it stands.
+
+  It mattered beyond a copy: `copyFilteredFiles()` is the staging step of `tarDirectory()` and
+  `zipDirectory()`, so every archive of a tree holding a link carried those directories and lost
+  what the link pointed at. A site whose `uploads` is a link was backed up without its uploads.
+
+  The exclude patterns and the filter callback now receive the path the walk travelled rather than
+  its resolved form. For a link they see the link instead of its target, which is the point; for
+  everything else the two differ only when the source directory is itself given through a link or
+  as a relative path.
 
 - `deleteDirectory()` no longer stops on a symbolic link. A link to a directory that still existed
   answered `true` to `SplFileInfo::isDir()`, so the walk called `rmdir()` on the link itself, which

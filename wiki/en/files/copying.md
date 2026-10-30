@@ -106,7 +106,8 @@ copyFilteredFiles(
     string    $sourceDir ,
     string    $destDir ,
     array     $excludePatterns = [] ,
-    ?callable $filterCallback  = null
+    ?callable $filterCallback  = null ,
+    bool      $followLinks     = false
 ) : bool
 ```
 
@@ -232,7 +233,8 @@ copyFilteredFiles(
 
 ### Pitfalls and limitations
 
-- **Symlinks**: the function uses `RecursiveDirectoryIterator::SKIP_DOTS`, but **does not follow symlinks** by default unless you change the flags. Native `copy()` doesn't traverse either — symlinks are copied as symlinks (or as target, depending on the platform).
+- **Symlinks**: by default a link is **reproduced as a link**, with the target it was written with — a relative link stays relative, an absolute one stays absolute — and its target is **never read**. With `followLinks: true` the links are **read**: a linked directory is walked and a linked file copied, as if the link were the thing it points at. A dangling link is skipped in either mode. The exclude patterns and the filter callback see the **link's** own path, not its target's.
+- **`followLinks` and cycles**: a link pointing at a directory that holds it is **refused** (`DirectoryException`), since the walk would not end. Two links pointing at each other's branch are not detected — the same caveat as [`findFiles`](discovery.md#findfiles).
 - **Permissions**: PHP's native `copy()` **does not preserve** owner/group (only content and basic perms). For a faithful backup, consider `rsync` or `cp -p`.
 - **Files open for writing**: may be copied in an intermediate state — no read lock.
 - **Atomicity**: the copy is not transactional. If it fails mid-way (disk full, permission), `$destDir` is left in a partial state.
