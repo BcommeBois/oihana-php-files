@@ -147,6 +147,49 @@ makeTemporaryDirectory(
 
 Internally: calls `getTemporaryDirectory($path)` then `mkdir($dir, $permission, recursive: true)` if needed.
 
+> ⚠ **`makeTemporaryDirectory( null )` or `( '' )` returns `/tmp` itself.** Never delete what it returns without having given it a name: use [`makePrivateTemporaryDirectory`](#makeprivatetemporarydirectory), which refuses an empty path, or `deleteTemporaryDirectory`, which refuses to delete `/tmp`.
+
+---
+
+## `makePrivateTemporaryDirectory`
+
+```php
+makePrivateTemporaryDirectory( string|array $path , ?string $base = null ) : string
+```
+
+Creates a working directory that **only its owner can read**: mode `0700`. For the work that must not be seen by the other accounts of the machine while it is in progress — a database dump, a configuration file with its credentials, the decrypted content of an archive.
+
+| Parameter | Effect |
+|-----------|--------|
+| `$path`   | The sub-path, as one string or as segments. Empty segments are dropped. |
+| `$base`   | Where to create it: the system temporary directory when `null`, or another volume when the work is too large for it. |
+
+- The directories created on the way are `0700` too. The base is left alone.
+- The mode is **applied again** after the creation: a directory left behind by an earlier run keeps the permissions it was created with.
+- **An empty path is refused** (`DirectoryException`): the directory would be the base itself, and whoever deletes it afterwards would delete the whole base.
+
+```php
+use function oihana\files\makePrivateTemporaryDirectory;
+use function oihana\files\deleteDirectory;
+
+$work = makePrivateTemporaryDirectory( [ 'backup' , 'example.com' ] ) ;
+// /tmp/backup/example.com, mode 0700
+
+$work = makePrivateTemporaryDirectory( 'backup' , '/srv/work' ) ;
+// /srv/work/backup, mode 0700
+
+makePrivateTemporaryDirectory( '' ) ; // throws DirectoryException
+
+try
+{
+    // … the work …
+}
+finally
+{
+    deleteDirectory( $work ) ;
+}
+```
+
 ---
 
 ## `deleteTemporaryDirectory`
@@ -170,7 +213,7 @@ deleteTemporaryDirectory( 'myapp' ) ;     // /tmp/myapp deleted (or true if abse
 
 - **Always use an application prefix** (`['myapp', ...]`) to avoid polluting `/tmp` with anonymous directories.
 - **Cleanup in `finally`** for transactional workflows.
-- **Permissions `0700`** if content is sensitive (default `0755` is *world-readable*).
+- **Permissions `0700`** if content is sensitive (default `0755` is *world-readable*): [`makePrivateTemporaryDirectory`](#makeprivatetemporarydirectory) does it, and refuses an empty path.
 - **Do not rely on persistence**: the system may wipe `/tmp` on reboot (most Linux distros), or via `tmpfiles.d`.
 - **Do not store absolute paths** to `/tmp/...` in a database — not portable across machines.
 

@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+Seven functions that lived in an application built on this library, and that had nothing of that
+application in them. Each comes with its own test, and the wiki, in English and in French,
+documents them where their neighbours already are.
+
+- `toml\escapeTomlString()` — escapes a value for a TOML basic string: `\` and `"`, the control
+  characters with a shorthand, and `\uXXXX` for the others and DEL. A test reads the result back
+  with the TOML parser.
+- `toml\setTomlValue()` — writes a string value into a TOML document **inside one table only**,
+  editing the text rather than decoding and re-encoding it: the alignment, the trailing comment and
+  the line endings stay. The same key name recurs across tables (`host`, `pass`), and a replacement
+  that did not stop at its table overwrote unrelated credentials. A missing key is added at the
+  end of its table, a missing table at the end of the document.
+- `treePaths()` — every path under a directory, files, directories and links, relative to a root.
+  Links are listed and never followed; an unreadable sub-directory is listed without its content,
+  and the walk goes on past it.
+- `containsFile()` — whether a directory holds a file at any depth, where `hasFiles()` only looks
+  at the first level. A link counts; a directory that cannot be read is taken to hold one, since
+  it cannot be shown to be empty.
+- `archive\tar\tarExcludesPath()` — whether GNU tar's `--exclude` patterns leave a path out of an
+  archive: unanchored, leading directory, and `*` crossing `/`, as tar reads them by default. A
+  test holds it to GNU tar itself when it is installed.
+- `assertRemovableDirectory()` — refuses, with a `DirectoryException`, a path that is not safe to
+  delete recursively: empty, relative, holding `.` or `..`, or fewer than `$minDepth` segments
+  (3 by default) from the root.
+- `makePrivateTemporaryDirectory()` — a working directory in mode `0700`, applied again when the
+  directory is already there, under the system temporary directory or another base. **An empty
+  path is refused**: `makeTemporaryDirectory( null )` returns the temporary directory itself, and
+  a caller deleting what it was handed would delete the whole of it. That return is now said in
+  the documentation of `makeTemporaryDirectory()`, which does not change.
+
 ### Fixed
 
 - `unzip()` no longer writes a corrupt entry as if it were whole. libzip does not check an entry

@@ -355,6 +355,8 @@ $tmp = makeTemporaryDirectory( null ) ;
 
 **Throws `DirectoryException`** if creation fails.
 
+> ⚠ With `null` or `''`, the directory returned is `/tmp` itself. Never delete what it returns without having given it a name: for a working directory, prefer [`makePrivateTemporaryDirectory`](temporary.md#makeprivatetemporarydirectory), which refuses an empty path.
+
 See the [full temporary workflow](temporary.md).
 
 ---

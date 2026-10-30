@@ -147,6 +147,49 @@ makeTemporaryDirectory(
 
 Internement : appelle `getTemporaryDirectory($path)` puis `mkdir($dir, $permission, recursive: true)` si nécessaire.
 
+> ⚠ **`makeTemporaryDirectory( null )` ou `( '' )` rend `/tmp` lui-même.** Ne jamais supprimer ce qu'elle rend sans lui avoir donné un nom : utiliser [`makePrivateTemporaryDirectory`](#makeprivatetemporarydirectory), qui refuse un chemin vide, ou `deleteTemporaryDirectory`, qui refuse de supprimer `/tmp`.
+
+---
+
+## `makePrivateTemporaryDirectory`
+
+```php
+makePrivateTemporaryDirectory( string|array $path , ?string $base = null ) : string
+```
+
+Crée un dossier de travail que **seul son propriétaire peut lire** : mode `0700`. Pour le travail qui ne doit pas être visible des autres comptes de la machine pendant qu'il est en cours — un dump de base de données, un fichier de configuration avec ses identifiants, le contenu déchiffré d'une archive.
+
+| Paramètre | Effet |
+|-----------|-------|
+| `$path`   | Le sous-chemin, en une chaîne ou en segments. Les segments vides sont ignorés. |
+| `$base`   | Où le créer : le dossier temporaire du système si `null`, ou un autre volume quand le travail est trop gros pour lui. |
+
+- Les dossiers créés en chemin sont en `0700` eux aussi. La base n'est pas modifiée.
+- Le mode est **réappliqué** après la création : un dossier laissé par une exécution précédente garde les droits avec lesquels il a été créé.
+- **Un chemin vide est refusé** (`DirectoryException`) : le dossier serait la base elle-même, et qui le supprime ensuite supprimerait toute la base.
+
+```php
+use function oihana\files\makePrivateTemporaryDirectory;
+use function oihana\files\deleteDirectory;
+
+$work = makePrivateTemporaryDirectory( [ 'backup' , 'example.com' ] ) ;
+// /tmp/backup/example.com, mode 0700
+
+$work = makePrivateTemporaryDirectory( 'backup' , '/srv/work' ) ;
+// /srv/work/backup, mode 0700
+
+makePrivateTemporaryDirectory( '' ) ; // lève DirectoryException
+
+try
+{
+    // … le travail …
+}
+finally
+{
+    deleteDirectory( $work ) ;
+}
+```
+
 ---
 
 ## `deleteTemporaryDirectory`
@@ -170,7 +213,7 @@ deleteTemporaryDirectory( 'myapp' ) ;     // /tmp/myapp supprimé (ou true si ab
 
 - **Toujours utiliser un préfixe d'application** (`['myapp', ...]`) pour ne pas polluer `/tmp` avec des dossiers anonymes.
 - **Cleanup en `finally`** pour les workflows transactionnels.
-- **Permissions `0700`** si le contenu est sensible (par défaut `0755` est *world-readable*).
+- **Permissions `0700`** si le contenu est sensible (par défaut `0755` est *world-readable*) : [`makePrivateTemporaryDirectory`](#makeprivatetemporarydirectory) le fait, et refuse un chemin vide.
 - **Ne pas dépendre de la persistance** : le système peut nettoyer `/tmp` au reboot (sur la plupart des Linux), ou via `tmpfiles.d`.
 - **Ne pas stocker de chemins absolus** vers `/tmp/...` en base de données — pas portable entre machines.
 

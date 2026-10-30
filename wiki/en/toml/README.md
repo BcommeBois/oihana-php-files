@@ -204,6 +204,81 @@ $config = resolveTomlConfig(
 
 ---
 
+## `escapeTomlString`
+
+```php
+escapeTomlString( string $value ) : string
+```
+
+Escapes a value so it can be written inside a TOML **basic string** (`"…"`). The result does **not** include the surrounding quotes.
+
+- `\` and `"` are escaped;
+- the control characters that have a shorthand become `\b`, `\t`, `\n`, `\f`, `\r`;
+- the other control characters and DEL become `\uXXXX`.
+
+Without it, a password holding a quote or a backslash produces a file the parser rejects, and the whole configuration becomes unreadable.
+
+```php
+use function oihana\files\toml\escapeTomlString;
+
+echo escapeTomlString( 'pa"ss\word' ) ; // pa\"ss\\word
+echo escapeTomlString( "two\nlines" ) ; // two\nlines
+echo escapeTomlString( "\x01" ) ;       // \u0001
+```
+
+---
+
+## `setTomlValue`
+
+```php
+setTomlValue( string $content , ?string $section , string $key , string $value ) : string
+```
+
+Writes a string value into a TOML document, **inside one table only**, leaving the rest of the text alone.
+
+| Parameter  | Type      | Effect |
+|------------|-----------|--------|
+| `$content` | `string`  | The TOML document. |
+| `$section` | `?string` | The table (`database`, `app.database`), compared without regard to case. `null` for the root table, above the first header. |
+| `$key`     | `string`  | The key. |
+| `$value`   | `string`  | The raw value, written as a basic string and escaped by [`escapeTomlString`](#escapetomlstring). |
+
+### Why "one table only"
+
+The same key often recurs across tables: `host` or `pass` under `[database]`, `[smtp]` and `[mysql]`. A replacement that does not stop at the target table overwrites unrelated credentials.
+
+### What is kept
+
+The document is edited **as text**, not decoded and written back: the alignment before `=`, the trailing comment and the rest of the file stay as they are. Line endings follow the document's (CRLF when it has one, LF otherwise).
+
+### When the key or the table is missing
+
+- **The key is missing**: it is added at the end of its table, before the blank lines that close it.
+- **The table is missing**: it is added at the end of the document.
+
+> ⚠ Only keys written as a single-line string (`"…"` or `'…'`) are recognised. A key holding a number, a boolean, an array or a multi-line string is not replaced: a new line is added for it instead.
+
+```php
+use function oihana\files\toml\setTomlValue;
+
+$toml = <<<TOML
+[database]
+host = "localhost" # local
+
+[smtp]
+host = "mail"
+TOML;
+
+echo setTomlValue( $toml , 'database' , 'host' , 'db.example.com' ) ;
+// [database]
+// host = "db.example.com" # local
+//
+// [smtp]
+// host = "mail"
+```
+
+---
+
 ## Comparison: TOML vs alternatives
 
 | Format  | Readability | Typing | Standard | When to use here |

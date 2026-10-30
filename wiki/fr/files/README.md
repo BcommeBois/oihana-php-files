@@ -12,10 +12,10 @@ Les fonctions sont groupées en **9 catégories** documentées séparément :
 |---|---|---|
 | **Assertions** | [assertions.md](assertions.md) | `assertFile`, `assertDirectory`, `assertWritableDirectory` |
 | **Création** | [creation.md](creation.md) | `makeFile`, `writeFileAtomic`, `touchFile`, `makeDirectory`, `makeTimestampedFile`, `makeTimestampedDirectory`, `makeTemporaryDirectory` |
-| **Suppression** | [deletion.md](deletion.md) | `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory` |
-| **Répertoires temporaires** | [temporary.md](temporary.md) | `getTemporaryDirectory`, `makeTemporaryDirectory`, `deleteTemporaryDirectory` (workflow) |
+| **Suppression** | [deletion.md](deletion.md) | `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory`, `assertRemovableDirectory` |
+| **Répertoires temporaires** | [temporary.md](temporary.md) | `getTemporaryDirectory`, `makeTemporaryDirectory`, `makePrivateTemporaryDirectory`, `deleteTemporaryDirectory` (workflow) |
 | **Lecture** | [reading.md](reading.md) | `getFileContent`, `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays` |
-| **Découverte** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories` |
+| **Découverte** | [discovery.md](discovery.md) | `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories`, `containsFile`, `treePaths` |
 | **Copie et déplacement** | [copying.md](copying.md) | `copyFile`, `moveFile`, `renameFile`, `copyFilteredFiles`, `copyFilteredFilesWithMetadata` |
 | **Compression** | [compression.md](compression.md) | `gzipFile`, `gunzipFile`, `bzip2File`, `bunzip2File` |
 | **Liens symboliques** | [links.md](links.md) | `createSymlink`, `isSymlink`, `readSymlink` |

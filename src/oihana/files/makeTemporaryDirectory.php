@@ -15,6 +15,11 @@ use oihana\files\exceptions\DirectoryException;
  * <li><code>['my', 'app']</code> → <code>/tmp/my/app</code></li>
  * </ul>
  *
+ * **Given `null` or `''`, it returns the temporary directory itself.** Never delete what it
+ * returns without having given it a name: use {@see makePrivateTemporaryDirectory()}, which
+ * refuses an empty path, or {@see deleteTemporaryDirectory()}, which refuses to delete the
+ * temporary directory itself.
+ *
  * @param string|string[]|null $path Optional sub‑directory path segments.
  * @param int $permission Octal mode for <code>mkdir()</code> (default: <code>0755</code>).
  *

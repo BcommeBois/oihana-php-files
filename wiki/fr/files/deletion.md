@@ -186,6 +186,40 @@ deleteTemporaryDirectory( null ) ;
 
 ---
 
+## `assertRemovableDirectory`
+
+```php
+assertRemovableDirectory( string $path , int $minDepth = 3 ) : void
+```
+
+Vérifie qu'un chemin peut être confié sans danger à une suppression récursive. Un chemin lu dans un fichier de configuration finit tôt ou tard dans `deleteDirectory` ou un `rm -rf` : une valeur tronquée, relative ou mal tapée transforme un nettoyage ordinaire en perte d'un dossier système.
+
+Le chemin est accepté s'il est :
+
+- **non vide** ;
+- **absolu** — un chemin relatif dépend du dossier courant, que personne ne vérifie ;
+- **sans segment `.` ni `..`** — `/var/www/site/..`, c'est `/var/www` ;
+- **assez profond** — au moins `$minDepth` segments : avec 3 (le défaut), `/`, `/var` et `/var/www` sont refusés.
+
+Rien n'est lu sur le disque : le dossier n'a pas à exister, et un lien est jugé sur son propre chemin. C'est une garde contre une **valeur fausse**, pas contre une valeur malveillante.
+
+**Lève `DirectoryException`** quand le chemin n'est pas sûr. Le message nomme le chemin refusé.
+
+```php
+use function oihana\files\assertRemovableDirectory;
+use function oihana\files\deleteDirectory;
+
+assertRemovableDirectory( '/var/www/example.com/htdocs' ) ; // passe
+assertRemovableDirectory( '/var/www' ) ;                    // lève : 2 segments, 3 demandés
+assertRemovableDirectory( 'www/example.com' ) ;             // lève : relatif
+assertRemovableDirectory( '/var/www/site/..' ) ;            // lève : segment relatif
+
+assertRemovableDirectory( $path ) ;
+deleteDirectory( $path ) ;
+```
+
+---
+
 ## Tableau récapitulatif
 
 | Fonction                     | Cible            | Validation par défaut | Mode permissif | Idempotent |
@@ -194,6 +228,7 @@ deleteTemporaryDirectory( null ) ;
 | `deleteDirectory`            | Dossier + contenu| `assertDirectory`     | `assertable: false` | Non |
 | `clearFile`                  | Fichier (contenu)| `assertFile`          | `assertable: false` | Oui (tronquer un fichier vide ne fait rien) |
 | `deleteTemporaryDirectory`   | Dossier dans temp| Indirecte (via `deleteDirectory`) | Garde-fous internes | Oui |
+| `assertRemovableDirectory`   | Chemin (texte)   | Absolu, sans `..`, profondeur | — | Oui (ne supprime rien) |
 
 ---
 

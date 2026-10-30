@@ -268,6 +268,36 @@ tarIsCompressed( 'README.md'       ) ; // false
 
 ---
 
+## `tarExcludesPath`
+
+```php
+tarExcludesPath( string $path , array $patterns ) : bool
+```
+
+Tells whether **GNU tar**'s `--exclude` patterns leave a path out of an archive. An archive made with `tar --exclude=<pattern> …` lacks two kinds of things the original tree has: what was added since, and what a pattern left out on purpose. A caller comparing the two — to restore a tree to its archive, for instance — has to tell them apart, or it removes what was never meant to be archived.
+
+The patterns are read the way GNU tar reads them by default:
+
+| Rule | Effect | Example |
+|---|---|---|
+| **Unanchored** | A pattern may start at any `/` of the path. | `cache` matches `app/cache` |
+| **Leading directory** | A pattern matching a directory excludes everything under it. | `cache` matches `app/cache/a.bin` |
+| **`*` crosses `/`** | As `fnmatch()` with no flags. | `content/*.log` matches `content/logs/a.log` |
+
+Leading and trailing slashes are ignored, and an empty pattern excludes nothing. A test holds the function to GNU tar itself, when it is installed.
+
+```php
+use function oihana\files\archive\tar\tarExcludesPath;
+
+tarExcludesPath( 'content/cache/a.bin' , [ 'cache' ] ) ;         // true
+tarExcludesPath( 'content/logs/a.log'  , [ 'content/*.log' ] ) ; // true
+tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (a segment, not a prefix)
+```
+
+> ℹ️ This is not the rule of [`shouldExcludeFile`](../files/discovery.md#shouldexcludefile), which `tarDirectory` uses: that one matches a pattern against the whole path or the file name. `tarExcludesPath` tells what the `tar` **binary** does.
+
+---
+
 ## See also
 
 - [Extracting an archive](untar.md) — `untar`, `assertTar`, `hasTarExtension`, `hasTarMimeType`, `validateTarStructure`.

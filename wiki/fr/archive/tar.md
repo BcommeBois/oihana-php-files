@@ -268,6 +268,36 @@ tarIsCompressed( 'README.md'       ) ; // false
 
 ---
 
+## `tarExcludesPath`
+
+```php
+tarExcludesPath( string $path , array $patterns ) : bool
+```
+
+Indique si les motifs `--exclude` de **GNU tar** laissent un chemin hors d'une archive. Une archive faite avec `tar --exclude=<motif> …` n'a pas deux sortes de choses que l'arbre d'origine a : ce qui a été ajouté depuis, et ce qu'un motif a laissé dehors exprès. Qui compare les deux — pour remettre un arbre dans l'état de son archive, par exemple — doit les distinguer, sinon il supprime ce qui ne devait jamais être archivé.
+
+Les motifs sont lus comme GNU tar les lit par défaut :
+
+| Règle | Effet | Exemple |
+|---|---|---|
+| **Non ancré** | Le motif peut commencer à n'importe quel `/` du chemin. | `cache` vaut pour `app/cache` |
+| **Dossier de tête** | Un motif qui vise un dossier exclut tout ce qu'il contient. | `cache` vaut pour `app/cache/a.bin` |
+| **`*` traverse `/`** | Comme `fnmatch()` sans option. | `content/*.log` vaut pour `content/logs/a.log` |
+
+Les `/` de début et de fin sont ignorés, et un motif vide n'exclut rien. Un essai compare la fonction à GNU tar lui-même, quand il est installé.
+
+```php
+use function oihana\files\archive\tar\tarExcludesPath;
+
+tarExcludesPath( 'content/cache/a.bin' , [ 'cache' ] ) ;         // true
+tarExcludesPath( 'content/logs/a.log'  , [ 'content/*.log' ] ) ; // true
+tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (un segment, pas un préfixe)
+```
+
+> ℹ️ Ce n'est pas la règle de [`shouldExcludeFile`](../files/discovery.md#shouldexcludefile), qu'utilise `tarDirectory` : celle-ci compare un motif au chemin entier ou au nom du fichier. `tarExcludesPath` dit ce que fait le **binaire** `tar`.
+
+---
+
 ## Voir aussi
 
 - [Extraire une archive](untar.md) — `untar`, `assertTar`, `hasTarExtension`, `hasTarMimeType`, `validateTarStructure`.

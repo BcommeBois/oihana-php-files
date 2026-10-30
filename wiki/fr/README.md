@@ -60,11 +60,11 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 - [Vue d'ensemble](files/README.md) — les ~45 fonctions du namespace `oihana\files`.
 - [Assertions](files/assertions.md) — `assertFile`, `assertDirectory`, `assertWritableDirectory`.
 - [Création](files/creation.md) — `makeFile`, `makeDirectory`, `makeTimestampedFile`, `makeTimestampedDirectory`, `makeTemporaryDirectory`.
-- [Suppression](files/deletion.md) — `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory`.
+- [Suppression](files/deletion.md) — `deleteFile`, `deleteDirectory`, `clearFile`, `deleteTemporaryDirectory`, `assertRemovableDirectory`.
 - [Lecture](files/reading.md) — `getFileLines`, `getFileLinesGenerator`, `countFileLines`, `requireAndMergeArrays`.
-- [Découverte](files/discovery.md) — `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories`.
+- [Découverte](files/discovery.md) — `findFiles`, `recursiveFilePaths`, `shouldExcludeFile`, `sortFiles`, `hasFiles`, `hasDirectories`, `containsFile`, `treePaths`.
 - [Copie filtrée](files/copying.md) — `copyFilteredFiles`.
-- [Répertoires temporaires](files/temporary.md) — `getTemporaryDirectory`, `makeTemporaryDirectory`, `deleteTemporaryDirectory`.
+- [Répertoires temporaires](files/temporary.md) — `getTemporaryDirectory`, `makeTemporaryDirectory`, `makePrivateTemporaryDirectory`, `deleteTemporaryDirectory`.
 - [Système](files/system.md) — `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory`.
 - [MIME et validation](files/mime.md) — `validateMimeType`, `getImageMimeType`.
 
@@ -72,7 +72,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 - [Vue d'ensemble](archive/README.md) — les namespaces `oihana\files\archive\tar` et `oihana\files\archive\zip` (ZipArchive).
 - [Comment un tar est construit, et extrait](archive/tar-engine.md) — le GNU tar du système quand il y en a un, `PharData` sinon, à l'écriture comme à l'extraction ; pourquoi GNU tar seulement, et comment savoir quel moteur est en place.
-- [Créer un tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/aucune, `tarIsCompressed`.
+- [Créer un tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/aucune, `tarIsCompressed`, `tarExcludesPath`.
 - [Extraire un tar](archive/untar.md) — `untar`, `validateTarStructure`, `assertTar`, `hasTarExtension`, `hasTarMimeType`.
 - [Créer un zip](archive/zip.md) — `zip`, `zipDirectory`, `zipFileInfo`, compression DEFLATE/STORE.
 - [Extraire un zip](archive/unzip.md) — `unzip` (Zip Slip + anti-bombe + `keepPermissions`), `assertZip`, `hasZipExtension`, `hasZipMimeType`, `validateZipStructure`.
@@ -87,7 +87,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 ### TOML — [`toml/`](toml/)
 
-- [Vue d'ensemble](toml/README.md) — `resolveTomlConfig` : chargement d'une config TOML, fusion profonde avec valeurs par défaut, callback d'initialisation.
+- [Vue d'ensemble](toml/README.md) — `resolveTomlConfig` : chargement d'une config TOML, fusion profonde avec valeurs par défaut, callback d'initialisation ; `setTomlValue` et `escapeTomlString` : écrire une valeur dans un document sans toucher au reste.
 
 ### Options — [`options/`](options/)
 

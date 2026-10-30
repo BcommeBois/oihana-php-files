@@ -13,7 +13,7 @@ Les deux APIs sont volontairement **parallèles** : `zip`/`unzip` reflètent `ta
 |---|---|---|
 | **Création** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory), [`tarBinary`](tar-engine.md) | [`zip`](zip.md#zip), [`zipDirectory`](zip.md#zipdirectory) |
 | **Extraction** | [`untar`](untar.md#untar) | [`unzip`](unzip.md#unzip) |
-| **Inspection** | [`tarFileInfo`](tar.md#tarfileinfo), [`tarIsCompressed`](tar.md#tariscompressed) | [`zipFileInfo`](zip.md#zipfileinfo) |
+| **Inspection** | [`tarFileInfo`](tar.md#tarfileinfo), [`tarIsCompressed`](tar.md#tariscompressed), [`tarExcludesPath`](tar.md#tarexcludespath) | [`zipFileInfo`](zip.md#zipfileinfo) |
 | **Validation** | [`assertTar`](untar.md#asserttar), [`hasTarExtension`](untar.md#hastarextension), [`hasTarMimeType`](untar.md#hastarmimetype), [`validateTarStructure`](untar.md#validatetarstructure) | [`assertZip`](unzip.md#assertzip), [`hasZipExtension`](unzip.md#haszipextension), [`hasZipMimeType`](unzip.md#haszipmimetype), [`validateZipStructure`](unzip.md#validatezipstructure) |
 
 > ℹ️ Pas de `zipIsCompressed` : un zip est un conteneur dont la compression se décide **par entrée** (DEFLATE ou STORE), la notion globale « compressé ou non » n'a pas de sens.

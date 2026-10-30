@@ -186,6 +186,40 @@ deleteTemporaryDirectory( null ) ;
 
 ---
 
+## `assertRemovableDirectory`
+
+```php
+assertRemovableDirectory( string $path , int $minDepth = 3 ) : void
+```
+
+Asserts that a path is safe to hand to a recursive deletion. A path read from a configuration file ends up, sooner or later, in `deleteDirectory` or an `rm -rf`: a truncated, relative or mistyped value turns a routine clean-up into the loss of a system directory.
+
+A path is accepted when it is:
+
+- **not empty**;
+- **absolute** — a relative path depends on the current directory, which nobody checks;
+- **free of `.` and `..` segments** — `/var/www/site/..` is `/var/www`;
+- **deep enough** — at least `$minDepth` segments: with 3 (the default), `/`, `/var` and `/var/www` are refused.
+
+Nothing is read on disk: the directory need not exist, and a link is judged by its own path. This is a guard against a **wrong value**, not against a hostile one.
+
+**Throws `DirectoryException`** when the path is not safe. The message names the refused path.
+
+```php
+use function oihana\files\assertRemovableDirectory;
+use function oihana\files\deleteDirectory;
+
+assertRemovableDirectory( '/var/www/example.com/htdocs' ) ; // passes
+assertRemovableDirectory( '/var/www' ) ;                    // throws: 2 segments, 3 required
+assertRemovableDirectory( 'www/example.com' ) ;             // throws: relative
+assertRemovableDirectory( '/var/www/site/..' ) ;            // throws: relative segment
+
+assertRemovableDirectory( $path ) ;
+deleteDirectory( $path ) ;
+```
+
+---
+
 ## Summary table
 
 | Function                     | Target              | Default validation         | Permissive mode      | Idempotent |

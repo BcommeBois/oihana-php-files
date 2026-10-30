@@ -204,6 +204,81 @@ $config = resolveTomlConfig(
 
 ---
 
+## `escapeTomlString`
+
+```php
+escapeTomlString( string $value ) : string
+```
+
+Échappe une valeur pour l'écrire dans une **chaîne de base** TOML (`"…"`). Le résultat ne contient **pas** les guillemets autour.
+
+- `\` et `"` sont échappés ;
+- les caractères de contrôle qui ont un raccourci deviennent `\b`, `\t`, `\n`, `\f`, `\r` ;
+- les autres caractères de contrôle et DEL deviennent `\uXXXX`.
+
+Sans cela, un mot de passe qui contient un guillemet ou une barre oblique inverse donne un fichier que le parseur refuse : toute la configuration devient illisible.
+
+```php
+use function oihana\files\toml\escapeTomlString;
+
+echo escapeTomlString( 'pa"ss\word' ) ; // pa\"ss\\word
+echo escapeTomlString( "two\nlines" ) ; // two\nlines
+echo escapeTomlString( "\x01" ) ;       // \u0001
+```
+
+---
+
+## `setTomlValue`
+
+```php
+setTomlValue( string $content , ?string $section , string $key , string $value ) : string
+```
+
+Écrit une valeur texte dans un document TOML, **dans une seule table**, sans toucher au reste du texte.
+
+| Paramètre  | Type      | Effet |
+|------------|-----------|-------|
+| `$content` | `string`  | Le document TOML. |
+| `$section` | `?string` | La table (`database`, `app.database`), sans tenir compte de la casse. `null` pour la table racine, au-dessus du premier en-tête. |
+| `$key`     | `string`  | La clé. |
+| `$value`   | `string`  | La valeur brute, écrite en chaîne de base et échappée par [`escapeTomlString`](#escapetomlstring). |
+
+### Pourquoi « dans une seule table »
+
+Une même clé revient souvent dans plusieurs tables : `host` ou `pass` sous `[database]`, `[smtp]` et `[mysql]`. Un remplacement qui ne s'arrête pas à la table visée écrase des identifiants qui n'ont rien à voir.
+
+### Ce qui est gardé
+
+Le document est modifié **comme du texte**, pas décodé puis réécrit : l'alignement avant `=`, le commentaire de fin de ligne et tout le reste du fichier restent tels quels. Les fins de ligne suivent celles du document (CRLF s'il en a, LF sinon).
+
+### Quand la clé ou la table manque
+
+- **La clé manque** : elle est ajoutée à la fin de sa table, avant les lignes vides qui la ferment.
+- **La table manque** : elle est ajoutée à la fin du document.
+
+> ⚠ Seules les clés écrites en chaîne d'une ligne (`"…"` ou `'…'`) sont reconnues. Une clé qui vaut un nombre, un booléen, un tableau ou une chaîne sur plusieurs lignes n'est pas remplacée : une nouvelle ligne est ajoutée pour elle.
+
+```php
+use function oihana\files\toml\setTomlValue;
+
+$toml = <<<TOML
+[database]
+host = "localhost" # local
+
+[smtp]
+host = "mail"
+TOML;
+
+echo setTomlValue( $toml , 'database' , 'host' , 'db.example.com' ) ;
+// [database]
+// host = "db.example.com" # local
+//
+// [smtp]
+// host = "mail"
+```
+
+---
+
 ## Comparaison : TOML vs alternatives
 
 | Format  | Lisibilité | Typage | Standard | Quand l'utiliser ici |

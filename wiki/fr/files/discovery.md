@@ -347,6 +347,62 @@ if ( !hasFiles( $dir ) && !hasDirectories( $dir ) ) {
 
 ---
 
+## `containsFile`
+
+```php
+containsFile( string $directory ) : bool
+```
+
+Indique si un dossier contient un fichier, **à n'importe quelle profondeur**. Là où `hasFiles` ne regarde que le premier niveau, `containsFile` parcourt tout l'arbre : un dossier qui ne contient que des sous-dossiers vides ne contient aucun fichier.
+
+- Un **lien** compte comme un fichier, et n'est pas suivi.
+- Un dossier **illisible**, ou qui a un sous-dossier illisible, est **réputé contenir un fichier** : ce qu'on ne peut pas lire, on ne peut pas montrer qu'il est vide. C'est la réponse sûre avant de supprimer un dossier « vide ».
+- Un dossier **absent** ne contient rien : `false`, sans exception.
+
+```php
+use function oihana\files\containsFile;
+
+// /tmp/work/a/b/ — que des dossiers vides
+containsFile( '/tmp/work' ) ; // false
+
+// /tmp/work/a/b/dump.sql
+containsFile( '/tmp/work' ) ; // true
+```
+
+---
+
+## `treePaths`
+
+```php
+treePaths( string $directory , string $root = '' ) : array
+```
+
+Liste **tous les chemins** sous un dossier — fichiers, dossiers et liens — relatifs à une racine. Là où `recursiveFilePaths` ne rend que les fichiers, `treePaths` rend aussi les dossiers : de quoi comparer deux arbres entrée par entrée.
+
+| Paramètre    | Effet |
+|--------------|-------|
+| `$directory` | Le dossier à parcourir. |
+| `$root`      | Ce par rapport à quoi les chemins sont relatifs. Vide : le dossier lui-même. Donner son parent garde le nom du dossier dans chaque chemin. |
+
+- Les **liens** sont listés et **jamais suivis** : un lien vers `/` listerait toute la machine. Un `$directory` qui est lui-même un lien donne une liste vide.
+- Un sous-dossier **illisible** est listé, sans son contenu ; le parcours continue après lui.
+- Un dossier absent ou illisible donne une liste vide.
+- Chaque dossier vient **avant son contenu**, et les chemins utilisent toujours `/`.
+
+```php
+use function oihana\files\treePaths;
+
+// /srv/site/content/a.txt et /srv/site/content/img/b.png
+
+treePaths( '/srv/site/content' ) ;
+// [ 'a.txt' , 'img' , 'img/b.png' ]
+
+treePaths( '/srv/site/content' , '/srv/site' ) ;
+// [ 'content/a.txt' , 'content/img' , 'content/img/b.png' ]
+```
+
+---
+
 ## Voir aussi
 
 - [Copie filtrée](copying.md) — `copyFilteredFiles` (utilise `shouldExcludeFile`).

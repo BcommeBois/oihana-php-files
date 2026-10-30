@@ -355,6 +355,8 @@ $tmp = makeTemporaryDirectory( null ) ;
 
 **Lève `DirectoryException`** si la création échoue.
 
+> ⚠ Avec `null` ou `''`, le dossier rendu est `/tmp` lui-même. Ne jamais supprimer ce qu'elle rend sans lui avoir donné un nom : pour un dossier de travail, préférer [`makePrivateTemporaryDirectory`](temporary.md#makeprivatetemporarydirectory), qui refuse un chemin vide.
+
 Voir le [workflow temporaire complet](temporary.md).
 
 ---
