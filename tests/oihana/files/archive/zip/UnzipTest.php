@@ -469,6 +469,46 @@ class UnzipTest extends TestCase
     }
 
     /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenALinkExistsAndOverwriteIsDisabled(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $archive = $this->makeZipWithLink( 'link.txt' , 'target.txt' , [ 'target.txt' => 'data' ] ) ;
+
+        makeDirectory( $this->outputDir ) ;
+        file_put_contents( $this->outputDir . '/link.txt' , 'already here' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/The target file ".+link\.txt" already exists/' ) ;
+
+        unzip( $archive , $this->outputDir , [ ZipOption::OVERWRITE => false ] ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenALinkCannotBeCreated(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // A directory stands where the link must go: it is not unlinked, and symlink() writes over
+        // nothing, so the entry cannot be restored.
+
+        $archive = $this->makeZipWithLink( 'link.txt' , 'target.txt' , [ 'target.txt' => 'data' ] ) ;
+
+        makeDirectory( $this->outputDir . DIRECTORY_SEPARATOR . 'link.txt' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/Failed to create the symbolic link ".+link\.txt" to "target\.txt"/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
      * Builds an archive holding one symbolic link entry — its target as the entry's content and
      * the Unix link type bits in its external attributes, the way zip() stores a link — plus any
      * regular files given.

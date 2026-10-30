@@ -113,6 +113,41 @@ class CopyFilteredFilesTest extends TestCase
         $this->assertFileDoesNotExist($this->destDir . '/broken.link');
     }
 
+    /**
+     * @throws DirectoryException
+     */
+    public function testCreatesTheMissingParentOfAReproducedLink(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // The walk creates a directory before its children, so a link's parent is normally there
+        // already. Exclude the directory and the link inside it arrives first: its parent has to
+        // be created for it.
+
+        mkdir( $this->sourceDir . '/holder' ) ;
+        symlink( '../file1.txt' , $this->sourceDir . '/holder/pointer' ) ;
+
+        $this->assertTrue( copyFilteredFiles( $this->sourceDir , $this->destDir , [ 'holder' ] ) ) ;
+
+        $this->assertDirectoryExists( $this->destDir . '/holder' ) ;
+        $this->assertTrue( is_link( $this->destDir . '/holder/pointer' ) ) ;
+    }
+
+    public function testThrowsWhenALinkCannotBeReproduced(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // symlink() writes over nothing, and something already stands where this link must go.
+
+        symlink( 'file1.txt' , $this->sourceDir . '/pointer' ) ;
+        file_put_contents( $this->destDir . '/pointer' , 'in the way' ) ;
+
+        $this->expectException( DirectoryException::class ) ;
+        $this->expectExceptionMessageMatches( '/Failed to copy the symbolic link ".+pointer" to /' ) ;
+
+        copyFilteredFiles( $this->sourceDir , $this->destDir ) ;
+    }
+
     public function testThrowsWhenAFileCannotBeCopied(): void
     {
         if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )

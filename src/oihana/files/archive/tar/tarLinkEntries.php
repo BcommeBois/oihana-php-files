@@ -146,10 +146,14 @@ function tarLinkEntries( string $tarFile , ?string $compression = null ): array
                 }
                 else if ( $seekable )
                 {
+                    // Unreachable on a local file: fseek() past the end of one succeeds, so a
+                    // declared size larger than the archive does not make it fail.
+                    // @codeCoverageIgnoreStart
                     if ( fseek( $handle , $blocks * 512 , SEEK_CUR ) !== 0 )
                     {
                         break ;
                     }
+                    // @codeCoverageIgnoreEnd
                 }
                 else
                 {

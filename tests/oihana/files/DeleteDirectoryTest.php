@@ -408,6 +408,35 @@ class DeleteDirectoryTest extends TestCase
         }
     }
 
+    public function testThrowsWhenPathIsALinkThatCannotBeRemoved(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // The link is removed on its own, so what stops it is its parent: read-only, nothing can
+        // be unlinked from it. The target stays reachable, so the assertions on $path still pass.
+
+        $base = $this->makeTemporaryDirectory() ;
+        $link = $base . '/ro/pointer' ;
+
+        try
+        {
+            mkdir( $base . '/ro' ) ;
+            mkdir( $base . '/target' ) ;
+            symlink( $base . '/target' , $link ) ;
+            chmod( $base . '/ro' , 0555 ) ;
+
+            $this->expectException( DirectoryException::class ) ;
+            $this->expectExceptionMessage( sprintf( 'Failed to remove symbolic link "%s".' , $link ) ) ;
+
+            deleteDirectory( $link ) ;
+        }
+        finally
+        {
+            @chmod( $base . '/ro' , 0777 ) ;
+            $this->removeTree( $base ) ;
+        }
+    }
+
     /**
      * Creates an empty directory of its own in the system temporary directory.
      */

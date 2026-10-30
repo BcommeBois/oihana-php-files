@@ -5,6 +5,8 @@ namespace tests\oihana\files\archive\tar;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use oihana\files\enums\CompressionType;
+
 use function oihana\files\deleteDirectory;
 use function oihana\files\archive\tar\tarHeaderSize;
 use function oihana\files\archive\tar\tarLinkEntries;
@@ -161,6 +163,85 @@ class TarLinkEntriesTest extends TestCase
 
         $this->assertSame( 'a file with spaces' , $records[ 'path' ] ) ;
         $this->assertSame( '/var/da ta' , $records[ 'linkpath' ] ) ;
+    }
+
+    public function testAMalformedPaxRecordStopsTheWalkInsteadOfGuessing(): void
+    {
+        // No space to read a length from, then a length that overruns what is left: each ends the
+        // walk rather than reading past the data.
+
+        $this->assertSame( [] , tarPaxRecords( 'path=no-length-here' ) ) ;
+        $this->assertSame( [] , tarPaxRecords( '999 path=longer-than-it-says' ) ) ;
+        $this->assertSame( [] , tarPaxRecords( '0 path=zero' ) ) ;
+    }
+
+    public function testANameTooLongForOneFieldIsReadFromTheUstarPrefix(): void
+    {
+        // The ustar header splits a long name between a 155-byte prefix and a 100-byte name, so
+        // the whole name is only known by putting the two halves back together.
+
+        $directory = str_repeat( 'a-long-directory/' , 6 ) ;
+
+        mkdir( $this->root . '/tree/' . $directory , 0700 , true ) ;
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/' . $directory . 'pointer' ) ;
+
+        $links = tarLinkEntries( $this->archive( 'ustar' ) ) ;
+
+        $this->assertCount( 1 , $links ) ;
+        $this->assertSame( $directory . 'pointer' , $links[ 0 ][ 'name' ] ) ;
+        $this->assertGreaterThan( 100 , strlen( $links[ 0 ][ 'name' ] ) ) ;
+    }
+
+    public function testATruncatedArchiveEndsTheWalkWhereItStops(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/z-link.txt' ) ;
+
+        $path = $this->archive() ;
+        $raw  = (string) file_get_contents( $path ) ;
+
+        // The first header and its data block are kept whole, and the one after is cut in two.
+
+        file_put_contents( $path , substr( $raw , 0 , 1024 + 100 ) ) ;
+
+        $this->assertSame( [] , tarLinkEntries( $path ) ) ;
+    }
+
+    public function testThrowsForACompressionPhpCannotRead(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/is a xz archive and PHP has no stream wrapper to read one/' ) ;
+
+        tarLinkEntries( $this->archive() , CompressionType::XZ ) ;
+    }
+
+    public function testThrowsWhenTheFileExistsButCannotBeRead(): void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )
+        {
+            $this->markTestSkipped( 'Permission tests are not reliable on Windows.' ) ;
+        }
+
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+
+        $path = $this->archive() ;
+
+        chmod( $path , 0000 ) ;
+
+        try
+        {
+            $this->expectException( RuntimeException::class ) ;
+            $this->expectExceptionMessageMatches( '/could not open/' ) ;
+
+            tarLinkEntries( $path ) ;
+        }
+        finally
+        {
+            chmod( $path , 0644 ) ;
+        }
     }
 
     /**
