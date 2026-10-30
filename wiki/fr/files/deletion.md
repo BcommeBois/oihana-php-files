@@ -159,8 +159,9 @@ Pour éviter d'effacer accidentellement quelque chose hors du temp :
 
 1. **`null` ou chemin vide** → retourne `false`, pas d'erreur.
 2. **Tentative de supprimer le temp dir lui-même** → retourne `false` (via comparaison `realpath()`).
-3. **Le dossier n'existe pas** → retourne `true` (rien à faire, succès idempotent).
-4. **Sinon** → délègue à `deleteDirectory`.
+3. **Chemin hors du dossier temporaire** → retourne `false`. [`getTemporaryDirectory`](temporary.md#gettemporarydirectory) rend un chemin **absolu** tel quel et joint un chemin relatif **sans le résoudre**, donc `'/etc'` comme `'../../..'` arrivent ici intacts. Le contrôle porte sur ce que le système résout, pas sur la chaîne : le **parent** est résolu, donc un ancêtre qui est un lien ne sert pas de passage ; le **dernier segment** ne l'est pas, donc un lien posé dans le temp est supprimé seul, sa cible intacte.
+4. **Le dossier n'existe pas** → retourne `true` (rien à faire, succès idempotent).
+5. **Sinon** → délègue à `deleteDirectory`.
 
 ### Usage
 

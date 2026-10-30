@@ -159,8 +159,9 @@ To avoid accidentally wiping things outside the temp:
 
 1. **`null` or empty path** → returns `false`, no error.
 2. **Attempt to delete the temp dir itself** → returns `false` (via `realpath()` comparison).
-3. **Directory does not exist** → returns `true` (nothing to do, idempotent success).
-4. **Otherwise** → delegates to `deleteDirectory`.
+3. **Path outside the temporary directory** → returns `false`. [`getTemporaryDirectory`](temporary.md#gettemporarydirectory) hands back an **absolute** path as it stands and joins a relative one **without resolving it**, so both `'/etc'` and `'../../..'` arrive here untouched. The check is made on what the filesystem resolves rather than on the string: the **parent** is resolved, so a linked ancestor is no way out; the **last segment** is not, so a link sitting in the temp directory is removed on its own, its target intact.
+4. **Directory does not exist** → returns `true` (nothing to do, idempotent success).
+5. **Otherwise** → delegates to `deleteDirectory`.
 
 ### Usage
 

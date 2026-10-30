@@ -6,6 +6,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Fixed
+
+- `deleteTemporaryDirectory()` no longer deletes outside the temporary directory. Its only guard
+  was `realpath( $directory ) === realpath( sys_get_temp_dir() )` — "not the temporary directory
+  itself" — and nothing checked that the path was *inside* it. `getTemporaryDirectory()` hands back
+  an absolute path as it stands and joins a relative one without resolving it, so both forms went
+  straight through:
+
+      deleteTemporaryDirectory( '/some/tree/outside/the/temp/dir' ) ;   // returned true, deleted it
+      deleteTemporaryDirectory( '../../../../../elsewhere' ) ;          // returned true, deleted it
+
+  Measured on 2026-10-30, each on a disposable tree: both were removed with their contents, by a
+  function the wiki introduces as the safe wrapper whose guards exist "to avoid accidentally wiping
+  things outside the temp". A path that is not inside the temporary directory is now refused with
+  `false`, as the temporary directory itself already was.
+
+  The check is made on what the filesystem resolves rather than on the string, and it resolves the
+  parent while leaving the last segment alone. Resolving the parent closes the linked ancestor — a
+  link sitting in the temporary directory cannot be used to reach through it — and leaving the last
+  segment closes nothing while keeping something worth keeping: a link in the temporary directory is
+  removed on its own, its target untouched. A purely lexical check would also have failed on macOS,
+  where `/var` is a link to `/private/var`, so the string and the resolved path never match.
+
 ### Added
 
 - `unzip()` takes an `allowUnsafeLinks` option, `ZipOption::ALLOW_UNSAFE_LINKS`, default `false`.
