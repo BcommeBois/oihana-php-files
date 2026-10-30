@@ -35,6 +35,7 @@ Extrait une archive tar (compressée ou non) dans un dossier de sortie.
 | `'overwrite'` / `TarOption::OVERWRITE` | `bool` | `true` | Si `false`, lève `RuntimeException` au premier fichier déjà existant. |
 | `'keepPermissions'` / `TarOption::KEEP_PERMISSIONS` | `bool` | `false` | Restaure les permissions originales via [`preservePharFilePermissions`](../phar/README.md). |
 | `'maxExtractedSize'` / `TarOption::MAX_EXTRACTED_SIZE` | `int\|null` | `null` | Si défini, plafonne la taille décompressée totale (en octets). Lève `RuntimeException` **avant** toute écriture si dépassement. Voir [Protection contre les bombes de décompression](#protection-contre-les-bombes-de-décompression). |
+| `'allowUnsafeLinks'` / `TarOption::ALLOW_UNSAFE_LINKS` | `bool` | `false` | Restaure un lien dont la cible est **absolue** ou **sort** du dossier de sortie, refusé par défaut. Voir [Liens symboliques](#liens-symboliques). |
 
 ### Retour
 
@@ -96,7 +97,20 @@ c'est-à-dire quand une passe de listage est faite de toute façon. Dans le cas 
   sert à le tester ne peut pas être produite par le programme testé.
 - **`PharData`** assainit les entrées `..` à la lecture, ce qui est moins explicite.
 
+> 📎 La garde sur les **cibles de liens**, elle, ne dépend pas de ce listage : voir
+> [Liens symboliques](#liens-symboliques).
+
 > 💡 **Recommandation sécurité** : pour extraire une archive d'origine externe (upload utilisateur, téléchargement), **toujours** utiliser `dryRun: true` d'abord pour valider, puis extraire avec `overwrite: false`. Coût : double parcours, mais sécurité maximale.
+
+### Liens symboliques
+
+Le moteur binaire restaure les liens, et le format tar les porte nativement. Deux refus les encadrent, tous deux en `RuntimeException` levée **avant** toute écriture.
+
+**Une cible qui sort du dossier de sortie.** Un lien est la seule entrée dont le contenu est lui-même un chemin, et la garde path-traversal ci-dessus ne lit que les **noms** : une entrée nommée `lien/passwd` est dans le dossier de sortie, et le fichier écrit ne l'est pas. Sont donc refusées une cible **absolue** et une cible qui **s'échappe** une fois résolue depuis le dossier du lien. `allowUnsafeLinks` lève ce refus-là, pour une archive dont tu réponds — ton propre backup, dont les liens étaient absolus sur le disque d'origine.
+
+**Une archive lue par `PharData`.** Ce moteur ne sait pas restaurer un lien : son itérateur rapporte l'entrée comme un fichier normal de 0 octet, `isLink()` répond faux, et `extractTo()` écrit **un fichier vide** à sa place. L'archive est donc refusée dès qu'elle contient un lien, quel qu'il soit — `allowUnsafeLinks` ne lève pas celui-ci, puisqu'il ne s'agit pas de confiance mais d'une capacité absente. C'est le pendant exact du refus de [`tar`](tar-engine.md#ce-que-phardata-ne-peut-pas-écrire) à l'écriture.
+
+> ⚠ Ce refus-là se décide en lisant les **en-têtes de l'archive compressée**, avant que `PharData` n'y touche. `PharData::decompress()` réécrit l'archive pour la décompresser et écrit un fichier vide là où était le lien : le `.tar` qu'il produit ne contient plus le lien qu'il faudrait refuser. Scanner après lui ne voit rien.
 
 ### Protection contre les bombes de décompression
 

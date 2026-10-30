@@ -5,6 +5,12 @@ namespace oihana\files\archive\tar ;
 use RuntimeException;
 
 use oihana\enums\Char;
+use oihana\files\enums\TarOption;
+
+use function oihana\files\path\canonicalizePath;
+use function oihana\files\path\isAbsolutePath;
+use function oihana\files\path\isBasePath;
+use function oihana\files\path\joinPaths;
 
 /**
  * Checks what an archive holds against what the caller allows, before anything is written.
@@ -49,10 +55,11 @@ use oihana\enums\Char;
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.5.0
  */
-function untarAssertExtractable( array $entries , string $outputPath , bool $overwrite = true , ?int $maxExtractedSize = null ) :array
+function untarAssertExtractable( array $entries , string $outputPath , bool $overwrite = true , ?int $maxExtractedSize = null , bool $allowUnsafeLinks = false ) :array
 {
     $files     = [] ;
     $totalSize = 0 ;
+    $base      = canonicalizePath( $outputPath ) ;
 
     foreach ( $entries as $entry )
     {
@@ -61,6 +68,37 @@ function untarAssertExtractable( array $entries , string $outputPath , bool $ove
         if ( str_contains( $name , Char::DOUBLE_DOT ) )
         {
             throw new RuntimeException( sprintf( 'Path traversal attempt detected in tar file: %s' , $name ) ) ;
+        }
+
+        // A link is the one entry whose content is itself a path, and the check above reads names.
+        // A link to "/etc" or to "../.." hands every entry written after it a way out of the
+        // output directory, since a name like "link/passwd" is inside it and the file is not.
+
+        $target = $entry[ 'target' ] ?? null ;
+
+        if ( $target !== null && !$allowUnsafeLinks )
+        {
+            if ( isAbsolutePath( $target ) )
+            {
+                throw new RuntimeException( sprintf
+                (
+                    'Path traversal attempt detected in tar file: the entry "%s" is a link to the absolute path "%s". Set the "%s" option to extract it anyway.' ,
+                    $name ,
+                    $target ,
+                    TarOption::ALLOW_UNSAFE_LINKS
+                )) ;
+            }
+
+            if ( !isBasePath( $base , canonicalizePath( joinPaths( dirname( joinPaths( $outputPath , $name ) ) , $target ) ) ) )
+            {
+                throw new RuntimeException( sprintf
+                (
+                    'Path traversal attempt detected in tar file: the entry "%s" is a link to "%s", which escapes the output directory. Set the "%s" option to extract it anyway.' ,
+                    $name ,
+                    $target ,
+                    TarOption::ALLOW_UNSAFE_LINKS
+                )) ;
+            }
         }
 
         if ( $entry[ 'directory' ] )

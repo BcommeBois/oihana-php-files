@@ -110,6 +110,7 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
     $overwrite           = $options[ TarOption::OVERWRITE          ] ?? true  ;
     $preservePermissions = $options[ TarOption::KEEP_PERMISSIONS   ] ?? false ;
     $maxExtractedSize    = $options[ TarOption::MAX_EXTRACTED_SIZE ] ?? null  ;
+    $allowUnsafeLinks    = $options[ TarOption::ALLOW_UNSAFE_LINKS ] ?? false ;
 
     $sizeLimited = is_int( $maxExtractedSize ) && $maxExtractedSize >= 0 ;
 
@@ -119,6 +120,14 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
 
     $mustList = !$overwrite || $dryRun || $sizeLimited ;
 
+    // A link's target is the one thing its name cannot show, and refusing one after it has been
+    // extracted is too late. When the listing is not being made anyway, the headers of an
+    // uncompressed archive answer for a pass over 512-byte blocks — no subprocess, no second
+    // decompression. A compressed archive has no headers to read without inflating it, so there
+    // the answer comes with the listing, which one of the three guarantees above asks for.
+
+    $scanForLinks = !$allowUnsafeLinks && !$mustList && !tarIsCompressed( $tarFile ) ;
+
     // Chosen here, before anything is written, and not revisited afterwards.
 
     $binary = untarBinaryHandles( $tarFile ) ? tarBinary() : null ;
@@ -127,15 +136,28 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
     {
         if ( $binary !== null )
         {
-            $fileList = $mustList
-                      ? untarAssertExtractable
-                        (
-                            untarEntries( $binary , $tarFile ) ,
-                            $outputPath ,
-                            $overwrite ,
-                            $sizeLimited ? $maxExtractedSize : null
-                        )
-                      : [] ;
+            $entries = match ( true )
+            {
+                $mustList     => untarEntries( $binary , $tarFile ) ,
+                $scanForLinks => array_map
+                (
+                    static fn( array $link ): array => [ 'name' => $link[ 'name' ] , 'size' => 0 , 'directory' => false , 'target' => $link[ 'target' ] ] ,
+                    tarLinkEntries( $tarFile )
+                ) ,
+                default       => [] ,
+            } ;
+
+            // The list is only returned for a dry run, which is one of the three that set
+            // $mustList, so what the link scan leaves here goes nowhere.
+
+            $fileList = untarAssertExtractable
+            (
+                $entries ,
+                $outputPath ,
+                $overwrite ,
+                $sizeLimited ? $maxExtractedSize : null ,
+                $allowUnsafeLinks
+            ) ;
 
             if ( $dryRun )
             {
@@ -163,6 +185,20 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
             )) ;
         }
 
+        // PharData cannot restore a link: its iterator reports one as a regular file of size 0,
+        // isLink() answers false, and extractTo() writes an empty file in its place. The headers
+        // say what its API will not, and the archive is refused rather than quietly flattened —
+        // the same answer tar() gives when PharData is the engine that would have written it.
+        //
+        // Read here, before anything else touches the archive: decompress() rewrites it to
+        // decompress it, and writes a regular empty file where a link was, so the .tar it
+        // produces no longer holds the link to refuse.
+        //
+        // Refused for a dry run too: a list of files that would be extracted, from an archive
+        // whose links would not survive extraction, is not a list worth answering with.
+
+        $links = tarLinkEntries( $tarFile , $compression ) ;
+
         $alias            = $compression === null ? null : untarUniqueAlias( $tarFile , $compression ) ;
         $decompressedPath = null ;
 
@@ -180,6 +216,16 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
         }
 
         assertTar( $phar->getPath() ) ;
+
+        if ( $links !== [] )
+        {
+            throw new RuntimeException( sprintf
+            (
+                'Cannot extract the %s "%s": this archive is being read by PharData, which cannot restore a link entry — it writes an empty file in its place. Install the system GNU tar, which restores it.' ,
+                $links[ 0 ][ 'hard' ] ? 'hard link' : 'symbolic link' ,
+                $links[ 0 ][ 'name' ]
+            )) ;
+        }
 
         $fileList = [] ;
 
@@ -211,7 +257,8 @@ function untar( string $tarFile , string $outputPath , array $options = [] ): tr
                 $entries ,
                 $outputPath ,
                 $overwrite ,
-                $sizeLimited ? $maxExtractedSize : null
+                $sizeLimited ? $maxExtractedSize : null ,
+                $allowUnsafeLinks
             ) ;
         }
 

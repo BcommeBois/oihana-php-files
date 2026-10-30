@@ -109,15 +109,23 @@ function untarEntries( string $binary , string $tarFile ) :array
             )) ;
         }
 
-        $name = $matches[ 3 ] ;
+        $name   = $matches[ 3 ] ;
+        $target = null ;
+
+        // A link's line carries its target after the name, and the separator depends on the kind:
+        // " -> " for a symbolic link, " link to " for a hard one — both tars agree on that. Only
+        // the arrow was looked for before, so the name of a hard link kept the whole suffix:
+        // "z-hard.txt link to a-real.txt" was the name an archive reported.
 
         if ( $matches[ 1 ] === 'l' || $matches[ 1 ] === 'h' )
         {
-            $arrow = strpos( $name , ' -> ' ) ;
+            $separator = $matches[ 1 ] === 'l' ? ' -> ' : ' link to ' ;
+            $at        = strpos( $name , $separator ) ;
 
-            if ( $arrow !== false )
+            if ( $at !== false )
             {
-                $name = substr( $name , 0 , $arrow ) ;
+                $target = substr( $name , $at + strlen( $separator ) ) ;
+                $name   = substr( $name , 0 , $at ) ;
             }
         }
 
@@ -126,6 +134,7 @@ function untarEntries( string $binary , string $tarFile ) :array
             'name'      => $name ,
             'size'      => (int) $matches[ 2 ] ,
             'directory' => $matches[ 1 ] === 'd' ,
+            'target'    => $target ,
         ] ;
     }
 

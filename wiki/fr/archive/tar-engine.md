@@ -150,6 +150,12 @@ issues : installer GNU tar, archiver les chemins un par un pour qu'il soit utili
 > envoient le travail à `PharData` sur n'importe quelle machine, GNU tar installé ou non. Un lien
 > archivé seul est gardé ; le même lien archivé avec un chemin d'un autre parent est refusé.
 
+**Et il ne peut pas en lire un non plus.** Son itérateur rapporte une entrée lien comme un fichier
+normal de 0 octet, `isLink()` répond faux, et `extractTo()` écrit un fichier vide à sa place. Donc
+[`untar`](untar.md#liens-symboliques) refuse aussi une archive qui contient un lien quand c'est ce
+moteur qui lit — en lisant les en-têtes de l'archive **avant** que `PharData::decompress()` ne la
+réécrive et n'efface le lien qu'il aurait fallu refuser.
+
 ## Savoir quel moteur est en place
 
 ```php

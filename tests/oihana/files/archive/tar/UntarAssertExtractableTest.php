@@ -5,6 +5,8 @@ namespace tests\oihana\files\archive\tar;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use oihana\files\enums\TarOption;
+
 use function oihana\files\archive\tar\untarAssertExtractable;
 
 /**
@@ -42,6 +44,84 @@ class UntarAssertExtractableTest extends TestCase
             [ 'name' => 'site/index.php' , 'size' => 1200 , 'directory' => false ] ,
             [ 'name' => 'site/un deux.txt' , 'size' => 800  , 'directory' => false ] ,
         ] ;
+    }
+
+    public function testALinkContainedInTheOutputDirectoryIsAccepted(): void
+    {
+        $entries =
+        [
+            [ 'name' => 'site/real.txt' , 'size' => 4 , 'directory' => false , 'target' => null ] ,
+            [ 'name' => 'site/link.txt' , 'size' => 0 , 'directory' => false , 'target' => 'real.txt' ] ,
+            [ 'name' => 'site/deep/up'  , 'size' => 0 , 'directory' => false , 'target' => '../real.txt' ] ,
+        ] ;
+
+        $files = untarAssertExtractable( $entries , $this->root ) ;
+
+        $this->assertCount( 3 , $files ) ;
+    }
+
+    public function testALinkEscapingTheOutputDirectoryIsRefused(): void
+    {
+        // The target is resolved from the link's own directory, as the filesystem would.
+
+        $entries = [ [ 'name' => 'site/link' , 'size' => 0 , 'directory' => false , 'target' => '../../elsewhere' ] ] ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/link to "\.\.\/\.\.\/elsewhere", which escapes the output directory/' ) ;
+
+        untarAssertExtractable( $entries , $this->root ) ;
+    }
+
+    public function testALinkToAnAbsolutePathIsRefused(): void
+    {
+        // A link is the one entry whose content is a path, so the name check above cannot see it:
+        // "site/link" is inside the output directory and /etc is not.
+
+        $entries = [ [ 'name' => 'site/link' , 'size' => 0 , 'directory' => false , 'target' => '/etc' ] ] ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/link to the absolute path "\/etc"/' ) ;
+        $this->expectExceptionMessageMatches( '/Set the "allowUnsafeLinks" option/' ) ;
+
+        untarAssertExtractable( $entries , $this->root ) ;
+    }
+
+    public function testAllowUnsafeLinksLiftsBothRefusals(): void
+    {
+        $entries =
+        [
+            [ 'name' => 'site/absolute' , 'size' => 0 , 'directory' => false , 'target' => '/etc' ] ,
+            [ 'name' => 'site/escaping' , 'size' => 0 , 'directory' => false , 'target' => '../../elsewhere' ] ,
+        ] ;
+
+        $files = untarAssertExtractable( $entries , $this->root , true , null , true ) ;
+
+        $this->assertSame( [ 'site/absolute' , 'site/escaping' ] , $files ) ;
+    }
+
+    public function testAnEntryWithoutATargetIsNotTreatedAsALink(): void
+    {
+        // The listing of an engine that does not report targets leaves the key out entirely.
+
+        $entries = [ [ 'name' => 'site/index.php' , 'size' => 10 , 'directory' => false ] ] ;
+
+        $this->assertSame( [ 'site/index.php' ] , untarAssertExtractable( $entries , $this->root ) ) ;
+    }
+
+    public function testTheRefusalNamesTheOptionThatLiftsIt(): void
+    {
+        $entries = [ [ 'name' => 'site/link' , 'size' => 0 , 'directory' => false , 'target' => '/etc' ] ] ;
+
+        try
+        {
+            untarAssertExtractable( $entries , $this->root ) ;
+
+            $this->fail( 'An absolute target must be refused.' ) ;
+        }
+        catch ( RuntimeException $exception )
+        {
+            $this->assertStringContainsString( TarOption::ALLOW_UNSAFE_LINKS , $exception->getMessage() ) ;
+        }
     }
 
     public function testTheListReturnedHoldsTheFilesAndNotTheDirectories(): void

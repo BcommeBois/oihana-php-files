@@ -35,6 +35,7 @@ Extracts a tar archive (compressed or not) into an output directory.
 | `'overwrite'` / `TarOption::OVERWRITE` | `bool` | `true` | If `false`, throws `RuntimeException` at the first existing file. |
 | `'keepPermissions'` / `TarOption::KEEP_PERMISSIONS` | `bool` | `false` | Restores original permissions via [`preservePharFilePermissions`](../phar/README.md). |
 | `'maxExtractedSize'` / `TarOption::MAX_EXTRACTED_SIZE` | `int\|null` | `null` | If set, caps the total uncompressed size (in bytes). Throws `RuntimeException` **before** any write if exceeded. See [Decompression-bomb protection](#decompression-bomb-protection). |
+| `'allowUnsafeLinks'` / `TarOption::ALLOW_UNSAFE_LINKS` | `bool` | `false` | Restores a link whose target is **absolute** or **escapes** the output directory, refused by default. See [Symbolic links](#symbolic-links). |
 
 ### Returns
 
@@ -95,6 +96,16 @@ protection comes from the engine:
 - **`PharData`** sanitises `..` entries on read, which is less explicit.
 
 > 💡 **Security recommendation**: to extract an archive from an external source (user upload, download), **always** use `dryRun: true` first to validate, then extract with `overwrite: false`. Cost: double walk, but maximum safety.
+
+### Symbolic links
+
+The binary engine restores links, and the tar format carries them natively. Two refusals frame them, both as a `RuntimeException` thrown **before** anything is written.
+
+**A target that leaves the output directory.** A link is the one entry whose content is itself a path, and the path-traversal guard above reads **names** only: an entry named `link/passwd` is inside the output directory and the file written is not. So an **absolute** target is refused, and so is one that **escapes** once resolved from the link's own directory. `allowUnsafeLinks` lifts that refusal, for an archive you answer for — your own backup, whose links were absolute on the disk it was taken from.
+
+**An archive read by `PharData`.** That engine cannot restore a link: its iterator reports the entry as a regular file of 0 bytes, `isLink()` answers false, and `extractTo()` writes **an empty file** in its place. The archive is therefore refused as soon as it holds a link of any kind — `allowUnsafeLinks` does not lift this one, since it is not a matter of trust but of a missing capability. It is the exact counterpart of [`tar`](tar-engine.md#what-phardata-cannot-write)'s refusal on the way in.
+
+> ⚠ This refusal is decided by reading the headers of the **compressed** archive, before `PharData` touches it. `PharData::decompress()` rewrites the archive to decompress it and writes an empty file where the link was: the `.tar` it produces no longer holds the link that would have to be refused. Scanning after it sees nothing.
 
 ### Decompression-bomb protection
 

@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
+- `tarLinkEntries()`, in `oihana\files\archive\tar`, reads a tar archive's headers and returns the
+  link entries it holds, with their targets. `PharData` is the only reader this library has where
+  there is no GNU tar, and it cannot see a link: the entry comes back from its iterator as a regular
+  file of size 0, `isLink()` answers `false`, and `extractTo()` writes an empty file in its place.
+  The headers are plain, fixed and documented, so they are read instead — including GNU long names
+  and the `path`/`linkpath` records of a pax header, since either can carry a name or a target too
+  long for the 100-byte fields. A compressed archive is read through its stream wrapper, which is
+  the only moment its links still exist: `PharData::decompress()` rewrites the archive and erases
+  them on the way.
+
+- `TarOption::ALLOW_UNSAFE_LINKS`, default `false`, lifts the refusal of a link whose target is
+  absolute or escapes the output directory, for an archive the caller answers for. It does not lift
+  the other refusal: an archive read by `PharData` is refused whenever it holds a link at all, since
+  that is a missing capability rather than a question of trust.
+
 - `realpathParent()`, in `oihana\files\path`, resolves a path's parent and leaves its last segment
   as it stands. `realpath()` answers for the whole path, which is too much when the last segment is
   the thing being judged: a link would be replaced by what it points at, and a path that does not
@@ -16,6 +31,37 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   `deleteTemporaryDirectory()` is its first caller.
 
 ### Fixed
+
+- `untar()` no longer extracts a link whose target leaves the output directory, and no longer
+  flattens one when `PharData` reads the archive. Both are the counterpart of what `unzip()` and
+  `tar()` were given earlier in this release, and neither existed: `untarAssertExtractable()`
+  checked entry **names** for `..` and nothing looked at a link's **target**, which is the one
+  entry whose content is itself a path. An archive holding `link -> /etc` extracted that link
+  without a word; GNU tar then refuses to write *through* a link it extracted, so the traversal
+  itself was blocked by the program rather than by this library, and nothing covered the `PharData`
+  path at all. An absolute target, and one that escapes once resolved from the link's own directory,
+  are now refused before anything is written, with the entry and its target named.
+
+  Where the listing is not being made anyway, an uncompressed archive's headers are read instead —
+  a pass over 512-byte blocks, no subprocess and no second decompression — so the guard costs
+  nothing in the common case.
+
+  `PharData` cannot restore a link, so an archive holding one is refused outright when it is the
+  reader. That refusal is decided on the compressed archive's headers, before `decompress()`
+  rewrites it: the `.tar` it produces no longer holds the link, so scanning after it sees nothing.
+
+- `untarEntries()` reports the name of a hard link alone. A link's line carries its target after the
+  name, and the separator depends on the kind — `" -> "` for a symbolic link, `" link to "` for a
+  hard one. Only the arrow was looked for, so the name of a hard link came back as the whole line:
+  `"z-hard.txt link to a-real.txt"`. Every guard that reads a name, and the list a dry run returns,
+  carried it.
+
+- `TarOption`'s documentation described another class. Its class docblock was titled `FileExtension`
+  and announced "mode options to use in the findFiles function"; `OVERWRITE` said "Overwrite the
+  archive", where it governs whether an existing **target** may be overwritten during extraction;
+  `METADATA` sat out of alphabetical order. The keys serve two functions — `untar()` reads five of
+  them and `tarDirectory()` the other three — and nothing said which was which. Each constant now
+  names the function that reads it.
 
 - `tar()` no longer flattens a symbolic link when PharData writes the archive. The engine is chosen
   before anything is written: the system GNU tar when there is one to trust, PharData otherwise —

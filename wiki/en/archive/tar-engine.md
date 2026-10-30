@@ -143,6 +143,12 @@ link.
 > work to `PharData` on any host, GNU tar installed or not. A link archived on its own is kept; the
 > same link archived alongside a path from another parent is refused.
 
+**And it cannot read one either.** Its iterator reports a link entry as a regular file of 0 bytes,
+`isLink()` answers false, and `extractTo()` writes an empty file in its place. So
+[`untar`](untar.md#symbolic-links) also refuses an archive holding a link when that engine is the
+reader — decided by reading the archive's headers **before** `PharData::decompress()` rewrites it
+and erases the link that would have to be refused.
+
 ## Asking which engine is in place
 
 ```php

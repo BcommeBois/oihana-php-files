@@ -69,6 +69,87 @@ class UntarEntriesTest extends TestCase
         return $path ;
     }
 
+    public function testAHardLinkKeepsItsNameAndCarriesItsTarget(): void
+    {
+        // A hard link's line reads "name link to target", never "name -> target". Only the arrow
+        // was looked for, so the name of a hard link came back as the whole line:
+        // "tree/hard.txt link to tree/real.txt".
+        //
+        // Of two names for one inode, tar stores as the link whichever it meets second, and the
+        // order it reads the directory in decides that — so the assertion names neither.
+
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        link( $this->root . '/tree/real.txt' , $this->root . '/tree/hard.txt' ) ;
+
+        $entries = untarEntries( $this->binary , $this->archive() ) ;
+        $names   = [ 'tree/real.txt' , 'tree/hard.txt' ] ;
+
+        foreach ( $entries as $entry )
+        {
+            $this->assertStringNotContainsString
+            (
+                ' link to ' ,
+                $entry[ 'name' ] ,
+                'A hard link must be named on its own, with its target kept apart'
+            ) ;
+        }
+
+        $linked = array_values( array_filter
+        (
+            $entries ,
+            static fn( array $entry ): bool => ( $entry[ 'target' ] ?? null ) !== null
+        )) ;
+
+        $this->assertCount( 1 , $linked , 'One of the two names is the link' ) ;
+        $this->assertContains( $linked[ 0 ][ 'name' ] , $names ) ;
+        $this->assertContains( $linked[ 0 ][ 'target' ] , $names ) ;
+        $this->assertNotSame( $linked[ 0 ][ 'name' ] , $linked[ 0 ][ 'target' ] ) ;
+        $this->assertFalse( $linked[ 0 ][ 'directory' ] ) ;
+    }
+
+    public function testASymbolicLinkCarriesItsTarget(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/link.txt' ) ;
+
+        $entries = untarEntries( $this->binary , $this->archive() ) ;
+        $link    = $this->entryNamed( $entries , 'tree/link.txt' ) ;
+
+        $this->assertNotNull( $link ) ;
+        $this->assertSame( 'real.txt' , $link[ 'target' ] ) ;
+    }
+
+    public function testAnOrdinaryFileCarriesNoTarget(): void
+    {
+        file_put_contents( $this->root . '/tree/plain.txt' , 'x' ) ;
+
+        $entries = untarEntries( $this->binary , $this->archive() ) ;
+        $plain   = $this->entryNamed( $entries , 'tree/plain.txt' ) ;
+
+        $this->assertNotNull( $plain ) ;
+        $this->assertNull( $plain[ 'target' ] ) ;
+    }
+
+    /**
+     * The entry of that name, or null.
+     *
+     * @param array<int, array<string, mixed>> $entries
+     *
+     * @return array<string, mixed>|null
+     */
+    private function entryNamed( array $entries , string $name ) :?array
+    {
+        foreach ( $entries as $entry )
+        {
+            if ( $entry[ 'name' ] === $name )
+            {
+                return $entry ;
+            }
+        }
+
+        return null ;
+    }
+
     private function names( array $entries ) :array
     {
         return array_map( static fn( array $e ) => $e[ 'name' ] , $entries ) ;

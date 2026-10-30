@@ -3,6 +3,7 @@
 namespace tests\oihana\files\archive\tar;
 
 use oihana\files\enums\CompressionType;
+use oihana\files\enums\TarOption;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -113,6 +114,118 @@ class UntarEngineTest extends TestCase
      * The one that failed before this lot: write with the library, read back with the
      * library.
      */
+    /**
+     * A link the archive holds, restored by the binary and refused by PharData.
+     *
+     * PharData cannot restore one: its iterator reports a link as a regular file of size 0,
+     * isLink() answers false, and extractTo() writes an empty file in its place — the link and,
+     * with it, anything the link stood for. So the archive is refused rather than quietly
+     * flattened, the same answer tar() gives when PharData is the engine that would write it.
+     */
+    public function testPharDataRefusesAnArchiveHoldingALink(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/link.txt' ) ;
+
+        $this->useBinary() ;
+
+        $archive = tar( [ $this->root . '/tree' ] , $this->root . '/plain.tar' , CompressionType::NONE , $this->root ) ;
+
+        $this->forcePharData() ;
+
+        try
+        {
+            untar( $archive , $this->root . '/out' ) ;
+
+            $this->fail( 'PharData cannot restore a link, so the archive must be refused.' ) ;
+        }
+        catch ( RuntimeException $exception )
+        {
+            $this->assertStringContainsString( 'cannot restore a link entry' , $exception->getMessage() ) ;
+            $this->assertStringContainsString( 'tree/link.txt' , $exception->getMessage() ) ;
+        }
+
+        $this->assertFileDoesNotExist
+        (
+            $this->root . '/out/tree/real.txt' ,
+            'An archive that is refused must leave nothing extracted behind it.'
+        ) ;
+    }
+
+    /**
+     * And refused in a compressed archive too, which is the harder half.
+     *
+     * PharData::decompress() rewrites the archive to decompress it, and writes a regular empty
+     * file where a link was, so the `.tar` it produces no longer holds the link to refuse. The
+     * headers of the compressed stream are read before it, through the stream wrapper, which is
+     * the only moment the link still exists.
+     */
+    public function testPharDataRefusesALinkInACompressedArchiveToo(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/link.txt' ) ;
+
+        $this->useBinary() ;
+
+        $archive = tar( [ $this->root . '/tree' ] , $this->root . '/tree.tar.gz' , CompressionType::GZIP , $this->root ) ;
+
+        $this->forcePharData() ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/cannot restore a link entry/' ) ;
+
+        untar( $archive , $this->root . '/out' ) ;
+    }
+
+    public function testTheBinaryRestoresALinkTheArchiveHolds(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( 'real.txt' , $this->root . '/tree/link.txt' ) ;
+
+        $this->useBinary() ;
+
+        $archive = tar( [ $this->root . '/tree' ] , $this->root . '/plain.tar' , CompressionType::NONE , $this->root ) ;
+
+        untar( $archive , $this->root . '/out' ) ;
+
+        // A contained target is not what the guard is for, and the archive is read with no option
+        // asked for, which is the path that reads the headers rather than listing the archive.
+
+        $this->assertTrue( is_link( $this->root . '/out/tree/link.txt' ) ) ;
+        $this->assertSame( 'real.txt' , readlink( $this->root . '/out/tree/link.txt' ) ) ;
+        $this->assertSame( 'real' , file_get_contents( $this->root . '/out/tree/link.txt' ) ) ;
+    }
+
+    public function testTheBinaryRefusesALinkWhoseTargetLeavesTheOutputDirectory(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( '/etc' , $this->root . '/tree/absolute' ) ;
+
+        $this->useBinary() ;
+
+        $archive = tar( [ $this->root . '/tree' ] , $this->root . '/plain.tar' , CompressionType::NONE , $this->root ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/link to the absolute path "\/etc"/' ) ;
+
+        untar( $archive , $this->root . '/out' ) ;
+    }
+
+    public function testAllowUnsafeLinksRestoresTheLinkTheGuardRefused(): void
+    {
+        file_put_contents( $this->root . '/tree/real.txt' , 'real' ) ;
+        symlink( '/etc' , $this->root . '/tree/absolute' ) ;
+
+        $this->useBinary() ;
+
+        $archive = tar( [ $this->root . '/tree' ] , $this->root . '/plain.tar' , CompressionType::NONE , $this->root ) ;
+
+        untar( $archive , $this->root . '/out' , [ TarOption::ALLOW_UNSAFE_LINKS => true ] ) ;
+
+        $this->assertTrue( is_link( $this->root . '/out/tree/absolute' ) ) ;
+        $this->assertSame( '/etc' , readlink( $this->root . '/out/tree/absolute' ) ) ;
+    }
+
     public function testAnArchiveThisLibraryWroteCanBeReadBackWhenANameIsLong(): void
     {
         $long = str_repeat( 'e' , 150 ) . '.txt' ;

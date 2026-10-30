@@ -53,6 +53,7 @@
             "src/oihana/files/archive/tar/tarProcessEnvironment.php",
             "src/oihana/files/archive/tar/tarFileInfo.php",
             "src/oihana/files/archive/tar/tarIsCompressed.php",
+            "src/oihana/files/archive/tar/tarLinkEntries.php",
             "src/oihana/files/archive/tar/tarWithBinary.php",
             "src/oihana/files/archive/tar/tarWritableCompressions.php",
             "src/oihana/files/archive/tar/untar.php",
