@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-10-30
+
+A symbolic link is a thing in its own right, and three functions of this library treated it as
+whatever it pointed at. `deleteDirectory()` stopped in the middle of a tree, `copyFilteredFiles()`
+wrote the host's absolute paths into the destination it was mirroring, and `zip()` died on a link
+pointing at nothing. The rule is now the same everywhere: a link is acted on, never followed, and
+reading what it points at is asked for explicitly.
+
 ### Added
 
 - `unzip()` restores symbolic links. An entry whose stored Unix mode carries the link type bits —
