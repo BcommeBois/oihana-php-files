@@ -6,6 +6,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-30
+
+A symbolic link is a thing in its own right, and most of this library treated it as whatever it
+pointed at. The 1.5.2 release closed three of those; this one closes the rest and makes the rule
+the same everywhere: **a link is acted on, never followed, and reading what it points at is asked
+for explicitly.**
+
+What that cost, function by function: `deleteDirectory()` stopped in the middle of a tree,
+`copyFilteredFiles()` wrote the host's absolute paths into the destination it was mirroring,
+`zip()` died on a link pointing at nothing, `tar()` turned a linked directory into an empty one
+when PharData wrote, `unzip()` and `untar()` restored a link whose target led out of the
+destination, and `untar()` flattened links into empty files when PharData read. Each of them is
+loud now, and each refusal names the path that caused it.
+
+Two of those refusals can be lifted, for an archive the caller answers for:
+`ZipOption::ALLOW_UNSAFE_LINKS` and `TarOption::ALLOW_UNSAFE_LINKS`. Neither lifts a refusal that
+is about a missing capability rather than about trust — PharData can neither write nor restore a
+link, and no option makes it able to.
+
+Found along the way and fixed here: `deleteTemporaryDirectory()` deleted outside the temporary
+directory, `untarEntries()` reported the name of a hard link with its target glued to it, and six
+writes across four functions failed in silence while their callers were told everything had gone
+well.
+
 ### Added
 
 - `tarLinkEntries()`, in `oihana\files\archive\tar`, reads a tar archive's headers and returns the
@@ -33,7 +57,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Six writes whose failure went unreported now report it. Each was a call whose return value was
-  discarded, so the function around it carried on and answered success:
+  discarded, so the surrounding function carried on and answered success:
 
   - `copyFilteredFiles()` — `copy()`. A file that could not be copied left the function returning
     `true` for a destination missing one of its files.
