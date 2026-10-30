@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- `realpathParent()`, in `oihana\files\path`, resolves a path's parent and leaves its last segment
+  as it stands. `realpath()` answers for the whole path, which is too much when the last segment is
+  the thing being judged: a link would be replaced by what it points at, and a path that does not
+  exist would answer `false`. Resolving everything above the last segment closes the linked
+  ancestor, and keeping the last segment verbatim lets a link be judged by where it sits.
+  `deleteTemporaryDirectory()` is its first caller.
+
 ### Fixed
 
 - `deleteTemporaryDirectory()` no longer deletes outside the temporary directory. Its only guard
@@ -22,12 +31,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   things outside the temp". A path that is not inside the temporary directory is now refused with
   `false`, as the temporary directory itself already was.
 
-  The check is made on what the filesystem resolves rather than on the string, and it resolves the
-  parent while leaving the last segment alone. Resolving the parent closes the linked ancestor — a
-  link sitting in the temporary directory cannot be used to reach through it — and leaving the last
-  segment closes nothing while keeping something worth keeping: a link in the temporary directory is
-  removed on its own, its target untouched. A purely lexical check would also have failed on macOS,
-  where `/var` is a link to `/private/var`, so the string and the resolved path never match.
+  The check is made on what the filesystem resolves rather than on the string, through the new
+  `realpathParent()`: the parent is resolved and the last segment is not. Resolving the parent
+  closes the linked ancestor — a link sitting in the temporary directory cannot be used to reach
+  through it — and leaving the last segment closes nothing while keeping something worth keeping: a
+  link in the temporary directory is removed on its own, its target untouched. A purely lexical
+  check would also have failed on macOS, where `/var` is a link to `/private/var`, so the string and
+  the resolved path never match.
 
 ### Added
 

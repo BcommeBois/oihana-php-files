@@ -83,6 +83,7 @@
             "src/oihana/files/path/makeAbsolute.php",
             "src/oihana/files/path/makeRelative.php",
             "src/oihana/files/path/normalizePath.php",
+            "src/oihana/files/path/realpathParent.php",
             "src/oihana/files/path/relativePath.php",
             "src/oihana/files/path/splitPath.php",
             "src/oihana/files/phar/assertPhar.php",

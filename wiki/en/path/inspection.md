@@ -1,11 +1,12 @@
 # Inspection
 
-Four functions to analyse a path without modifying it.
+Five functions to analyse a path without modifying it.
 
 - [`splitPath`](#splitpath) — splits *root* / *remainder*.
 - [`directoryPath`](#directorypath) — extracts the parent directory (robust replacement for `dirname()`).
 - [`isLocalPath`](#islocalpath) — detects remote paths (with `://` scheme).
 - [`isBasePath`](#isbasepath) — checks whether one path is contained in another.
+- [`realpathParent`](#realpathparent) — resolves a path's parent, keeps its last segment.
 
 ---
 
@@ -162,6 +163,36 @@ isBasePath( 'C:/Users', 'C:/Users/Bob/file.txt' );   // true
 >     throw new \RuntimeException("Refused: $safe escapes $allowedRoot");
 > }
 > ```
+
+---
+
+## `realpathParent`
+
+```php
+realpathParent( string $path ) : string
+```
+
+Resolves a path's **parent** and leaves its **last segment** as it stands.
+
+It is the only function on this page that asks the disk. `realpath()` answers for the whole path, which is too much when the last segment is the thing being judged: a symbolic link would be replaced by what it points at, and a path that does not exist would answer `false`. Here everything above the last segment is resolved — so a linked ancestor cannot hide where a path really leads — and the last segment is kept verbatim.
+
+When the parent does not exist, the path is canonicalized lexically instead: there is nothing on disk to ask.
+
+```php
+use function oihana\files\path\realpathParent;
+
+// On macOS, where /var is a link to /private/var:
+realpathParent( '/var/folders/x/T' ) ; // '/private/var/folders/x/T'
+
+// The parent is the filesystem root, and the result carries one separator, not two:
+realpathParent( '/tmp' ) ;             // '/tmp'
+
+// A link is kept as itself, never followed:
+symlink( '/elsewhere' , '/tmp/pointer' ) ;
+realpathParent( '/tmp/pointer' ) ;     // '/tmp/pointer'
+```
+
+**What is it for?** Deciding whether one path is contained in another without being fooled. [`deleteTemporaryDirectory`](../files/deletion.md#deletetemporarydirectory) uses it to refuse anything outside the temporary directory: resolving the parent closes the linked ancestor, keeping the last segment allows a link sitting in the temp directory to be removed without touching its target.
 
 ---
 

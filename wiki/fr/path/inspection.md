@@ -1,11 +1,12 @@
 # Inspection
 
-Quatre fonctions pour analyser un chemin sans le modifier.
+Cinq fonctions pour analyser un chemin sans le modifier.
 
 - [`splitPath`](#splitpath) — sépare *racine* / *reste*.
 - [`directoryPath`](#directorypath) — extrait le dossier parent (équivalent robuste de `dirname()`).
 - [`isLocalPath`](#islocalpath) — détecte les chemins distants (avec scheme `://`).
 - [`isBasePath`](#isbasepath) — vérifie si un chemin est contenu dans un autre.
+- [`realpathParent`](#realpathparent) — résout le parent d'un chemin, garde son dernier segment.
 
 ---
 
@@ -162,6 +163,36 @@ isBasePath( 'C:/Users', 'C:/Users/Bob/file.txt' );   // true
 >     throw new \RuntimeException("Refused: $safe escapes $allowedRoot");
 > }
 > ```
+
+---
+
+## `realpathParent`
+
+```php
+realpathParent( string $path ) : string
+```
+
+Résout le **parent** d'un chemin et laisse son **dernier segment** tel quel.
+
+C'est la seule fonction de cette page qui interroge le disque. `realpath()` répond pour le chemin entier, ce qui est trop quand le dernier segment est précisément ce qu'on juge : un lien symbolique serait remplacé par sa cible, et un chemin inexistant répondrait `false`. Ici, tout ce qui est au-dessus du dernier segment est résolu — donc un ancêtre qui est un lien ne peut pas cacher où mène vraiment un chemin — et le dernier segment est gardé mot pour mot.
+
+Si le parent n'existe pas, le chemin est canonicalisé lexicalement : il n'y a rien à demander au disque.
+
+```php
+use function oihana\files\path\realpathParent;
+
+// Sur macOS, où /var est un lien vers /private/var :
+realpathParent( '/var/folders/x/T' ) ; // '/private/var/folders/x/T'
+
+// Le parent est la racine, et le résultat ne porte qu'un séparateur, pas deux :
+realpathParent( '/tmp' ) ;             // '/tmp'
+
+// Un lien est gardé pour lui-même, jamais suivi :
+symlink( '/elsewhere' , '/tmp/pointer' ) ;
+realpathParent( '/tmp/pointer' ) ;     // '/tmp/pointer'
+```
+
+**À quoi ça sert ?** À décider si un chemin est contenu dans un autre sans se faire tromper. [`deleteTemporaryDirectory`](../files/deletion.md#deletetemporarydirectory) l'utilise pour refuser ce qui n'est pas dans le dossier temporaire : résoudre le parent ferme l'ancêtre-lien, garder le dernier segment permet de supprimer un lien posé dans le temp sans toucher à sa cible.
 
 ---
 

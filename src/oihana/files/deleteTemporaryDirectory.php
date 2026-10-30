@@ -5,8 +5,8 @@ namespace oihana\files ;
 use oihana\enums\Char;
 use oihana\files\exceptions\DirectoryException;
 
-use function oihana\files\path\canonicalizePath;
 use function oihana\files\path\isBasePath;
+use function oihana\files\path\realpathParent;
 
 /**
  * Deletes a directory located in the system temporary folder (recursively).
@@ -66,13 +66,10 @@ function deleteTemporaryDirectory( string|array|null $path , bool $assertable = 
 
     // The parent is resolved and the last segment is not: a linked ancestor cannot be used to
     // reach outside, and a link sitting in the temporary directory is still judged by where it
-    // stands rather than by what it points at. When the parent does not exist there is nothing
-    // to delete, and the lexical path is enough to answer.
+    // stands rather than by what it points at. {@see realpathParent()} does that, including when
+    // the parent is the filesystem root — as it is wherever sys_get_temp_dir() is "/tmp".
 
-    $parent   = realpath( dirname( $directory ) ) ;
-    $resolved = $parent !== false
-              ? $parent . DIRECTORY_SEPARATOR . basename( $directory )
-              : canonicalizePath( $directory ) ;
+    $resolved = realpathParent( $directory ) ;
 
     if ( $base === false || $resolved === $base )
     {
