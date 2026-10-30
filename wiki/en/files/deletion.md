@@ -90,7 +90,7 @@ deleteDirectory( '/tmp/maybe' , assertable: false ) ;
 
 ### ⚠ Gotchas
 
-- **Symlinks**: `unlink` removes them (not their target). `rmdir` only removes *real directories*, not symlinks to a directory.
+- **Symlinks**: a link is removed with `unlink()`, never followed — whether it points to a directory or to a file, and whether its target still exists or not. The target is left intact: nothing is ever deleted through a link. If `$path` is itself a link to a directory, the link alone is removed, its target is kept, and the function walks nothing.
 - **Permissions**: if you lack rights on an inner file, deletion stops mid-way — the directory ends up in a partially-deleted state.
 - **Windows + open file**: `unlink` fails while any handle is open. Close all handles first.
 

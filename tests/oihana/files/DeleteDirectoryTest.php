@@ -237,4 +237,220 @@ class DeleteDirectoryTest extends TestCase
             @rmdir($base);
         }
     }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testPathIsItselfALinkRemovesTheLinkAndKeepsItsTarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $base = $this->makeTemporaryDirectory() ;
+
+        try
+        {
+            mkdir( $base . '/target' ) ;
+            file_put_contents( $base . '/target/keepme.txt' , 'content' ) ;
+            symlink( $base . '/target' , $base . '/link' ) ;
+
+            $this->assertTrue( deleteDirectory( $base . '/link' ) ) ;
+
+            $this->assertFalse( is_link( $base . '/link' ) ) ;
+            $this->assertDirectoryExists( $base . '/target' ) ;
+            $this->assertFileExists( $base . '/target/keepme.txt' ) ;
+            $this->assertSame( 'content' , file_get_contents( $base . '/target/keepme.txt' ) ) ;
+        }
+        finally
+        {
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testRemovesADanglingLink(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $base = $this->makeTemporaryDirectory() ;
+
+        try
+        {
+            mkdir( $base . '/tree' ) ;
+            symlink( $base . '/never-existed' , $base . '/tree/dangling' ) ;
+
+            $this->assertTrue( is_link( $base . '/tree/dangling' ) ) ;
+            $this->assertTrue( deleteDirectory( $base . '/tree' ) ) ;
+            $this->assertDirectoryDoesNotExist( $base . '/tree' ) ;
+        }
+        finally
+        {
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testRemovesALinkToADirectoryAndKeepsItsTarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $base = $this->makeTemporaryDirectory() ;
+
+        try
+        {
+            mkdir( $base . '/tree' ) ;
+            mkdir( $base . '/outside' ) ;
+            file_put_contents( $base . '/outside/keepme.txt' , 'content' ) ;
+            symlink( $base . '/outside' , $base . '/tree/linked' ) ;
+
+            $this->assertTrue( deleteDirectory( $base . '/tree' ) ) ;
+
+            $this->assertDirectoryDoesNotExist( $base . '/tree' ) ;
+            $this->assertDirectoryExists( $base . '/outside' ) ;
+            $this->assertFileExists( $base . '/outside/keepme.txt' ) ;
+            $this->assertSame( 'content' , file_get_contents( $base . '/outside/keepme.txt' ) ) ;
+        }
+        finally
+        {
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testRemovesALinkToAFileAndKeepsItsTarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        $base = $this->makeTemporaryDirectory() ;
+
+        try
+        {
+            mkdir( $base . '/tree' ) ;
+            file_put_contents( $base . '/keepme.txt' , 'content' ) ;
+            symlink( $base . '/keepme.txt' , $base . '/tree/linked.txt' ) ;
+
+            $this->assertTrue( deleteDirectory( $base . '/tree' ) ) ;
+
+            $this->assertDirectoryDoesNotExist( $base . '/tree' ) ;
+            $this->assertFileExists( $base . '/keepme.txt' ) ;
+            $this->assertSame( 'content' , file_get_contents( $base . '/keepme.txt' ) ) ;
+        }
+        finally
+        {
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testRemovesLinksPointingInsideTheTree(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // 'self' points at the root of the tree, which the walk removes only once it is over: the
+        // link is therefore still a live link to a directory when its own turn comes, whatever
+        // order the filesystem hands the entries back in. That is what makes this case
+        // order-independent, where a link to 'm_target' only catches the defect when the
+        // filesystem happens to hand the link over before its target.
+        //
+        // It is also the shape that would make a walk following links turn in circles.
+
+        $base = $this->makeTemporaryDirectory() ;
+
+        try
+        {
+            mkdir( $base . '/tree/m_target' , 0777 , true ) ;
+            file_put_contents( $base . '/tree/m_target/file.txt' , 'content' ) ;
+            symlink( $base . '/tree' , $base . '/tree/self' ) ;
+            symlink( $base . '/tree/m_target' , $base . '/tree/a_link' ) ;
+            symlink( $base . '/tree/m_target' , $base . '/tree/z_link' ) ;
+
+            $this->assertTrue( deleteDirectory( $base . '/tree' ) ) ;
+            $this->assertDirectoryDoesNotExist( $base . '/tree' ) ;
+        }
+        finally
+        {
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    public function testThrowsNamingTheLinkAndNotItsTargetWhenALinkCannotBeRemoved(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // The read-only parent prevents unlinking the link it holds.
+
+        $base = $this->makeTemporaryDirectory() ;
+        $link = $base . '/ro/linked' ;
+
+        try
+        {
+            mkdir( $base . '/ro' ) ;
+            mkdir( $base . '/outside' ) ;
+            symlink( $base . '/outside' , $link ) ;
+            chmod( $base . '/ro' , 0555 ) ;
+
+            $this->expectException( DirectoryException::class ) ;
+            $this->expectExceptionMessage( sprintf( 'Failed to remove symbolic link "%s".' , $link ) ) ;
+
+            deleteDirectory( $base ) ;
+        }
+        finally
+        {
+            @chmod( $base . '/ro' , 0777 ) ;
+            $this->removeTree( $base ) ;
+        }
+    }
+
+    /**
+     * Creates an empty directory of its own in the system temporary directory.
+     */
+    private function makeTemporaryDirectory(): string
+    {
+        $path = sys_get_temp_dir() . '/oihana_del_link_' . uniqid() ;
+        mkdir( $path , 0777 , true ) ;
+        return $path ;
+    }
+
+    /**
+     * Removes a tree without going through the function under test: a link is unlinked, never
+     * followed, so a target living outside the tree is left alone.
+     */
+    private function removeTree( string $path ): void
+    {
+        if ( is_link( $path ) || is_file( $path ) )
+        {
+            @unlink( $path ) ;
+            return ;
+        }
+
+        if ( !is_dir( $path ) )
+        {
+            return ;
+        }
+
+        foreach ( scandir( $path ) ?: [] as $entry )
+        {
+            if ( $entry !== '.' && $entry !== '..' )
+            {
+                $this->removeTree( $path . DIRECTORY_SEPARATOR . $entry ) ;
+            }
+        }
+
+        @rmdir( $path ) ;
+    }
+
+    private function skipWhenSymlinksAreUnreliable(): void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )
+        {
+            $this->markTestSkipped( 'Symbolic link tests are not reliable on Windows.' ) ;
+        }
+    }
 }

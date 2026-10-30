@@ -12,6 +12,12 @@ use oihana\files\exceptions\DirectoryException;
 /**
  * Deletes a directory recursively.
  *
+ * **Symbolic links are removed, never followed.** A link met in the tree is unlinked, whether it
+ * points to a directory or to a file, and whether its target still exists or not. The target is
+ * left untouched: nothing is ever deleted through a link. The same holds for `$path` itself — if
+ * `$path` is a link to a directory, the link alone is removed and the directory it points to is
+ * kept, so the call does not recurse at all.
+ *
  * @param string|array|null $path Directory or segments to remove.
  * @param bool $assertable Whether to validate the resulting path. Defaults to true.
  * @param bool $isReadable Check if the directory is readable (Default true).
@@ -64,6 +70,18 @@ use oihana\files\exceptions\DirectoryException;
  * }
  * ```
  *
+ * A link inside the tree goes away with the tree, its target stays.
+ * ```php
+ * mkdir( '/tmp/tree' ) ;
+ * mkdir( '/tmp/outside' ) ;
+ * file_put_contents( '/tmp/outside/keepme.txt' , 'content' ) ;
+ * symlink( '/tmp/outside' , '/tmp/tree/linked' ) ;
+ *
+ * deleteDirectory( '/tmp/tree' ) ;
+ *
+ * // is_dir('/tmp/tree') is false, '/tmp/outside/keepme.txt' is still there.
+ * ```
+ *
  * @package oihana\files
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.0.0
@@ -71,6 +89,19 @@ use oihana\files\exceptions\DirectoryException;
 function deleteDirectory( string|array|null $path , bool $assertable = true , bool $isReadable = true , bool $isWritable = true ): bool
 {
     $directory = getDirectory( $path , $assertable , $isReadable , $isWritable ) ;
+
+    // $path may itself be a link to a directory. Remove the link, keep its target, and do not
+    // walk into it: a tree reached through a link is not this call's to delete.
+
+    if ( isSymlink( $directory ) )
+    {
+        if ( !@unlink( $directory ) )
+        {
+            throw new DirectoryException( sprintf('Failed to remove symbolic link "%s".' , $directory ) ) ;
+        }
+
+        return true ;
+    }
 
     try
     {
@@ -82,18 +113,30 @@ function deleteDirectory( string|array|null $path , bool $assertable = true , bo
 
         foreach ( $iterator as $file )
         {
-            if ( $file->isDir() )
+            // isLink() comes before isDir(), and the order is the whole point: isDir() answers true
+            // for a link to a directory, and rmdir() refuses a link. Reversed, the walk stops in the
+            // middle of the tree. The link is also named by getPathname(), not getRealPath(), so a
+            // failure reports the path that blocks instead of the target behind it.
+
+            if ( $file->isLink() )
             {
-                if (!@rmdir($file->getPathname()))
+                if ( !@unlink( $file->getPathname() ) )
                 {
-                    throw new DirectoryException(sprintf('Failed to remove directory "%s".', $file->getRealPath()));
+                    throw new DirectoryException( sprintf('Failed to remove symbolic link "%s".' , $file->getPathname() ) ) ;
+                }
+            }
+            else if ( $file->isDir() )
+            {
+                if ( !@rmdir( $file->getPathname() ) )
+                {
+                    throw new DirectoryException( sprintf('Failed to remove directory "%s".' , $file->getPathname() ) ) ;
                 }
             }
             else
             {
                 if ( !@unlink( $file->getPathname() ) )
                 {
-                    throw new DirectoryException(sprintf('Failed to remove file "%s".', $file->getRealPath() ) ) ;
+                    throw new DirectoryException( sprintf('Failed to remove file "%s".', $file->getPathname() ) ) ;
                 }
             }
         }

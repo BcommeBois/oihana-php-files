@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Fixed
+
+- `deleteDirectory()` no longer stops on a symbolic link. A link to a directory that still existed
+  answered `true` to `SplFileInfo::isDir()`, so the walk called `rmdir()` on the link itself, which
+  the system refuses: the deletion stopped in the middle of the tree and threw `Failed to remove
+  directory "<target>"` — naming the directory behind the link rather than the link that blocked.
+  `isLink()` is now tested before `isDir()`, and a link is removed with `unlink()` whether it points
+  to a directory or to a file and whether its target still exists or not. Messages name
+  `getPathname()`, so the path reported is the one that blocks. If `$path` is itself a link to a
+  directory, the link alone is removed and its target is kept, so the call does not recurse at all.
+  Nothing is ever deleted through a link, which was already true and stays true.
+
+  Whether the defect showed depended on the order the filesystem handed the entries back: with the
+  link's target inside the tree and removed first, the link was left dangling, `isDir()` answered
+  `false`, and `unlink()` took it. That is why it passed on macOS and broke a caller's CI on Linux,
+  on 2026-10-30. Six tests cover it, one case each: a link to a directory outside the tree, a link
+  to a file outside it, a dangling link, a link pointing inside the tree, `$path` itself a link, and
+  the message naming the link instead of its target.
+
 ## [1.5.1] - 2026-10-29
 
 ### Fixed

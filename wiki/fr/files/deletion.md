@@ -90,7 +90,7 @@ deleteDirectory( '/tmp/maybe' , assertable: false ) ;
 
 ### ⚠ Pièges
 
-- **Liens symboliques** : `unlink` les supprime (pas leur cible). `rmdir` ne supprime que les *dossiers réels*, pas les symlinks pointant vers un dossier.
+- **Liens symboliques** : un lien est supprimé avec `unlink()`, jamais suivi — qu'il pointe vers un dossier ou vers un fichier, que sa cible existe encore ou non. La cible reste intacte : rien n'est jamais supprimé à travers un lien. Si `$path` est lui-même un lien vers un dossier, seul le lien est supprimé, sa cible est conservée, et la fonction ne parcourt rien.
 - **Permissions** : si tu n'as pas les droits sur un fichier interne, la suppression s'arrête au milieu — le dossier est dans un état partiellement supprimé.
 - **Windows + fichier ouvert** : `unlink` échoue tant qu'un handle est ouvert. Fermer tous les handles d'abord.
 
