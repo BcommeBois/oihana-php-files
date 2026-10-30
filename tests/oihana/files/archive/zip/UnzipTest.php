@@ -509,6 +509,77 @@ class UnzipTest extends TestCase
     }
 
     /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenADeflatedEntryIsCorrupt(): void
+    {
+        // Twenty-four bytes of the compressed stream zeroed: libzip inflates what it can, gives
+        // back 2 bytes of the 840, and reports nothing. Unchecked, unzip() wrote those 2 bytes and
+        // returned true.
+
+        $archive = $this->tempDir . DIRECTORY_SEPARATOR . 'deflated.zip' ;
+        $zip     = new ZipArchive() ;
+
+        $zip->open( $archive , ZipArchive::CREATE | ZipArchive::OVERWRITE ) ;
+        $zip->addFromString( 'page.txt' , str_repeat( 'compressible content ' , 40 ) ) ;
+        $zip->close() ;
+
+        $raw = (string) file_get_contents( $archive ) ;
+        $at  = $this->firstEntryDataOffset( $raw ) ;
+
+        file_put_contents( $archive , substr_replace( $raw , str_repeat( "\x00" , 24 ) , $at + 2 , 24 ) ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/The entry "page\.txt" of the zip archive is corrupt/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenAStoredEntryHasBeenAltered(): void
+    {
+        // A stored entry is read as it lies, so one altered byte comes back altered, at the right
+        // length. Only the checksum can tell, which is why it is the checksum that is compared.
+
+        $archive = $this->tempDir . DIRECTORY_SEPARATOR . 'stored.zip' ;
+        $zip     = new ZipArchive() ;
+
+        $zip->open( $archive , ZipArchive::CREATE | ZipArchive::OVERWRITE ) ;
+        $zip->addFromString( 'page.txt' , 'ABCDEFGHIJKLMNOP' ) ;
+        $zip->setCompressionName( 'page.txt' , ZipArchive::CM_STORE ) ;
+        $zip->close() ;
+
+        $raw = (string) file_get_contents( $archive ) ;
+        $at  = $this->firstEntryDataOffset( $raw ) ;
+
+        $this->assertSame( 'A' , $raw[ $at ] , 'The stored content must sit where the header says' ) ;
+
+        $raw[ $at ] = 'Z' ;
+        file_put_contents( $archive , $raw ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/The entry "page\.txt" of the zip archive is corrupt/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * Where the data of the first entry starts: right after its local header, which is 30 bytes,
+     * then the name, then the extra field, whose lengths it gives at offsets 26 and 28.
+     */
+    private function firstEntryDataOffset( string $raw ): int
+    {
+        $nameLength  = unpack( 'v' , substr( $raw , 26 , 2 ) )[ 1 ] ;
+        $extraLength = unpack( 'v' , substr( $raw , 28 , 2 ) )[ 1 ] ;
+
+        return 30 + $nameLength + $extraLength ;
+    }
+
+    /**
      * Builds an archive holding one symbolic link entry — its target as the entry's content and
      * the Unix link type bits in its external attributes, the way zip() stores a link — plus any
      * regular files given.

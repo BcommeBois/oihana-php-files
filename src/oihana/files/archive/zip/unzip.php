@@ -57,7 +57,8 @@ use function oihana\files\path\joinPaths;
  *                       absolute or escapes the destination while `allowUnsafeLinks` is off, an
  *                       entry is a symbolic link without a target, a link cannot be created, a bomb
  *                       guard trips, a target already exists while overwrite is disabled, an
- *                       entry cannot be read, or an extracted file cannot be written.
+ *                       entry cannot be read or does not match its recorded checksum, or an
+ *                       extracted file cannot be written.
  * @throws DirectoryException If the destination directory (or an entry's parent) cannot be created.
  *
  * @example
@@ -241,6 +242,21 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
                 if ( $contents === false )
                 {
                     throw new FileException( sprintf('Cannot read the entry "%s" of the zip archive.' , $name ) ) ;
+                }
+
+                // libzip does not check an entry against its CRC when it reads it. A damaged
+                // deflated stream comes back as whatever inflated before the damage — 2 bytes of
+                // 840 when it was measured — and an altered stored entry comes back altered, with
+                // no error either way. The catalogue records the CRC each entry was written with,
+                // so the content is held to it before it is written anywhere.
+
+                if ( crc32( $contents ) !== (int) $zip->statIndex( $i )[ 'crc' ] )
+                {
+                    throw new FileException( sprintf
+                    (
+                        'The entry "%s" of the zip archive is corrupt: its content does not match the checksum the archive records for it.' ,
+                        $name
+                    )) ;
                 }
 
                 // @-suppressed: file_put_contents() warns on a failure the exception below reports.

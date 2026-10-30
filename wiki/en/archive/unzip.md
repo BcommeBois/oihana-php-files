@@ -50,6 +50,7 @@ Extracts a zip archive into an output directory. Mirror of [`untar`](untar.md#un
   - **Zip Slip**: an entry escapes the destination directory;
   - **Zip Slip through a link**: an entry is a symbolic link whose target is **absolute** or **escapes** the destination directory;
   - a symbolic link **without a target**, or one that cannot be created;
+  - a **corrupt** entry: its content does not match the CRC the archive records for it. libzip does not check it on read — a damaged entry comes back truncated or altered without an error — so `unzip()` does before writing;
   - overwrite attempt with `overwrite: false`.
 - **`DirectoryException`**: cannot create `$outputPath` (or the parent directory of an entry).
 

@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Fixed
+
+- `unzip()` no longer writes a corrupt entry as if it were whole. libzip does not check an entry
+  against its CRC when it reads it: a damaged deflated stream comes back as whatever inflated before
+  the damage — 2 bytes of 840, measured — and an altered stored entry comes back altered, at the
+  right length. Neither raises anything, so `unzip()` wrote what it was given and returned `true`.
+  1.6.0 measured this and documented it as known; it is fixed here, since the catalogue already
+  records the CRC each entry was written with and the content is already in memory when it is
+  checked. The comparison is on the checksum alone: a stored entry with one byte altered keeps its
+  size, so only the checksum can tell.
+
 ## [1.6.0] - 2026-10-30
 
 A symbolic link is a thing in its own right, and most of this library treated it as whatever it

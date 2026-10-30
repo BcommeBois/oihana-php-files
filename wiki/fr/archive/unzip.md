@@ -50,6 +50,7 @@ Extrait une archive zip dans un dossier de sortie. Miroir de [`untar`](untar.md#
   - **Zip Slip** : une entrée s'échappe du dossier de destination ;
   - **Zip Slip par un lien** : une entrée est un lien symbolique dont la cible est **absolue** ou **sort** du dossier de destination ;
   - un lien symbolique **sans cible**, ou impossible à créer ;
+  - une entrée **corrompue** : son contenu ne correspond pas au CRC que l'archive enregistre pour elle. libzip ne le vérifie pas à la lecture — une entrée abîmée revient tronquée ou altérée sans erreur — donc `unzip()` le fait avant d'écrire ;
   - tentative d'écrasement avec `overwrite: false`.
 - **`DirectoryException`** : impossible de créer `$outputPath` (ou le dossier parent d'une entrée).
 
