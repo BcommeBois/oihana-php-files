@@ -25,11 +25,13 @@ use function oihana\files\path\joinPaths;
  * bits — what {@see zip()} writes for every link it meets — is recreated with `symlink()` and its
  * content read as the target. Such a target is refused when it is absolute or when it escapes the
  * destination directory, since a link is the one entry whose content is itself a path and the Zip
- * Slip guard on entry names does not cover it.
+ * Slip guard on entry names does not cover it. The `allowUnsafeLinks` option lifts that refusal for
+ * an archive the caller answers for — a backup of a tree whose links were absolute on the disk it
+ * was taken from, which `zip()` stores faithfully and which could otherwise not be restored.
  *
  * @param string $zipFile    Path to the zip archive to extract.
  * @param string $outputPath Directory where the archive is extracted. Created if missing.
- * @param array{dryRun?: bool, overwrite?: bool, maxEntries?: int|null, maxSize?: int|null, keepPermissions?: bool} $options Optional flags, keyed by {@see ZipOption}:
+ * @param array{dryRun?: bool, overwrite?: bool, maxEntries?: int|null, maxSize?: int|null, keepPermissions?: bool, allowUnsafeLinks?: bool} $options Optional flags, keyed by {@see ZipOption}:
  *   - **dryRun**: If true, no file is written; returns the list of file entries that would be
  *     extracted (directory entries excluded). Default: false.
  *   - **overwrite**: If false, extraction fails when a target file already exists. Default: true.
@@ -38,6 +40,10 @@ use function oihana\files\path\joinPaths;
  *   - **maxSize**: If a positive integer, the archive is pre-scanned and rejected **before**
  *     any file is written when the sum of the entries' uncompressed sizes exceeds this limit
  *     (decompression-bomb guard). Default: null (no limit).
+ *   - **allowUnsafeLinks**: If true, recreates a symbolic link whose target is absolute or escapes
+ *     the destination directory, which is refused by default. Only for an archive the caller
+ *     answers for: once such a link stands in the destination, the entries written after it can
+ *     reach through it, outside. Default: false.
  *   - **keepPermissions**: If true, restores the Unix file mode stored in each entry's external
  *     attributes (`OPSYS_UNIX`) via `chmod()`. Entries without Unix permissions are left with the
  *     default mode, and a symbolic link is left alone, since `chmod()` would follow it and change
@@ -48,7 +54,8 @@ use function oihana\files\path\joinPaths;
  *
  * @throws FileException If the archive does not exist, cannot be opened, an entry escapes the
  *                       destination (Zip Slip), an entry is a symbolic link whose target is
- *                       absolute or escapes the destination, a link cannot be created, a bomb
+ *                       absolute or escapes the destination while `allowUnsafeLinks` is off, an
+ *                       entry is a symbolic link without a target, a link cannot be created, a bomb
  *                       guard trips, or a target already exists while overwrite is disabled.
  * @throws DirectoryException If the destination directory (or an entry's parent) cannot be created.
  *
@@ -92,6 +99,7 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
         $maxEntries      = $options[ ZipOption::MAX_ENTRIES      ] ?? null  ;
         $maxSize         = $options[ ZipOption::MAX_SIZE         ] ?? null  ;
         $keepPermissions = $options[ ZipOption::KEEP_PERMISSIONS ] ?? false ;
+        $unsafeLinks     = $options[ ZipOption::ALLOW_UNSAFE_LINKS ] ?? false ;
 
         $numFiles = $zip->numFiles ;
 
@@ -171,14 +179,21 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
                     throw new FileException( sprintf('The entry "%s" is a symbolic link without a target.' , $name ) ) ;
                 }
 
-                if ( isAbsolutePath( $linkTarget ) )
-                {
-                    throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to the absolute path "%s".' , $name , $linkTarget ) ) ;
-                }
+                // A target that leaves the destination is refused unless the caller answers for
+                // the archive. A link without a target is refused either way: it is malformed,
+                // not a matter of trust.
 
-                if ( !isBasePath( $base , canonicalizePath( joinPaths( dirname( $target ) , $linkTarget ) ) ) )
+                if ( !$unsafeLinks )
                 {
-                    throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to "%s", which escapes the destination directory.' , $name , $linkTarget ) ) ;
+                    if ( isAbsolutePath( $linkTarget ) )
+                    {
+                        throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to the absolute path "%s". Set the "%s" option to extract it anyway.' , $name , $linkTarget , ZipOption::ALLOW_UNSAFE_LINKS ) ) ;
+                    }
+
+                    if ( !isBasePath( $base , canonicalizePath( joinPaths( dirname( $target ) , $linkTarget ) ) ) )
+                    {
+                        throw new FileException( sprintf('Zip Slip detected: the entry "%s" is a symbolic link to "%s", which escapes the destination directory. Set the "%s" option to extract it anyway.' , $name , $linkTarget , ZipOption::ALLOW_UNSAFE_LINKS ) ) ;
+                    }
                 }
 
                 if ( !$overwrite && ( is_link( $target ) || file_exists( $target ) ) )

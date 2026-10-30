@@ -7,6 +7,7 @@ use ZipArchive;
 use PHPUnit\Framework\TestCase;
 
 use oihana\files\enums\CompressionType;
+use oihana\files\enums\ZipOption;
 use oihana\files\exceptions\DirectoryException;
 use oihana\files\exceptions\FileException;
 use oihana\files\exceptions\UnsupportedCompressionException;
@@ -389,6 +390,51 @@ class ZipTest extends TestCase
         // The target was written as a relative path, so it still points inside the extracted
         // tree, at the file the extraction just wrote.
         $this->assertSame( 'real' , file_get_contents( $back . '/link.txt' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     * @throws UnsupportedCompressionException
+     */
+    public function testALinkToAnAbsolutePathSurvivesTheRoundTripOnlyWhenAsked(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // zip() stores an absolute target as it stands, and unzip() refuses to recreate it: the
+        // archive is faithful and, by default, not restorable. This is the whole round trip a
+        // backup of a site whose uploads is an absolute link goes through.
+
+        $source   = $this->tempDir . DIRECTORY_SEPARATOR . 'tree' ;
+        $uploads  = $this->tempDir . DIRECTORY_SEPARATOR . 'uploads' ;
+
+        makeDirectory( $source ) ;
+        makeDirectory( $uploads ) ;
+        file_put_contents( $uploads . DIRECTORY_SEPARATOR . 'photo.jpg' , 'photo' ) ;
+        symlink( $uploads , $source . DIRECTORY_SEPARATOR . 'uploads' ) ;
+
+        $archive = zip( $source , $this->tempDir . '/absolute.zip' , preserveRoot: $source ) ;
+
+        $this->assertSame( 0o120000 , $this->entryTypeBits( $archive , 'uploads' ) ) ;
+        $this->assertSame( $uploads , $this->entryContent( $archive , 'uploads' ) ) ;
+
+        try
+        {
+            unzip( $archive , $this->tempDir . DIRECTORY_SEPARATOR . 'refused' ) ;
+            $this->fail( 'The absolute link should have been refused.' ) ;
+        }
+        catch ( FileException $exception )
+        {
+            $this->assertStringContainsString( 'symbolic link to the absolute path' , $exception->getMessage() ) ;
+        }
+
+        $back = $this->tempDir . DIRECTORY_SEPARATOR . 'back' ;
+
+        unzip( $archive , $back , [ ZipOption::ALLOW_UNSAFE_LINKS => true ] ) ;
+
+        $this->assertTrue( is_link( $back . '/uploads' ) ) ;
+        $this->assertSame( $uploads , readlink( $back . '/uploads' ) ) ;
+        $this->assertSame( 'photo' , file_get_contents( $back . '/uploads/photo.jpg' ) ) ;
     }
 
     /**

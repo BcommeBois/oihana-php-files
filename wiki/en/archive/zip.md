@@ -52,7 +52,7 @@ zip(
 4. **`NONE` compression**: each entry is marked `ZipArchive::CM_STORE` (useful for already-compressed files — jpeg, mp4 — where DEFLATE brings nothing).
 5. **Symbolic links stored as links**: a link met inside a walked directory is stored as it stands — the target it was written with as the entry's content, and the Unix type bits in its external attributes, the way `tar` already does it. Its target is **never read**: nothing outside the archived tree enters the archive, and a dangling link no longer crashes the function. [`unzip`](unzip.md#unzip) reads them back as links. A path passed **directly** in `$paths` is resolved instead, as it always was: archiving a link on its own archives what it points at.
 
-> ⚠ A link whose target is **absolute** is stored faithfully, but [`unzip`](unzip.md#unzip) will refuse to recreate it: the target leaves the extraction directory. An archive whose links are relative to the tree restores without reservation.
+> ⚠ A link whose target is **absolute** is stored faithfully, but [`unzip`](unzip.md#unzip) refuses by default to recreate it: the target leaves the extraction directory. It then takes the `allowUnsafeLinks` option. An archive whose links are relative to the tree restores without reservation.
 
 ### Examples
 

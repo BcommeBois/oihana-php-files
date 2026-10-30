@@ -31,6 +31,7 @@ Extrait une archive zip dans un dossier de sortie. Miroir de [`untar`](untar.md#
 | `'maxEntries'` / `ZipOption::MAX_ENTRIES` | `int\|null` | `null` | Si défini, rejette l'archive qui déclare plus d'entrées que cette limite (anti-bombe). |
 | `'maxSize'` / `ZipOption::MAX_SIZE` | `int\|null` | `null` | Si défini, plafonne la taille décompressée totale (en octets). Lève `FileException` **avant** toute écriture si dépassement. |
 | `'keepPermissions'` / `ZipOption::KEEP_PERMISSIONS` | `bool` | `false` | Restaure les permissions Unix stockées dans chaque entrée (attributs externes `OPSYS_UNIX`) via `chmod`. |
+| `'allowUnsafeLinks'` / `ZipOption::ALLOW_UNSAFE_LINKS` | `bool` | `false` | Recrée un lien symbolique dont la cible est **absolue** ou **sort** du dossier d'extraction, refusé par défaut. Pour une archive dont tu réponds. |
 
 ### Retour
 
@@ -69,7 +70,11 @@ Un lien est la **seule entrée dont le contenu est lui-même un chemin**, et la 
 - **cible absolue** → refusée ;
 - **cible qui sort du dossier de destination** une fois résolue depuis le dossier du lien → refusée.
 
-Un lien orphelin — dont la cible n'est pas dans l'archive — est recréé tel quel : c'est un lien valide qui ne pointe sur rien, comme sur le disque d'origine.
+`allowUnsafeLinks` lève ces deux refus — et seulement ceux-là. C'est l'option à passer pour restaurer **ta propre** archive : un backup d'un arbre dont les liens étaient absolus sur le disque d'origine, que [`zip`](zip.md#zip) stocke fidèlement et qui serait sinon irrécupérable. Le message du refus la nomme, pour ne pas te laisser chercher.
+
+> ⚠ Ce que l'option ouvre vraiment : dès qu'un tel lien existe dans la destination, **les entrées écrites après lui peuvent passer à travers**, donc dehors. Une entrée nommée `lien/passwd` est dans la destination par son nom et ailleurs sur le disque. À ne passer que pour une archive dont tu connais l'origine.
+
+Un lien orphelin — dont la cible n'est pas dans l'archive — est recréé tel quel : c'est un lien valide qui ne pointe sur rien, comme sur le disque d'origine. Un lien **sans cible du tout** est refusé dans tous les cas, `allowUnsafeLinks` ou non : il est malformé, ce n'est pas une question de confiance.
 
 `keepPermissions` **ne touche pas aux liens** : `chmod()` suit le lien et changerait les permissions de sa cible.
 6. Retourne la liste (mode `dryRun`) ou `true`.

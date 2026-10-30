@@ -18,6 +18,17 @@ class ZipOption
     use ConstantsTrait ;
 
     /**
+     * Whether to create a symbolic link whose target leaves the extraction directory.
+     *
+     * {@see \oihana\files\archive\zip\unzip()} refuses, by default, to recreate a link whose
+     * target is absolute or climbs out of the destination: a link is the one entry whose content is
+     * itself a path, and creating one hands every entry written after it a way out. Set this to
+     * `true` only for an archive you answer for — your own backup, typically, whose links were
+     * absolute on the disk it was taken from. Default: `false`.
+     */
+    public const string ALLOW_UNSAFE_LINKS = 'allowUnsafeLinks' ;
+
+    /**
      * Compression method applied to each entry when creating an archive.
      *
      * Accepts {@see CompressionType::ZIP} (DEFLATE, the default) or

@@ -313,6 +313,10 @@ class UnzipTest extends TestCase
         $this->expectException( FileException::class ) ;
         $this->expectExceptionMessageMatches( '/symbolic link to the absolute path "\/etc\/passwd"/' ) ;
 
+        // The refusal names the option that lifts it, so a caller restoring its own backup is not
+        // left guessing.
+        $this->expectExceptionMessageMatches( '/Set the "allowUnsafeLinks" option/' ) ;
+
         unzip( $archive , $this->outputDir ) ;
     }
 
@@ -348,6 +352,69 @@ class UnzipTest extends TestCase
         $this->assertTrue( is_link( $this->outputDir . '/sub/link.txt' ) ) ;
         $this->assertSame( 'real.txt' , readlink( $this->outputDir . '/sub/link.txt' ) ) ;
         $this->assertSame( 'real' , file_get_contents( $this->outputDir . '/sub/link.txt' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testAllowUnsafeLinksCreatesALinkEscapingTheDestination(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        file_put_contents( $this->tempDir . DIRECTORY_SEPARATOR . 'outside.txt' , 'outside' ) ;
+
+        $archive = $this->makeZipWithLink( 'link.txt' , '../outside.txt' ) ;
+
+        unzip( $archive , $this->outputDir , [ ZipOption::ALLOW_UNSAFE_LINKS => true ] ) ;
+
+        $this->assertTrue( is_link( $this->outputDir . '/link.txt' ) ) ;
+        $this->assertSame( '../outside.txt' , readlink( $this->outputDir . '/link.txt' ) ) ;
+        $this->assertSame( 'outside' , file_get_contents( $this->outputDir . '/link.txt' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testAllowUnsafeLinksCreatesALinkToAnAbsolutePath(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // The case this option exists for: a backup of a tree whose links were absolute on the
+        // disk it was taken from, which zip() stores faithfully.
+
+        $absolute = $this->tempDir . DIRECTORY_SEPARATOR . 'uploads' ;
+        makeDirectory( $absolute ) ;
+        file_put_contents( $absolute . DIRECTORY_SEPARATOR . 'photo.jpg' , 'photo' ) ;
+
+        $archive = $this->makeZipWithLink( 'uploads' , $absolute ) ;
+
+        $result = unzip( $archive , $this->outputDir , [ ZipOption::ALLOW_UNSAFE_LINKS => true ] ) ;
+
+        $this->assertTrue( $result ) ;
+        $this->assertTrue( is_link( $this->outputDir . '/uploads' ) ) ;
+        $this->assertSame( $absolute , readlink( $this->outputDir . '/uploads' ) ) ;
+        $this->assertSame( 'photo' , file_get_contents( $this->outputDir . '/uploads/photo.jpg' ) ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testAllowUnsafeLinksStillRefusesALinkWithoutATarget(): void
+    {
+        $this->skipWhenSymlinksAreUnreliable() ;
+
+        // A link to nothing at all is malformed, not a matter of trust: the option does not reach
+        // it.
+
+        $archive = $this->makeZipWithLink( 'link.txt' , '' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/symbolic link without a target/' ) ;
+
+        unzip( $archive , $this->outputDir , [ ZipOption::ALLOW_UNSAFE_LINKS => true ] ) ;
     }
 
     /**

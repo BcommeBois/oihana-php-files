@@ -31,6 +31,7 @@ Extracts a zip archive into an output directory. Mirror of [`untar`](untar.md#un
 | `'maxEntries'` / `ZipOption::MAX_ENTRIES` | `int\|null` | `null` | If set, rejects an archive that declares more entries than this limit (anti-bomb). |
 | `'maxSize'` / `ZipOption::MAX_SIZE` | `int\|null` | `null` | If set, caps the total uncompressed size (in bytes). Throws `FileException` **before** any write if exceeded. |
 | `'keepPermissions'` / `ZipOption::KEEP_PERMISSIONS` | `bool` | `false` | Restores the Unix permissions stored in each entry (`OPSYS_UNIX` external attributes) via `chmod`. |
+| `'allowUnsafeLinks'` / `ZipOption::ALLOW_UNSAFE_LINKS` | `bool` | `false` | Recreates a symbolic link whose target is **absolute** or **escapes** the extraction directory, refused by default. For an archive you answer for. |
 
 ### Returns
 
@@ -69,7 +70,11 @@ A link is the **one entry whose content is itself a path**, and the Zip Slip gua
 - **absolute target** → refused;
 - **target escaping the destination directory** once resolved from the link's own directory → refused.
 
-A dangling link — whose target is not in the archive — is recreated as it stands: a valid link pointing at nothing, as it was on the original disk.
+`allowUnsafeLinks` lifts those two refusals, and only those. It is the option to pass to restore **your own** archive: a backup of a tree whose links were absolute on the original disk, which [`zip`](zip.md#zip) stores faithfully and which would otherwise be unrestorable. The refusal message names it, so you are not left searching.
+
+> ⚠ What the option really opens: once such a link stands in the destination, **the entries written after it can reach through it**, outside. An entry named `link/passwd` is inside the destination by its name and elsewhere on disk. Pass it only for an archive whose origin you know.
+
+A dangling link — whose target is not in the archive — is recreated as it stands: a valid link pointing at nothing, as it was on the original disk. A link with **no target at all** is refused either way, `allowUnsafeLinks` or not: it is malformed, not a matter of trust.
 
 `keepPermissions` **leaves links alone**: `chmod()` follows a link and would change the permissions of its target.
 6. Returns the list (`dryRun` mode) or `true`.

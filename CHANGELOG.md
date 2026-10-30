@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- `unzip()` takes an `allowUnsafeLinks` option, `ZipOption::ALLOW_UNSAFE_LINKS`, default `false`.
+  It lifts the two refusals 1.5.2 introduced — a symbolic link whose target is absolute, and one
+  whose target escapes the destination — and nothing else. Without it, an archive this library
+  writes faithfully could not be read back: `zip()` stores a link's target as it was written, so a
+  backup of a tree whose `uploads` is an absolute link produced an archive `unzip()` refused to
+  restore, which is the shape most sites have. The refusal now names the option, so the way out is
+  in the message rather than in the source.
+
+  What the option opens is worth stating plainly: once such a link stands in the destination, the
+  entries written after it can reach through it, outside — an entry named `link/passwd` is inside
+  the destination by its name and elsewhere on disk. It is for an archive the caller answers for.
+  A link with no target at all stays refused either way, since that is malformed rather than
+  untrusted.
+
 ## [1.5.2] - 2026-10-30
 
 A symbolic link is a thing in its own right, and three functions of this library treated it as
