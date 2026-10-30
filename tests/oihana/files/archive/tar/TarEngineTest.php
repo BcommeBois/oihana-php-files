@@ -8,6 +8,7 @@ use RuntimeException;
 use oihana\files\enums\CompressionType;
 
 use function oihana\files\archive\tar\tar;
+use function oihana\files\deleteDirectory;
 use function oihana\files\archive\tar\tarBinary;
 use function oihana\files\archive\tar\tarBinaryHandles;
 use function oihana\files\archive\tar\tarBinaryIsUsable;
@@ -49,12 +50,24 @@ class TarEngineTest extends TestCase
 
     protected function tearDown() :void
     {
-        exec( sprintf( 'rm -rf %s' , escapeshellarg( $this->root ) ) ) ;
+        // The environment goes back before anything else. A test that empties the PATH, to make
+        // the system tar fail for want of its compressor, also keeps a shell from finding any
+        // program — so a cleanup shelling out to `rm` ran first and could not: "sh: rm: command
+        // not found" on the console, and the fixture tree left in the temporary directory, once
+        // per run.
 
         putenv( 'OIHANA_TAR_BINARY' ) ;
         putenv( $this->path === false ? 'PATH' : 'PATH=' . $this->path ) ;
 
         tarBinary( refresh: true ) ;
+
+        // And no shell at all now. deleteDirectory() removes the links these trees hold instead of
+        // stopping on them, which is what a shell was here for.
+
+        if ( is_dir( $this->root ) )
+        {
+            deleteDirectory( $this->root , assertable: false ) ;
+        }
     }
 
     // ------------------------------------------------------------------ the shared naming
