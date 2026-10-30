@@ -289,9 +289,13 @@ class TarEngineTest extends TestCase
     /**
      * The archive is the same whichever engine wrote it.
      *
-     * Accents, CJK, quotes, spaces, an empty directory, a symlink and a deep path — the shapes
-     * a real site is made of. Anything the two engines disagree on here is an archive that
-     * restores differently depending on which machine wrote it.
+     * Accents, CJK, quotes, spaces, an empty directory and a deep path — the shapes a real site
+     * is made of. Anything the two engines disagree on here is an archive that restores
+     * differently depending on which machine wrote it.
+     *
+     * A symbolic link is not among them, and that is deliberate: PharData has no way to write a
+     * link entry, so it refuses the tree instead of writing something else in its place. The two
+     * engines part company there, loudly, and the test below is where that is said.
      */
     public function testBothEnginesProduceTheSameEntries() :void
     {
@@ -342,6 +346,126 @@ class TarEngineTest extends TestCase
 
         $this->assertFileExists( $this->root . '/out/été.txt' ) ;
         $this->assertFileExists( $this->root . '/out/sous dossier/nested.txt' ) ;
+    }
+
+    /**
+     * A link is written by the binary and refused by PharData.
+     *
+     * Phar exposes no way to write a link entry — there is no addSymlink, and the ustar type flag
+     * is out of reach of the API — so this engine cannot keep one. It used to store something else
+     * instead: an empty directory for a link to a directory, the bytes of the target for a link to
+     * a file, and a phar error for a link to nothing. The same tree then gave one archive through
+     * the binary and another through this engine, which is the kind of difference that only shows
+     * up on another machine.
+     *
+     * PharData writes whenever there is no GNU tar to trust, for a compression it cannot run, and
+     * whenever the paths asked for span more than one parent directory — that last one on any host,
+     * GNU tar installed or not.
+     */
+    public function testASymbolicLinkIsRefusedByPharDataAndWrittenByTheBinary() :void
+    {
+        $binary = $this->requireBinary() ;
+
+        $tree = $this->root . '/linked' ;
+
+        mkdir( $tree , 0700 ) ;
+        file_put_contents( $tree . '/real.txt' , 'x' ) ;
+        symlink( 'real.txt' , $tree . '/link.txt' ) ;
+
+        putenv( 'OIHANA_TAR_BINARY=' ) ;
+        tarBinary( refresh: true ) ;
+
+        try
+        {
+            tar( $tree , $this->root . '/phar.tar' , CompressionType::NONE , $tree ) ;
+
+            $this->fail( 'PharData accepted a symbolic link; it has no way to store one.' ) ;
+        }
+        catch ( RuntimeException $exception )
+        {
+            // The message names the link that stopped it, and what to do instead.
+            $this->assertStringContainsString( $tree . '/link.txt' , $exception->getMessage() ) ;
+            $this->assertStringContainsString( 'cannot store a link entry' , $exception->getMessage() ) ;
+        }
+
+        $this->assertFileDoesNotExist( $this->root . '/phar.tar' , 'A refused archive must leave nothing behind.' ) ;
+
+        putenv( 'OIHANA_TAR_BINARY=' . $binary ) ;
+        tarBinary( refresh: true ) ;
+
+        $archive = tar( $tree , $this->root . '/system.tar' , CompressionType::NONE , $tree ) ;
+
+        $this->assertContains( 'link.txt' , $this->archived( $archive ) ) ;
+    }
+
+    /**
+     * A link to a directory is refused too, and it is the one that used to lose the most.
+     *
+     * 'directory' comes from SplFileInfo::isDir(), which answers true for a link to a directory,
+     * so this entry took the addEmptyDir() branch: the archive held an empty directory where the
+     * link was, and whatever it pointed at was nowhere — no error, no warning, just a backup
+     * missing a tree.
+     */
+    public function testALinkToADirectoryIsRefusedByPharData() :void
+    {
+        $this->requireBinary() ;
+
+        $tree = $this->root . '/withdir' ;
+
+        mkdir( $tree , 0700 ) ;
+        mkdir( $this->root . '/elsewhere' , 0700 ) ;
+        file_put_contents( $this->root . '/elsewhere/inside.txt' , 'x' ) ;
+        symlink( $this->root . '/elsewhere' , $tree . '/pointer' ) ;
+
+        putenv( 'OIHANA_TAR_BINARY=' ) ;
+        tarBinary( refresh: true ) ;
+
+        $this->expectException( RuntimeException::class ) ;
+        $this->expectExceptionMessageMatches( '/pointer": this archive is being written by PharData/' ) ;
+
+        tar( $tree , $this->root . '/phar.tar' , CompressionType::NONE , $tree ) ;
+    }
+
+    /**
+     * The trigger nobody would guess: several paths, several parents.
+     *
+     * tarBinaryHandles() asks for exactly one base, because the binary is given one `--directory`
+     * and reads the names from standard input. Paths under different parents make two, so PharData
+     * writes — on any host, GNU tar installed or not. A link in one of those paths is therefore
+     * refused on a machine where the very same link, archived on its own, is kept.
+     */
+    public function testALinkIsRefusedWhenSeveralParentsSendTheWorkToPharData() :void
+    {
+        $binary = $this->requireBinary() ;
+
+        mkdir( $this->root . '/x/a' , 0700 , true ) ;
+        mkdir( $this->root . '/y/b' , 0700 , true ) ;
+
+        file_put_contents( $this->root . '/x/a/real.txt' , 'x' ) ;
+        file_put_contents( $this->root . '/y/b/other.txt' , 'x' ) ;
+        symlink( 'real.txt' , $this->root . '/x/a/link.txt' ) ;
+
+        putenv( 'OIHANA_TAR_BINARY=' . $binary ) ;
+        tarBinary( refresh: true ) ;
+
+        // One path: one base, the binary writes, the link is kept.
+
+        $alone = tar( $this->root . '/x/a' , $this->root . '/alone.tar' , CompressionType::NONE , $this->root . '/x/a' ) ;
+
+        $this->assertContains( 'link.txt' , $this->archived( $alone ) ) ;
+
+        // Both paths: two bases, PharData writes, and the same link is refused.
+
+        try
+        {
+            tar( [ $this->root . '/x/a' , $this->root . '/y/b' ] , $this->root . '/both.tar' ) ;
+
+            $this->fail( 'Two parents send the work to PharData, which cannot store the link.' ) ;
+        }
+        catch ( RuntimeException $exception )
+        {
+            $this->assertStringContainsString( 'cannot store a link entry' , $exception->getMessage() ) ;
+        }
     }
 
     /**
@@ -483,7 +607,9 @@ class TarEngineTest extends TestCase
         file_put_contents( $tree . '/sous dossier/nested.txt' , 'x' ) ;
         file_put_contents( $tree . '/a/b/c/d/e/deep.txt' , 'x' ) ;
 
-        symlink( 'été.txt' , $tree . '/lien' ) ;
+        // No symbolic link here: the two engines do not agree on one, and are not meant to.
+        // PharData cannot store a link entry at all, so it refuses rather than storing something
+        // else — which is what testASymbolicLinkIsRefusedByPharDataAndWrittenByTheBinary says.
 
         return $tree ;
     }

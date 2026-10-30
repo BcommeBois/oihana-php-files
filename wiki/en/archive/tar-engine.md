@@ -124,6 +124,25 @@ A binary that is present and **fails** raises instead of falling back. It is rep
 `PharData` would meet as well — a full disk, a path it may not read — and retrying in PHP would
 spend minutes reaching the same wall with the original reason discarded.
 
+## What PharData cannot write
+
+Two things, and in both cases it **refuses** rather than writing something else.
+
+**A name longer than 100 bytes** — the `ustar` limit seen above.
+
+**A symbolic link.** Phar exposes no way to write a link entry: there is no `addSymlink`, and the
+`ustar` type flag is out of reach of the API. Before 1.6.0 this branch stored something else in its
+place — an empty directory for a link to a directory, the target's bytes for a link to a file, a
+`phar` error for a dangling link. The same tree therefore gave one archive through the binary and
+another through `PharData`, without a word. `tar()` now reads the tree **before anything is
+written** and refuses, naming the link, with the three ways out: install GNU tar, archive the paths
+one at a time so it can be used, or go through [`zip`](zip.md#zip) — all three keep the link as a
+link.
+
+> ⚠ The third case in the list above is the trap: **several paths with no common parent** send the
+> work to `PharData` on any host, GNU tar installed or not. A link archived on its own is kept; the
+> same link archived alongside a path from another parent is refused.
+
 ## Asking which engine is in place
 
 ```php

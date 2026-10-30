@@ -195,6 +195,23 @@ function tar
         return $finalPath ;
     }
 
+    // PharData is the writer from here on, and it cannot store a symbolic link: Phar exposes no
+    // way to write one — there is no addSymlink, and the ustar type flag is out of reach of the
+    // API. Rather than store something else in its place, the tree is read for links before
+    // anything is written, so the refusal names the link and leaves no half-written archive.
+
+    foreach ( $entries as $entry )
+    {
+        if ( is_link( $entry[ 'path' ] ) )
+        {
+            throw new RuntimeException( sprintf
+            (
+                'Cannot archive the symbolic link "%s": this archive is being written by PharData, which cannot store a link entry. Install the system GNU tar, or archive the paths one at a time so that it can be used, or use zip() — all three keep the link as a link.' ,
+                $entry[ 'path' ]
+            ) ) ;
+        }
+    }
+
     // Only the PharData branch writes a compressed temporary file, and only it knows the
     // extension of one — which is why this is computed here and not above. Asked earlier,
     // for a compression PharData cannot write, it refused an archive the binary was about

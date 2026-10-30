@@ -131,6 +131,25 @@ Un binaire présent qui **échoue** lève au lieu de se rabattre. Il signale que
 `PharData` rencontrerait aussi — un disque plein, un chemin illisible — et réessayer en PHP
 passerait des minutes à atteindre le même mur, en jetant la cause d'origine.
 
+## Ce que PharData ne peut pas écrire
+
+Deux choses, et dans les deux cas il **refuse** plutôt que d'écrire autre chose.
+
+**Un nom de plus de 100 octets** — la limite `ustar` vue plus haut.
+
+**Un lien symbolique.** Phar n'expose aucun moyen d'écrire une entrée de type lien : il n'y a pas
+de `addSymlink`, et le drapeau de type `ustar` est hors de portée de l'API. Avant la 1.6.0, cette
+branche stockait autre chose à la place — un dossier vide pour un lien vers un dossier, les octets
+de la cible pour un lien vers un fichier, une erreur `phar` pour un lien orphelin. Le même arbre
+donnait donc une archive par le binaire et une autre par `PharData`, sans un mot. `tar()` lit
+maintenant l'arbre **avant d'écrire quoi que ce soit** et refuse en nommant le lien, avec les trois
+issues : installer GNU tar, archiver les chemins un par un pour qu'il soit utilisé, ou passer par
+[`zip`](zip.md#zip) — les trois gardent le lien comme lien.
+
+> ⚠ Le troisième cas de la liste ci-dessus est le piège : **plusieurs chemins sans parent commun**
+> envoient le travail à `PharData` sur n'importe quelle machine, GNU tar installé ou non. Un lien
+> archivé seul est gardé ; le même lien archivé avec un chemin d'un autre parent est refusé.
+
 ## Savoir quel moteur est en place
 
 ```php

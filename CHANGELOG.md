@@ -17,6 +17,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- `tar()` no longer flattens a symbolic link when PharData writes the archive. The engine is chosen
+  before anything is written: the system GNU tar when there is one to trust, PharData otherwise —
+  and PharData has no way to write a link entry, since Phar exposes no `addSymlink` and the ustar
+  type flag is out of reach of its API. It stored something else in its place:
+
+      linked-dir/   size=0    type=directory      the content it pointed at, nowhere
+      linked-file   size=13   type=regular file    the target's bytes, read outside the tree
+      dangling      phar error: unable to open file
+
+  The same tree therefore produced one archive through the binary, which keeps links, and another
+  through PharData, which does not — the kind of difference that only shows up on another machine.
+  The tree is now read for links before anything is written, and a link is refused with a message
+  naming it and the three ways out: install GNU tar, archive the paths one at a time so it can be
+  used, or use `zip()`, which stores links since 2b03fd7.
+
+  PharData writes whenever there is no GNU tar — a Mac without one, since `bsdtar` does not
+  qualify — for a compression it cannot run, and whenever the paths asked for span more than one
+  parent directory. That last one fires on any host, GNU tar installed or not: a link archived on
+  its own is kept, and the same link archived alongside a path from another parent is refused.
+
 - `deleteTemporaryDirectory()` no longer deletes outside the temporary directory. Its only guard
   was `realpath( $directory ) === realpath( sys_get_temp_dir() )` — "not the temporary directory
   itself" — and nothing checked that the path was *inside* it. `getTemporaryDirectory()` hands back
