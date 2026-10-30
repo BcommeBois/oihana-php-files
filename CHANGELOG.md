@@ -32,6 +32,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- Six writes whose failure went unreported now report it. Each was a call whose return value was
+  discarded, so the function around it carried on and answered success:
+
+  - `copyFilteredFiles()` — `copy()`. A file that could not be copied left the function returning
+    `true` for a destination missing one of its files.
+  - `copyFilteredFilesWithMetadata()` — `file_put_contents()` for `.metadata.json`. The staging
+    directory then passed for complete, and the archive was built believing it carried metadata
+    nobody had written.
+  - `unzip()` — `ZipArchive::getFromIndex()`. An entry libzip cannot read answers `false`, which
+    written out gives an empty file: an AES-encrypted archive read without its password came out
+    as a tree of empty files, reported as a success.
+  - `unzip()` — `file_put_contents()` for the extracted file. A full disk, or a target that is
+    already a directory, left the extraction reporting success for a file it had not written.
+  - `tar()` — the two `rename()` calls that move the archive into place on the PharData path.
+    `tar()` returned the path of an archive that was never moved there.
+
+  The sixth call, `chmod()` in `preservePharFilePermissions()`, is deliberately best-effort and is
+  left as it is: a mode that cannot be applied is not a reason to fail an extraction that worked.
+
+  Worth stating since it was measured and is *not* fixed: libzip does not verify an entry's CRC on
+  read, so a corrupt entry comes back as truncated content rather than as `false`. The guard above
+  catches what libzip reports as a failure, not a silent truncation.
+
 - `untar()` no longer extracts a link whose target leaves the output directory, and no longer
   flattens one when `PharData` reads the archive. Both are the counterpart of what `unzip()` and
   `tar()` were given earlier in this release, and neither existed: `untarAssertExtractable()`

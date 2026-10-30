@@ -113,6 +113,31 @@ class CopyFilteredFilesTest extends TestCase
         $this->assertFileDoesNotExist($this->destDir . '/broken.link');
     }
 
+    public function testThrowsWhenAFileCannotBeCopied(): void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )
+        {
+            $this->markTestSkipped( 'Permission tests are not reliable on Windows.' ) ;
+        }
+
+        // Unchecked, copy() returning false left the function reporting true for a destination
+        // missing one of its files.
+
+        chmod( $this->sourceDir . '/file1.txt' , 0000 ) ;
+
+        try
+        {
+            $this->expectException( DirectoryException::class ) ;
+            $this->expectExceptionMessageMatches( '/Failed to copy ".+file1\.txt" to /' ) ;
+
+            copyFilteredFiles( $this->sourceDir , $this->destDir ) ;
+        }
+        finally
+        {
+            chmod( $this->sourceDir . '/file1.txt' , 0644 ) ;
+        }
+    }
+
     /**
      * @throws DirectoryException
      */

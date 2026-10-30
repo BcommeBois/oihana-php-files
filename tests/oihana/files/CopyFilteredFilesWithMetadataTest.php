@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
 use function oihana\files\copyFilteredFilesWithMetadata;
 use function oihana\files\deleteDirectory;
 
@@ -33,6 +34,37 @@ class CopyFilteredFilesWithMetadataTest extends TestCase
     protected function tearDown(): void
     {
         deleteDirectory( dirname( $this->sourceDir ) );
+    }
+
+    public function testThrowsWhenTheMetadataFileCannotBeWritten(): void
+    {
+        if ( strtoupper( substr( PHP_OS , 0 , 3 ) ) === 'WIN' )
+        {
+            $this->markTestSkipped( 'Permission tests are not reliable on Windows.' ) ;
+        }
+
+        // Unchecked, this failure let the staging directory pass for complete, and the archive was
+        // then built believing it carried metadata nobody had written.
+
+        $base     = dirname( $this->sourceDir ) ;
+        $readOnly = $base . DIRECTORY_SEPARATOR . 'read-only-dest' ;
+        $empty    = $base . DIRECTORY_SEPARATOR . 'empty-source' ;
+
+        mkdir( $readOnly , 0777 , true ) ;
+        mkdir( $empty , 0777 , true ) ;
+        chmod( $readOnly , 0555 ) ;
+
+        try
+        {
+            $this->expectException( FileException::class ) ;
+            $this->expectExceptionMessageMatches( '/Failed to write the metadata file ".+\.metadata\.json"/' ) ;
+
+            copyFilteredFilesWithMetadata( $empty , $readOnly , [] , null , [ 'createdBy' => 'the test' ] ) ;
+        }
+        finally
+        {
+            chmod( $readOnly , 0777 ) ;
+        }
     }
 
     public function testCopiesFilteredFiles(): void

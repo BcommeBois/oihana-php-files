@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use function oihana\files\archive\tar\tar;
+use function oihana\files\archive\tar\tarBinary;
 use function oihana\files\deleteDirectory;
 use function oihana\files\makeDirectory;
 use function oihana\reflect\helpers\getFunctionInfo;
@@ -38,6 +39,64 @@ class TarTest extends TestCase
         if( is_string( $this->archivePath ) && file_exists( $this->archivePath ) )
         {
             @unlink( $this->archivePath );
+        }
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testThrowsWhenTheArchiveCannotBeMovedIntoPlace(): void
+    {
+        // PharData writes a temporary file and moves it into place. Unchecked, a move that failed
+        // left tar() returning the path of an archive that was never there.
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/Cannot move the archive to ".+in-the-way\.tar"/' ) ;
+
+        $this->tarIntoSomethingInTheWay( CompressionType::NONE , 'in-the-way.tar' ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     */
+    public function testThrowsWhenTheCompressedArchiveCannotBeMovedIntoPlace(): void
+    {
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/Cannot move the compressed archive to ".+in-the-way\.tar\.gz"/' ) ;
+
+        $this->tarIntoSomethingInTheWay( CompressionType::GZIP , 'in-the-way.tar.gz' ) ;
+    }
+
+    /**
+     * Asks PharData to write an archive where a directory of that name already stands, so the move
+     * into place cannot land. The environment is put back whatever happens.
+     *
+     * @throws DirectoryException
+     */
+    private function tarIntoSomethingInTheWay( string $compression , string $name ): void
+    {
+        $override = getenv( 'OIHANA_TAR_BINARY' ) ;
+
+        putenv( 'OIHANA_TAR_BINARY=' ) ;
+        tarBinary( refresh: true ) ;
+
+        $tree = $this->tempDir . DIRECTORY_SEPARATOR . 'tree' ;
+
+        makeDirectory( $tree ) ;
+        file_put_contents( $tree . DIRECTORY_SEPARATOR . 'file.txt' , 'x' ) ;
+
+        $target = $this->tempDir . DIRECTORY_SEPARATOR . $name ;
+
+        makeDirectory( $target ) ;
+
+        try
+        {
+            tar( $tree , $target , $compression , $tree ) ;
+        }
+        finally
+        {
+            putenv( $override === false ? 'OIHANA_TAR_BINARY' : 'OIHANA_TAR_BINARY=' . $override ) ;
+            tarBinary( refresh: true ) ;
         }
     }
 

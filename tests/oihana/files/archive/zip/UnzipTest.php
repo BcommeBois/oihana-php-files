@@ -418,6 +418,57 @@ class UnzipTest extends TestCase
     }
 
     /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenAnEntryCannotBeRead(): void
+    {
+        // An entry encrypted with AES, read without the password: libzip answers false. Unchecked,
+        // that false was written out as an empty file and the extraction reported success — an
+        // archive this library cannot read came out as a tree of empty files.
+
+        $archive = $this->tempDir . DIRECTORY_SEPARATOR . 'encrypted.zip' ;
+        $zip     = new ZipArchive() ;
+
+        $zip->open( $archive , ZipArchive::CREATE | ZipArchive::OVERWRITE ) ;
+        $zip->setPassword( 'secret' ) ;
+        $zip->addFromString( 'secret.txt' , 'content' ) ;
+
+        if ( !$zip->setEncryptionName( 'secret.txt' , ZipArchive::EM_AES_256 ) )
+        {
+            $zip->close() ;
+
+            $this->markTestSkipped( 'This libzip cannot write an AES-encrypted entry.' ) ;
+        }
+
+        $zip->close() ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/Cannot read the entry "secret\.txt" of the zip archive/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
+     * @throws DirectoryException
+     * @throws FileException
+     */
+    public function testThrowsWhenAnExtractedFileCannotBeWritten(): void
+    {
+        // The entry is a file and a directory of that name already stands in the way, so the write
+        // cannot land. Unchecked, unzip() returned true for a file it had not written.
+
+        $archive = $this->makeZip( [ 'sub' => 'content' ] ) ;
+
+        makeDirectory( $this->outputDir . DIRECTORY_SEPARATOR . 'sub' ) ;
+
+        $this->expectException( FileException::class ) ;
+        $this->expectExceptionMessageMatches( '/Cannot write the extracted file ".+sub"/' ) ;
+
+        unzip( $archive , $this->outputDir ) ;
+    }
+
+    /**
      * Builds an archive holding one symbolic link entry — its target as the entry's content and
      * the Unix link type bits in its external attributes, the way zip() stores a link — plus any
      * regular files given.

@@ -3,6 +3,7 @@
 namespace oihana\files ;
 
 use oihana\files\exceptions\DirectoryException;
+use oihana\files\exceptions\FileException;
 use RuntimeException;
 
 /**
@@ -26,7 +27,8 @@ use RuntimeException;
  *
  * @return void
  *
- * @throws DirectoryException
+ * @throws DirectoryException If a directory of the destination cannot be created.
+ * @throws FileException If the metadata file cannot be written.
  * @package oihana\files
  * @author  Marc Alcaraz (ekameleon)
  * @since   1.2.0
@@ -58,7 +60,18 @@ function copyFilteredFilesWithMetadata
     if ( !empty( $metadata ) )
     {
         $metaJson = json_encode( $metadata , JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ;
-        file_put_contents( $destDir . DIRECTORY_SEPARATOR . '.metadata.json' , $metaJson ) ;
+        $metaPath = $destDir . DIRECTORY_SEPARATOR . '.metadata.json' ;
+
+        // Unchecked, a failure here let the staging directory pass for complete: the archive was
+        // then built believing it carried metadata that was never written.
+        //
+        // @-suppressed: file_put_contents() warns on a failure the exception below reports in full.
+
+        if ( @file_put_contents( $metaPath , $metaJson ) === false )
+        {
+            throw new FileException( sprintf('Failed to write the metadata file "%s".' , $metaPath ) ) ;
+        }
+
         $copiedFiles = true ;
     }
 

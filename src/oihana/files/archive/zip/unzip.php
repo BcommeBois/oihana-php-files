@@ -56,7 +56,8 @@ use function oihana\files\path\joinPaths;
  *                       destination (Zip Slip), an entry is a symbolic link whose target is
  *                       absolute or escapes the destination while `allowUnsafeLinks` is off, an
  *                       entry is a symbolic link without a target, a link cannot be created, a bomb
- *                       guard trips, or a target already exists while overwrite is disabled.
+ *                       guard trips, a target already exists while overwrite is disabled, an
+ *                       entry cannot be read, or an extracted file cannot be written.
  * @throws DirectoryException If the destination directory (or an entry's parent) cannot be created.
  *
  * @example
@@ -229,7 +230,25 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
                 }
 
                 makeDirectory( dirname( $target ) ) ;
-                file_put_contents( $target , $zip->getFromIndex( $i ) ) ;
+
+                // Both halves were unchecked, and each has its own silence: an entry that cannot
+                // be read answers false, which written out gives an empty file, and a write that
+                // fails — a full disk, a target that is a directory — left the extraction
+                // reporting success for a file it did not write.
+
+                $contents = $zip->getFromIndex( $i ) ;
+
+                if ( $contents === false )
+                {
+                    throw new FileException( sprintf('Cannot read the entry "%s" of the zip archive.' , $name ) ) ;
+                }
+
+                // @-suppressed: file_put_contents() warns on a failure the exception below reports.
+
+                if ( @file_put_contents( $target , $contents ) === false )
+                {
+                    throw new FileException( sprintf('Cannot write the extracted file "%s".' , $target ) ) ;
+                }
             }
 
             if ( $keepPermissions && ( $mode & 0o7777 ) !== 0 )

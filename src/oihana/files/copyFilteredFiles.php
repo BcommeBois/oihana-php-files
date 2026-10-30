@@ -38,9 +38,9 @@ use RecursiveIteratorIterator;
  *
  * @return bool Returns `true` if at least one file or directory was copied, `false` otherwise.
  *
- * @throws DirectoryException If a directory cannot be created in the destination path, if a
- * symbolic link cannot be reproduced, or if `$followLinks` meets a link pointing at a directory
- * that holds it.
+ * @throws DirectoryException If a directory cannot be created in the destination path, if a file
+ * cannot be copied, if a symbolic link cannot be reproduced, or if `$followLinks` meets a link
+ * pointing at a directory that holds it.
  *
  * @security
  * `$excludePatterns` is forwarded to {@see shouldExcludeFile()} which uses
@@ -206,7 +206,12 @@ function copyFilteredFiles( string $sourceDir , string $destDir , array $exclude
                 makeDirectory( $destDirPath );
             }
 
-            copy( $pathname , $destPath ) ;
+            // @-suppressed: copy() warns on a failure the exception below reports in full.
+
+            if ( !@copy( $pathname , $destPath ) )
+            {
+                throw new DirectoryException( sprintf('Failed to copy "%s" to "%s".' , $pathname , $destPath ) ) ;
+            }
         }
 
         $copiedFiles = true;

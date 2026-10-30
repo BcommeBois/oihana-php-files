@@ -247,7 +247,13 @@ function tar
 
         if ( $compression == CompressionType::NONE )
         {
-            rename( $tempTarPath , $finalPath ) ;
+            // @-suppressed: rename() warns on a failure the exception below reports in full.
+            // Unchecked, tar() returned the path of an archive that was never moved there.
+
+            if ( !@rename( $tempTarPath , $finalPath ) )
+            {
+                throw new FileException( sprintf('Cannot move the archive to "%s".' , $finalPath ) ) ;
+            }
         }
         else
         {
@@ -277,7 +283,10 @@ function tar
                     throw new RuntimeException("Compressed temporary file was not found at: $compressedTempPath" ) ;
                     // @codeCoverageIgnoreEnd
                 }
-                rename( $compressedTempPath , $finalPath ) ;
+                if ( !@rename( $compressedTempPath , $finalPath ) )
+                {
+                    throw new FileException( sprintf('Cannot move the compressed archive to "%s".' , $finalPath ) ) ;
+                }
             }
         }
 
