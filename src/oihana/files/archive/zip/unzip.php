@@ -237,26 +237,38 @@ function unzip( string $zipFile , string $outputPath , array $options = [] ): tr
                 // fails — a full disk, a target that is a directory — left the extraction
                 // reporting success for a file it did not write.
 
-                $contents = $zip->getFromIndex( $i ) ;
+                // A corrupt entry is caught by one layer or the other, depending on libzip:
+                //
+                // - libzip 1.7 (Ubuntu 24.04) checks the CRC as it reads and answers false. Why is
+                //   said only in the PHP warning it raises — "Cannot read entry: CRC error" — while
+                //   the archive's status still reads "No error". So the warning is silenced, and
+                //   read here instead;
+                // - libzip 1.11 does not check it. A damaged deflated stream comes back as whatever
+                //   inflated before the damage — 2 bytes of 840 when it was measured — and an
+                //   altered stored entry comes back altered, with no error at all. The catalogue
+                //   records the CRC each entry was written with, so the content is held to it
+                //   below, before it is written anywhere.
+                //
+                // Either way, a corrupt entry is reported the same. Any other refusal of libzip
+                // is reported with what it said, when it said something.
+
+                $corrupt = 'The entry "%s" of the zip archive is corrupt: its content does not match the checksum the archive records for it.' ;
+
+                error_clear_last() ;
+
+                $contents = @$zip->getFromIndex( $i ) ;
 
                 if ( $contents === false )
                 {
-                    throw new FileException( sprintf('Cannot read the entry "%s" of the zip archive.' , $name ) ) ;
-                }
+                    $said    = (string) preg_replace( '/^ZipArchive::getFromIndex\(\): /' , '' , error_get_last()[ 'message' ] ?? '' ) ;
+                    $message = str_contains( $said , 'CRC error' ) ? sprintf( $corrupt , $name ) : sprintf( 'Cannot read the entry "%s" of the zip archive%s' , $name , $said !== '' ? ': ' . $said : '.' ) ;
 
-                // libzip does not check an entry against its CRC when it reads it. A damaged
-                // deflated stream comes back as whatever inflated before the damage — 2 bytes of
-                // 840 when it was measured — and an altered stored entry comes back altered, with
-                // no error either way. The catalogue records the CRC each entry was written with,
-                // so the content is held to it before it is written anywhere.
+                    throw new FileException( $message ) ;
+                }
 
                 if ( crc32( $contents ) !== (int) $zip->statIndex( $i )[ 'crc' ] )
                 {
-                    throw new FileException( sprintf
-                    (
-                        'The entry "%s" of the zip archive is corrupt: its content does not match the checksum the archive records for it.' ,
-                        $name
-                    )) ;
+                    throw new FileException( sprintf( $corrupt , $name ) ) ;
                 }
 
                 // @-suppressed: file_put_contents() warns on a failure the exception below reports.

@@ -58,6 +58,12 @@ documents them where their neighbours already are.
   records the CRC each entry was written with and the content is already in memory when it is
   checked. The comparison is on the checksum alone: a stored entry with one byte altered keeps its
   size, so only the checksum can tell.
+  Which layer sees the corruption depends on libzip, and both are handled: libzip 1.11 reads a
+  corrupt entry without a word, and the checksum catches it; libzip 1.7 (Ubuntu 24.04) refuses to
+  read it, says why only in a PHP warning — `Cannot read entry: CRC error` — and leaves the
+  archive's status at « No error ». That warning is now silenced and read, so a corrupt entry is
+  reported the same on both, and any other refusal carries what libzip said instead of nothing.
+  The two tests that hold this failed on the CI until then: they had only been run against 1.11.
 
 ## [1.6.0] - 2026-10-30
 
