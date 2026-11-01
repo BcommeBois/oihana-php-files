@@ -1,13 +1,13 @@
 # Créer une archive tar
 
-Sept fonctions pour produire, inspecter et copier avec tar.
+Huit fonctions pour produire, inspecter et copier avec tar.
 
 - [`tar`](#tar) — création depuis fichiers et/ou dossiers (API principale).
 - [`tarDirectory`](#tardirectory) — convenience pour un dossier unique avec filtres et metadata.
 - [`tarFileInfo`](#tarfileinfo) — inspection (validité, MIME, compression, count, taille).
 - [`tarIsCompressed`](#tariscompressed) — détection rapide par extension.
 - [`tarExcludesPath`](#tarexcludespath) — si les motifs `--exclude` de GNU tar laissent un chemin dehors.
-- [`tarCopyScript` et `tarCopyOutcome`](#copier-un-dossier-par-deux-tar) — copier une partie d'un dossier par deux tar, et juger la copie.
+- [`tarCopyScript`, `tarCopyOutcome` et `tarCopyMovedLine`](#copier-un-dossier-par-deux-tar) — copier une partie d'un dossier par deux tar, juger la copie, et nommer ce qui a bougé.
 
 ---
 
@@ -305,9 +305,10 @@ tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (un se
 ```php
 tarCopyScript( string $source , array $members , string $destination , array $exclude = [] ) : string
 tarCopyOutcome( int $status , string $error ) : array
+tarCopyMovedLine( array $moved , string $what , ?int $limit = null ) : string
 ```
 
-`tar -cf - | tar -xf -` copie une partie d'un dossier dans un autre et, contrairement à `cp`, ne lit jamais ce qu'il exclut : un cache ou une archive laissés dans l'arbre ne coûtent rien. Les deux fonctions vont ensemble — l'une écrit la commande, l'autre juge ce qu'il en est sorti.
+`tar -cf - | tar -xf -` copie une partie d'un dossier dans un autre et, contrairement à `cp`, ne lit jamais ce qu'il exclut : un cache ou une archive laissés dans l'arbre ne coûtent rien. Les fonctions vont ensemble — l'une écrit la commande, une autre juge ce qu'il en est sorti, la dernière dit quels fichiers ont bougé.
 
 **`tarCopyScript`** rend le script bash. Il garde séparés les codes de sortie des deux tar, que `set -o pipefail` confondrait :
 
@@ -345,6 +346,22 @@ if ( !$outcome[ 'ok' ] )
 }
 // $outcome[ 'moved' ] nomme les fichiers qui ont changé pendant la copie.
 ```
+
+**`tarCopyMovedLine`** met la liste `moved` en mots, pour un terminal, un journal ou un courriel :
+
+```php
+tarCopyMovedLine( array $moved , string $what , ?int $limit = null ) : string
+```
+
+```php
+tarCopyMovedLine( [ 'content/a.log' ] , 'content' ) ;
+// '1 file changed while content was copied, and was copied as found: content/a.log'
+
+tarCopyMovedLine( [ 'a' , 'b' , 'c' , 'd' ] , 'content' , 2 ) ;
+// '4 files changed while content was copied, and were copied as found: a, b … and 2 more'
+```
+
+Une limite nomme au plus ce nombre de fichiers (un au moins) et dit combien elle en laisse : un dossier de cache qui change sans cesse ne doit pas faire un message de mille lignes. Le compte porte toujours sur tous les fichiers. Une liste vide donne une chaîne vide.
 
 ---
 

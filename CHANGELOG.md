@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-Nine functions that lived in an application built on this library, and that had nothing of that
+Ten functions that lived in an application built on this library, and that had nothing of that
 application in them. Each comes with its own test, and the wiki, in English and in French,
 documents them where their neighbours already are.
 
@@ -47,6 +47,11 @@ documents them where their neighbours already are.
   removed before being read, shrunk), and those files are named; any other line fails the copy,
   with what tar said as the reason. A copy taken from a directory in use is never a frozen
   picture of it, and failing it for a log written to during the copy loses the whole copy.
+- `archive\tar\tarCopyMovedLine()` — the sentence that names those files, for a terminal, a log
+  or a mail: « 2 files changed while content was copied, and were copied as found: a, b ». A
+  limit names that many at most and says how many it left out, so a cache folder that keeps
+  changing does not make a message of a thousand lines; the count is always of every file. No
+  file, no sentence: an empty list gives an empty string.
 
 ### Fixed
 

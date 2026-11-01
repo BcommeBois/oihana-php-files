@@ -1,13 +1,13 @@
 # Creating a tar archive
 
-Seven functions to produce, inspect and copy with tar.
+Eight functions to produce, inspect and copy with tar.
 
 - [`tar`](#tar) — create from files and/or directories (main API).
 - [`tarDirectory`](#tardirectory) — convenience for a single directory with filters and metadata.
 - [`tarFileInfo`](#tarfileinfo) — inspection (validity, MIME, compression, count, size).
 - [`tarIsCompressed`](#tariscompressed) — fast extension-based detection.
 - [`tarExcludesPath`](#tarexcludespath) — whether GNU tar's `--exclude` patterns leave a path out.
-- [`tarCopyScript` and `tarCopyOutcome`](#copying-a-directory-through-two-tar) — copy part of a directory through two tar, and judge the copy.
+- [`tarCopyScript`, `tarCopyOutcome` and `tarCopyMovedLine`](#copying-a-directory-through-two-tar) — copy part of a directory through two tar, judge the copy, and name what moved.
 
 ---
 
@@ -305,9 +305,10 @@ tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (a seg
 ```php
 tarCopyScript( string $source , array $members , string $destination , array $exclude = [] ) : string
 tarCopyOutcome( int $status , string $error ) : array
+tarCopyMovedLine( array $moved , string $what , ?int $limit = null ) : string
 ```
 
-`tar -cf - | tar -xf -` copies part of a directory into another and, unlike `cp`, never reads what it excludes: a cache or an archive left in the tree costs nothing. The two functions go together — one writes the command, the other judges what came of it.
+`tar -cf - | tar -xf -` copies part of a directory into another and, unlike `cp`, never reads what it excludes: a cache or an archive left in the tree costs nothing. The functions go together — one writes the command, one judges what came of it, and one says which files moved.
 
 **`tarCopyScript`** returns the bash script. It keeps the exit codes of the two tar apart, which `set -o pipefail` would merge:
 
@@ -345,6 +346,22 @@ if ( !$outcome[ 'ok' ] )
 }
 // $outcome[ 'moved' ] names the files that changed during the copy.
 ```
+
+**`tarCopyMovedLine`** puts the `moved` list in words, for a terminal, a log or a mail:
+
+```php
+tarCopyMovedLine( array $moved , string $what , ?int $limit = null ) : string
+```
+
+```php
+tarCopyMovedLine( [ 'content/a.log' ] , 'content' ) ;
+// '1 file changed while content was copied, and was copied as found: content/a.log'
+
+tarCopyMovedLine( [ 'a' , 'b' , 'c' , 'd' ] , 'content' , 2 ) ;
+// '4 files changed while content was copied, and were copied as found: a, b … and 2 more'
+```
+
+A limit names that many files at most (one at least) and says how many it left out: a cache folder that keeps changing must not make a message of a thousand lines. The count is always of every file. An empty list gives an empty string.
 
 ---
 

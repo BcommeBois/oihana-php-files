@@ -14,7 +14,7 @@ Both APIs are deliberately **parallel**: `zip`/`unzip` mirror `tar`/`untar`, `zi
 | **Creation** | [`tar`](tar.md#tar), [`tarDirectory`](tar.md#tardirectory), [`tarBinary`](tar-engine.md) | [`zip`](zip.md#zip), [`zipDirectory`](zip.md#zipdirectory) |
 | **Extraction** | [`untar`](untar.md#untar) | [`unzip`](unzip.md#unzip) |
 | **Inspection** | [`tarFileInfo`](tar.md#tarfileinfo), [`tarIsCompressed`](tar.md#tariscompressed), [`tarExcludesPath`](tar.md#tarexcludespath) | [`zipFileInfo`](zip.md#zipfileinfo) |
-| **Copy** | [`tarCopyScript`, `tarCopyOutcome`](tar.md#copying-a-directory-through-two-tar) | — |
+| **Copy** | [`tarCopyScript`, `tarCopyOutcome`, `tarCopyMovedLine`](tar.md#copying-a-directory-through-two-tar) | — |
 | **Validation** | [`assertTar`](untar.md#asserttar), [`hasTarExtension`](untar.md#hastarextension), [`hasTarMimeType`](untar.md#hastarmimetype), [`validateTarStructure`](untar.md#validatetarstructure) | [`assertZip`](unzip.md#assertzip), [`hasZipExtension`](unzip.md#haszipextension), [`hasZipMimeType`](unzip.md#haszipmimetype), [`validateZipStructure`](unzip.md#validatezipstructure) |
 
 > ℹ️ There is no `zipIsCompressed`: a zip is a container whose compression is decided **per entry** (DEFLATE or STORE), so a global "compressed or not" notion is meaningless.

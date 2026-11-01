@@ -72,7 +72,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 - [Overview](archive/README.md) — the `oihana\files\archive\tar` and `oihana\files\archive\zip` (ZipArchive) namespaces.
 - [How a tar gets built, and extracted](archive/tar-engine.md) — the system GNU tar where there is one, `PharData` otherwise, on writing as on extraction; why only GNU tar, and how to ask which engine is in place.
-- [Creating a tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/none, `tarIsCompressed`, `tarExcludesPath`, `tarCopyScript`, `tarCopyOutcome`.
+- [Creating a tar](archive/tar.md) — `tar`, `tarDirectory`, `tarFileInfo`, compression `gz`/`bz2`/none, `tarIsCompressed`, `tarExcludesPath`, `tarCopyScript`, `tarCopyOutcome`, `tarCopyMovedLine`.
 - [Extracting a tar](archive/untar.md) — `untar`, `validateTarStructure`, `assertTar`, `hasTarExtension`, `hasTarMimeType`.
 - [Creating a zip](archive/zip.md) — `zip`, `zipDirectory`, `zipFileInfo`, DEFLATE/STORE compression.
 - [Extracting a zip](archive/unzip.md) — `unzip` (Zip Slip + bomb guards + `keepPermissions`), `assertZip`, `hasZipExtension`, `hasZipMimeType`, `validateZipStructure`.
