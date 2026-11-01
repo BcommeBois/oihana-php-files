@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-Seven functions that lived in an application built on this library, and that had nothing of that
+Nine functions that lived in an application built on this library, and that had nothing of that
 application in them. Each comes with its own test, and the wiki, in English and in French,
 documents them where their neighbours already are.
 
@@ -37,6 +37,16 @@ documents them where their neighbours already are.
   path is refused**: `makeTemporaryDirectory( null )` returns the temporary directory itself, and
   a caller deleting what it was handed would delete the whole of it. That return is now said in
   the documentation of `makeTemporaryDirectory()`, which does not change.
+- `archive\tar\tarCopyScript()` — the bash script that copies part of a directory into another
+  through `tar -cf - | tar -xf -`, so that what is excluded is never read. It keeps the two exit
+  codes apart, which `set -o pipefail` would merge: it exits with the code of the reading tar (0,
+  1 when files moved while it read them, 2), or 3 when the writing tar failed — a full disk. It
+  runs under `LC_ALL=C`, so tar reports in English on any machine.
+- `archive\tar\tarCopyOutcome()` — what such a copy amounts to. Code 1 stands when **every** line
+  tar wrote is one of its three messages for a file that moved while it was read (changed,
+  removed before being read, shrunk), and those files are named; any other line fails the copy,
+  with what tar said as the reason. A copy taken from a directory in use is never a frozen
+  picture of it, and failing it for a log written to during the copy loses the whole copy.
 
 ### Fixed
 

@@ -1,11 +1,13 @@
 # Creating a tar archive
 
-Four functions to produce and inspect tar archives.
+Seven functions to produce, inspect and copy with tar.
 
 - [`tar`](#tar) — create from files and/or directories (main API).
 - [`tarDirectory`](#tardirectory) — convenience for a single directory with filters and metadata.
 - [`tarFileInfo`](#tarfileinfo) — inspection (validity, MIME, compression, count, size).
 - [`tarIsCompressed`](#tariscompressed) — fast extension-based detection.
+- [`tarExcludesPath`](#tarexcludespath) — whether GNU tar's `--exclude` patterns leave a path out.
+- [`tarCopyScript` and `tarCopyOutcome`](#copying-a-directory-through-two-tar) — copy part of a directory through two tar, and judge the copy.
 
 ---
 
@@ -295,6 +297,54 @@ tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (a seg
 ```
 
 > ℹ️ This is not the rule of [`shouldExcludeFile`](../files/discovery.md#shouldexcludefile), which `tarDirectory` uses: that one matches a pattern against the whole path or the file name. `tarExcludesPath` tells what the `tar` **binary** does.
+
+---
+
+## Copying a directory through two tar
+
+```php
+tarCopyScript( string $source , array $members , string $destination , array $exclude = [] ) : string
+tarCopyOutcome( int $status , string $error ) : array
+```
+
+`tar -cf - | tar -xf -` copies part of a directory into another and, unlike `cp`, never reads what it excludes: a cache or an archive left in the tree costs nothing. The two functions go together — one writes the command, the other judges what came of it.
+
+**`tarCopyScript`** returns the bash script. It keeps the exit codes of the two tar apart, which `set -o pipefail` would merge:
+
+| Exit code | Meaning |
+|---|---|
+| `0` | Both tar ended cleanly. |
+| `1` | The reading tar saw files move while it read them. |
+| `2` | The reading tar met a fatal error. |
+| `3` | The writing tar failed — a full disk, for instance — whatever the reading one said. |
+
+It runs under `LC_ALL=C`, so tar reports in English on any machine, runs `tar` as the `PATH` finds it (GNU tar, as everywhere in this namespace), and needs bash for `PIPESTATUS`. Every path and pattern is escaped for the shell; patterns are read as [`tarExcludesPath`](#tarexcludespath) reads them.
+
+**`tarCopyOutcome`** reads the exit code and what the two tar wrote on standard error, and returns `[ 'ok' => bool , 'moved' => list<string> , 'reason' => string ]`. Code `1` stands only when **every** line is one of GNU tar's three messages for a file in motion:
+
+- `tar: <path>: file changed as we read it`
+- `tar: <path>: File removed before we read it`
+- `tar: <path>: File shrank by <n> bytes; padding with zeros`
+
+Those paths are returned in `moved`. Any other line fails the copy, with what tar said as the `reason`. A copy taken from a directory in use is never a frozen picture of it; failing it for a log written to during the copy would lose the whole copy.
+
+```php
+use function oihana\files\archive\tar\tarCopyOutcome;
+use function oihana\files\archive\tar\tarCopyScript;
+
+$script  = tarCopyScript( '/srv/app' , [ 'content' ] , '/tmp/copy' , [ 'content/cache' ] ) ;
+$process = proc_open( [ 'bash' , '-c' , $script ] , [ 2 => [ 'pipe' , 'w' ] ] , $pipes ) ;
+$error   = stream_get_contents( $pipes[ 2 ] ) ;
+fclose( $pipes[ 2 ] ) ;
+
+$outcome = tarCopyOutcome( proc_close( $process ) , $error ) ;
+
+if ( !$outcome[ 'ok' ] )
+{
+    throw new RuntimeException( $outcome[ 'reason' ] ) ;
+}
+// $outcome[ 'moved' ] names the files that changed during the copy.
+```
 
 ---
 

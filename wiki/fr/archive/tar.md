@@ -1,11 +1,13 @@
 # Créer une archive tar
 
-Quatre fonctions pour produire et inspecter des archives tar.
+Sept fonctions pour produire, inspecter et copier avec tar.
 
 - [`tar`](#tar) — création depuis fichiers et/ou dossiers (API principale).
 - [`tarDirectory`](#tardirectory) — convenience pour un dossier unique avec filtres et metadata.
 - [`tarFileInfo`](#tarfileinfo) — inspection (validité, MIME, compression, count, taille).
 - [`tarIsCompressed`](#tariscompressed) — détection rapide par extension.
+- [`tarExcludesPath`](#tarexcludespath) — si les motifs `--exclude` de GNU tar laissent un chemin dehors.
+- [`tarCopyScript` et `tarCopyOutcome`](#copier-un-dossier-par-deux-tar) — copier une partie d'un dossier par deux tar, et juger la copie.
 
 ---
 
@@ -295,6 +297,54 @@ tarExcludesPath( 'content/cached.txt'  , [ 'cache' ] ) ;         // false (un se
 ```
 
 > ℹ️ Ce n'est pas la règle de [`shouldExcludeFile`](../files/discovery.md#shouldexcludefile), qu'utilise `tarDirectory` : celle-ci compare un motif au chemin entier ou au nom du fichier. `tarExcludesPath` dit ce que fait le **binaire** `tar`.
+
+---
+
+## Copier un dossier par deux tar
+
+```php
+tarCopyScript( string $source , array $members , string $destination , array $exclude = [] ) : string
+tarCopyOutcome( int $status , string $error ) : array
+```
+
+`tar -cf - | tar -xf -` copie une partie d'un dossier dans un autre et, contrairement à `cp`, ne lit jamais ce qu'il exclut : un cache ou une archive laissés dans l'arbre ne coûtent rien. Les deux fonctions vont ensemble — l'une écrit la commande, l'autre juge ce qu'il en est sorti.
+
+**`tarCopyScript`** rend le script bash. Il garde séparés les codes de sortie des deux tar, que `set -o pipefail` confondrait :
+
+| Code de sortie | Sens |
+|---|---|
+| `0` | Les deux tar ont fini proprement. |
+| `1` | Le tar qui lit a vu des fichiers bouger pendant sa lecture. |
+| `2` | Le tar qui lit a rencontré une erreur fatale. |
+| `3` | Le tar qui écrit a échoué — un disque plein, par exemple — quoi qu'ait dit celui qui lit. |
+
+Il tourne sous `LC_ALL=C`, pour que tar parle anglais sur toute machine, lance `tar` tel que le `PATH` le trouve (GNU tar, comme partout dans ce namespace), et demande bash pour `PIPESTATUS`. Chaque chemin et chaque motif est échappé pour le shell ; les motifs sont lus comme [`tarExcludesPath`](#tarexcludespath) les lit.
+
+**`tarCopyOutcome`** lit le code de sortie et ce que les deux tar ont écrit sur la sortie d'erreur, et rend `[ 'ok' => bool , 'moved' => list<string> , 'reason' => string ]`. Le code `1` est accepté seulement si **chaque** ligne est l'un des trois messages de GNU tar pour un fichier en mouvement :
+
+- `tar: <chemin>: file changed as we read it`
+- `tar: <chemin>: File removed before we read it`
+- `tar: <chemin>: File shrank by <n> bytes; padding with zeros`
+
+Ces chemins sont rendus dans `moved`. Toute autre ligne fait échouer la copie, avec ce que tar a dit comme `reason`. Une copie prise sur un dossier en service n'en est jamais une photo figée ; la faire échouer pour un journal écrit pendant la copie ferait perdre toute la copie.
+
+```php
+use function oihana\files\archive\tar\tarCopyOutcome;
+use function oihana\files\archive\tar\tarCopyScript;
+
+$script  = tarCopyScript( '/srv/app' , [ 'content' ] , '/tmp/copy' , [ 'content/cache' ] ) ;
+$process = proc_open( [ 'bash' , '-c' , $script ] , [ 2 => [ 'pipe' , 'w' ] ] , $pipes ) ;
+$error   = stream_get_contents( $pipes[ 2 ] ) ;
+fclose( $pipes[ 2 ] ) ;
+
+$outcome = tarCopyOutcome( proc_close( $process ) , $error ) ;
+
+if ( !$outcome[ 'ok' ] )
+{
+    throw new RuntimeException( $outcome[ 'reason' ] ) ;
+}
+// $outcome[ 'moved' ] nomme les fichiers qui ont changé pendant la copie.
+```
 
 ---
 

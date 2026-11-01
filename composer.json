@@ -48,6 +48,8 @@
             "src/oihana/files/archive/tar/tar.php",
             "src/oihana/files/archive/tar/tarBinary.php",
             "src/oihana/files/archive/tar/tarCompressionOfFile.php",
+            "src/oihana/files/archive/tar/tarCopyOutcome.php",
+            "src/oihana/files/archive/tar/tarCopyScript.php",
             "src/oihana/files/archive/tar/tarDirectory.php",
             "src/oihana/files/archive/tar/tarExcludesPath.php",
             "src/oihana/files/archive/tar/tarEntries.php",
