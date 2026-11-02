@@ -21,7 +21,7 @@ Functions are grouped into **9 categories** documented separately:
 | **Symbolic links** | [links.md](links.md) | `createSymlink`, `isSymlink`, `readSymlink` |
 | **System** | [system.md](system.md) | `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getFileSize`, `formatFileSize`, `getFreeDiskSpace`, `getTotalDiskSpace`, `getDiskUsage`, `getTimestampedFile`, `getTimestampedDirectory` |
 | **MIME** | [mime.md](mime.md) | `getMimeType`, `validateMimeType`, `hasMimeType`, `getImageMimeType` |
-| **Integrity** | [integrity.md](integrity.md) | `fileChecksum`, `filesAreEqual` |
+| **Integrity** | [integrity.md](integrity.md) | `fileChecksum`, `filesAreEqual`, `checksumLine`, `readChecksumLine` |
 
 ## Cross-cutting conventions
 

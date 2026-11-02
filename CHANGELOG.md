@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-Ten functions that lived in an application built on this library, and that had nothing of that
+Twelve functions that lived in an application built on this library, and that had nothing of that
 application in them. Each comes with its own test, and the wiki, in English and in French,
 documents them where their neighbours already are.
 
@@ -52,6 +52,13 @@ documents them where their neighbours already are.
   limit names that many at most and says how many it left out, so a cache folder that keeps
   changing does not make a message of a thousand lines; the count is always of every file. No
   file, no sentence: an empty list gives an empty string.
+- `checksumLine()` — the line that records a file's checksum, as `sha256sum` writes it: the hash
+  in lowercase, two spaces, the name, a line feed. `sha256sum -c` checks it beside the file,
+  without PHP; a test holds it to `sha256sum` (or `shasum` on macOS) when it is installed.
+- `readChecksumLine()` — reads that line back, for one file: the hash, lowercase, or null. The
+  hash must have the length of the algorithm's, `sha256` by default as in `fileChecksum()`; the
+  binary mode of `sha256sum` (` *name`) is read too. Only a line naming this file counts, so a
+  checksum file copied beside the wrong file does not vouch for it.
 
 ### Fixed
 

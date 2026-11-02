@@ -67,6 +67,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 - [Temporary directories](files/temporary.md) — `getTemporaryDirectory`, `makeTemporaryDirectory`, `makePrivateTemporaryDirectory`, `deleteTemporaryDirectory`.
 - [System](files/system.md) — `isLinux`, `isMac`, `isWindows`, `isOtherOS`, `getHomeDirectory`, `getRoot`, `getSchemeAndHierarchy`, `getOwnershipInfos`, `getDirectory`, `getBaseFileName`, `getFileExtension`, `getTimestampedFile`, `getTimestampedDirectory`.
 - [MIME and validation](files/mime.md) — `validateMimeType`, `getImageMimeType`.
+- [Integrity](files/integrity.md) — `fileChecksum`, `filesAreEqual`, `checksumLine`, `readChecksumLine`.
 
 ### Archives — [`archive/`](archive/)
 
