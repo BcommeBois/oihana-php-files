@@ -8,10 +8,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-Twelve functions that lived in an application built on this library, and that had nothing of that
-application in them. Each comes with its own test, and the wiki, in English and in French,
-documents them where their neighbours already are.
-
 - `toml\escapeTomlString()` — escapes a value for a TOML basic string: `\` and `"`, the control
   characters with a shorthand, and `\uXXXX` for the others and DEL. A test reads the result back
   with the TOML parser.
