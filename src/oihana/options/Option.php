@@ -50,7 +50,7 @@ use function oihana\core\strings\hyphenate;
  *
  * $o = new MyOptions();
  * echo $o->getOptions(MyOption::class);
- * // → --host "localhost" -verbose
+ * // → --host 'localhost' -verbose
  * ```
  */
 abstract class Option

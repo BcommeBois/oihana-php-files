@@ -56,6 +56,22 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   binary mode of `sha256sum` (` *name`) is read too. Only a line naming this file counts, so a
   checksum file copied beside the wrong file does not vouch for it.
 
+- `options\formatOptionValue()` — writes the value of a command-line option: a string between
+  single quotes by `escapeShellArgument()` of `oihana/php-core`, a number, `false` or `null` bare,
+  anything else as its JSON between single quotes.
+
+### Changed
+
+- `Options::getOptions()` writes a string value between single quotes, `--title 'Café'`, where it
+  wrote it between double quotes with `json_encode()`, `--title "Caf\u00e9"`. Inside double quotes
+  the shell still expands `$` and runs what stands between backquotes: a value such as
+  `` a$HOME`id` `` reached the program as the home directory and the output of `id`, and `id` ran
+  with the rights of the account that launched the line. Every accented letter arrived as the six
+  characters `\u00e9`. Each value now reaches the program exactly as it was set. Numbers, `false`
+  and flags are written as before. A caller that compared the generated line with double quotes,
+  in a test for instance, sees single quotes. Requires `escapeShellArgument()`, added to
+  `oihana/php-core`.
+
 ### Fixed
 
 - `unzip()` no longer writes a corrupt entry as if it were whole. libzip does not check an entry

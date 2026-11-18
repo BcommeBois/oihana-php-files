@@ -4,6 +4,7 @@ The **`oihana\options`** namespace exposes **two abstract classes** that togethe
 
 - [`Options`](#the-options-class) — abstract class to extend to define a config object.
 - [`Option`](#the-option-class) — associated contract that maps **property names** to **CLI option names**.
+- [`formatOptionValue()`](#formatoptionvalue-mixed-value---string) — writes an option's value on a shell command line.
 
 > 💡 The **`oihana\options`** namespace is to be distinguished from the `oihana\files\options/` directory (which contains **concrete implementations** like `MakeFileOptions` and `OwnershipInfos` — see [Concrete options](make-file-options.md)).
 
@@ -16,7 +17,7 @@ The **`oihana\options`** namespace exposes **two abstract classes** that togethe
 1. **Hydration** from an array or an object (via the constructor).
 2. **Serialisation** to `array` and JSON.
 3. **Template formatting** (`'{{host}}:{{port}}'` → `'localhost:8080'`).
-4. **CLI argument generation** (`--host "localhost" --port 8080`).
+4. **CLI argument generation** (`--host 'localhost' --port 8080`).
 5. **Merging** of multiple config sources (`resolve(...)`).
 
 ```php
@@ -217,7 +218,7 @@ class MyOptions extends Options
 
 $opts = new MyOptions() ;
 echo $opts->getOptions( MyOption::class ) ;
-// → --host "localhost" --port 8080 --verbose
+// → --host 'localhost' --port 8080 --verbose
 ```
 
 #### `getOptions` parameters
@@ -237,8 +238,10 @@ echo $opts->getOptions( MyOption::class ) ;
 |---|---|
 | `null` | property **ignored**. |
 | `true` | flag option: `--verbose` (no value). |
-| `array` | option **repeated**: `--list "a" --list "b"`. |
-| other (string, int, bool=false) | `--option "value"` with `json_encode` on the value. |
+| `array` | option **repeated**: `--list 'a' --list 'b'`. |
+| `string` | between single quotes: `--option 'value'`. The shell passes it as it is: no `$` expansion, no command run by backquotes, accents kept. See [`formatOptionValue()`](#formatoptionvalue-mixed-value---string). |
+| `int`, `float`, `false` | bare: `--port 8080`, `--debug false`. |
+| other (nested array, object) | its JSON, between single quotes: `--data '{"a":1}'`. |
 
 #### Advanced example: mixed prefixes and separators
 
@@ -255,7 +258,7 @@ $opts->getOptions(
     excludes: [ 'internalFlag' ] ,
     separator: fn( string $name ) => $name === 'list' ? '=' : ' ' ,
 ) ;
-// → --foo "value" -verbose /opt:list="a" /opt:list="b"
+// → --foo 'value' -verbose /opt:list='a' /opt:list='b'
 ```
 
 #### Forced order
@@ -351,6 +354,28 @@ class MyOption extends Option
 
 ---
 
+## Function
+
+### `formatOptionValue( mixed $value ) : string`
+
+**Writes the value of an option**, as `getOptions()` places it after the option's name.
+
+| Value | Written |
+|---|---|
+| `string` | between single quotes, by `escapeShellArgument()` of `oihana/php-core`: `'Café'`. The shell passes it as it is: no `$` expansion, nothing run between backquotes, a single quote written `'\''`, and, unlike `escapeshellarg()`, the same result whatever the locale. |
+| `int`, `float`, `false`, `null` | bare: `8080`, `1.5`, `false`, `null`. |
+| anything else | its JSON, between single quotes: `'{"a":1}'`. |
+
+```php
+use function oihana\options\formatOptionValue;
+
+echo formatOptionValue( 'a$HOME' ) ;     // 'a$HOME'
+echo formatOptionValue( 8080 ) ;         // 8080
+echo formatOptionValue( [ 'a' => 1 ] ) ; // '{"a":1}'
+```
+
+---
+
 ## Full pattern: end-to-end example
 
 ```php
@@ -386,7 +411,7 @@ $rsync = RsyncOptions::resolve(
 
 // 4. Build the shell command
 $cmd = 'rsync ' . $rsync->getOptions( RsyncOption::class ) ;
-// → rsync --archive --verbose --dry-run --exclude "..." --destination "..."
+// → rsync --archive --verbose --dry-run --exclude '...' --destination '...'
 
 // 5. (Optional) Serialise for log or audit
 file_put_contents( '/var/log/rsync.json' , json_encode( $rsync ) ) ;

@@ -92,7 +92,7 @@ For full details (options, enums, exception handling, contracts), see the table 
 
 ### Options — [`options/`](options/)
 
-- [Overview](options/README.md) — the abstract `Options` class (hydration, serialisation, placeholder formatting, CLI generation) and its `Option` contract.
+- [Overview](options/README.md) — the abstract `Options` class (hydration, serialisation, placeholder formatting, CLI generation) and its `Option` contract, and `formatOptionValue()`, which writes an option's value on a shell command line.
 - [Concrete options](options/make-file-options.md) — `MakeFileOptions`, `OwnershipInfos` as worked examples.
 
 ### Enumerations and exceptions

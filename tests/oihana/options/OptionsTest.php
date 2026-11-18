@@ -8,6 +8,7 @@ use ReflectionException;
 use oihana\enums\Char;
 use oihana\options\Options;
 
+use PHPUnit\Framework\Attributes\RequiresOperatingSystem;
 use PHPUnit\Framework\TestCase;
 
 use tests\oihana\options\mocks\ArrayableSource;
@@ -128,10 +129,10 @@ class OptionsTest extends TestCase
         ]);
 
         $result = $options->getOptions(MockOption::class);
-        $this->assertStringContainsString('--foo "value"', $result);
+        $this->assertStringContainsString("--foo 'value'", $result);
         $this->assertStringContainsString('--bar', $result);
-        $this->assertStringContainsString('--baz "item1"', $result);
-        $this->assertStringContainsString('--baz "item2"', $result);
+        $this->assertStringContainsString("--baz 'item1'", $result);
+        $this->assertStringContainsString("--baz 'item2'", $result);
     }
 
     public function testGetOptionsWithNullClazzReturnsEmptyString() :void
@@ -148,7 +149,7 @@ class OptionsTest extends TestCase
     {
         $options = $this->getConcreteOptionsInstance(['foo' => 'value', 'bar' => true]);
         $result = $options->getOptions(MockOption::class, 'PREFIX_');
-        $this->assertStringContainsString('PREFIX_foo "value"', $result);
+        $this->assertStringContainsString("PREFIX_foo 'value'", $result);
         $this->assertStringContainsString('PREFIX_bar', $result);
     }
 
@@ -280,10 +281,10 @@ class OptionsTest extends TestCase
 
         $result = $options->getOptions(MockOption::class, $callablePrefix );
 
-        $this->assertStringContainsString('--foo "value"'    , $result ) ;
+        $this->assertStringContainsString("--foo 'value'"    , $result ) ;
         $this->assertStringContainsString('-bar'             , $result ) ;
-        $this->assertStringContainsString('/opt:baz "one"' , $result ) ;
-        $this->assertStringContainsString('/opt:baz "two"' , $result ) ;
+        $this->assertStringContainsString("/opt:baz 'one'" , $result ) ;
+        $this->assertStringContainsString("/opt:baz 'two'" , $result ) ;
     }
 
     /**
@@ -299,7 +300,7 @@ class OptionsTest extends TestCase
 
         $result = $options->getOptions(MockOption::class, '--', excludes: [] , separator: '=' ) ;
 
-        $this->assertStringContainsString('--foo="value"', $result);
+        $this->assertStringContainsString("--foo='value'", $result);
         $this->assertStringContainsString('--bar', $result); // Pas de separator car booléen true
     }
 
@@ -323,10 +324,10 @@ class OptionsTest extends TestCase
 
         $result = $options->getOptions(MockOption::class, '--', excludes: [], separator: $separatorCallable);
 
-        $this->assertStringContainsString('--foo="value"' , $result ) ; // → séparateur '='
+        $this->assertStringContainsString("--foo='value'" , $result ) ; // → séparateur '='
         $this->assertStringContainsString('--bar'         , $result ) ; // → booléen → pas de séparateur
-        $this->assertStringContainsString('--baz:"one"'   , $result ) ; // → séparateur ':'
-        $this->assertStringContainsString('--baz:"two"'   , $result ) ;
+        $this->assertStringContainsString("--baz:'one'"   , $result ) ; // → séparateur ':'
+        $this->assertStringContainsString("--baz:'two'"   , $result ) ;
     }
 
     /**
@@ -349,14 +350,14 @@ class OptionsTest extends TestCase
         );
 
         $this->assertGreaterThan(
-            strpos($result, '--baz "one"'),
-            strpos($result, '--foo "value"'),
+            strpos($result, "--baz 'one'"),
+            strpos($result, "--foo 'value'"),
             "Expected --baz to appear before --foo"
         );
 
         $this->assertStringContainsString('--bar', $result);
-        $this->assertStringContainsString('--alpha "a"', $result);
-        $this->assertStringContainsString('--zeta "z"', $result);
+        $this->assertStringContainsString("--alpha 'a'", $result);
+        $this->assertStringContainsString("--zeta 'z'", $result);
     }
 
     /**
@@ -379,14 +380,14 @@ class OptionsTest extends TestCase
         );
 
         $this->assertLessThan(
-            strpos($result, '--baz "one"'),
-            strpos($result, '--foo "value"'),
+            strpos($result, "--baz 'one'"),
+            strpos($result, "--foo 'value'"),
             "Expected --baz to appear before --foo due to reverseOrder"
         );
 
         $this->assertStringContainsString('--bar', $result);
-        $this->assertStringContainsString('--alpha "a"', $result);
-        $this->assertStringContainsString('--zeta "z"', $result);
+        $this->assertStringContainsString("--alpha 'a'", $result);
+        $this->assertStringContainsString("--zeta 'z'", $result);
     }
 
     /**
@@ -425,7 +426,34 @@ class OptionsTest extends TestCase
 
         $result = $options->getOptions(MockOption::class, '--', excludes: [], separator: $separator);
 
-        $this->assertStringContainsString('--foo "value"', $result);
+        $this->assertStringContainsString("--foo 'value'", $result);
+    }
+
+    /**
+     * A shell reads the options back, and the program receives each value intact: no `$`
+     * expansion, no command run by backquotes, accents and quotes kept.
+     *
+     * @throws ReflectionException
+     */
+    #[RequiresOperatingSystem('Linux|Darwin')]
+    public function testGetOptionsValuesReachTheProgramIntact(): void
+    {
+        $options = $this->getConcreteOptionsInstance
+        ([
+            'foo' => 'a$HOME"b`id`c\\d\'e!x Café' ,
+            'baz' => [ 'two words' , "it's" ] ,
+        ]);
+
+        $line = $options->getOptions( MockOption::class , '--' , excludes: [ 'bar' ] , separator: '=' ) ;
+
+        // Each argument the program receives, one per line.
+        $output = shell_exec( "printf '%s\\n' " . $line ) ;
+
+        $this->assertSame
+        (
+            "--foo=a\$HOME\"b`id`c\\d'e!x Café\n--baz=two words\n--baz=it's\n" ,
+            $output
+        ) ;
     }
 
     public function testResolveWithNoSourcesReturnsNewInstance(): void

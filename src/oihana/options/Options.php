@@ -55,7 +55,7 @@ use function oihana\core\strings\formatFromDocument;
  * // → http://localhost:8080
  *
  * echo $opts->getOptions(CliMap::class);
- * // → --host "localhost" --port 8080 --debug
+ * // → --host 'localhost' --port 8080 --debug
  *
  * echo json_encode($opts);
  * // → {"host":"localhost","port":8080,"debug":true}
@@ -292,6 +292,11 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
      *
      * You can pass a string or a callable to dynamically generate prefixes or separators based on the property name.
      *
+     * Each value is written by {@see formatOptionValue()}: a string between single quotes, so the
+     * shell passes it to the program exactly as it is (`$`, backquotes, backslashes and accented
+     * letters included); a number, `false` or `null` bare. The result can be placed on a shell
+     * command line as it is.
+     *
      * @param class-string         $clazz         Class implementing the getCommandOption(string $property): string method.
      * @param null|callable|string $prefix        Prefix for each option (e.g. '--', '-', '/opt:'), or a callable (string $property): string.
      * @param array<string>        $excludes      Optional list of property names to exclude from the output.
@@ -299,7 +304,7 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
      * @param array<string>        $order         Optional list of property names to force order.
      * @param bool                 $reverseOrder  If true, ordered properties are placed at the end instead of the beginning.
      *
-     * @return string CLI-formatted options string, e.g. '--foo "bar" -v --list "one" --list "two"'
+     * @return string CLI-formatted options string, e.g. "--foo 'bar' -v --list 'one' --list 'two'"
      *
      * @throws ReflectionException
      *
@@ -339,7 +344,7 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
      *
      * echo $result;
      * // Output:
-     * // --foo "value" -verbose /opt:list="a" /opt:list="b"
+     * // --foo 'value' -verbose /opt:list='a' /opt:list='b'
      * ```
      *
      * Use the order parameter :
@@ -441,7 +446,7 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
             {
                 foreach ( $value as $item )
                 {
-                    $expression[] = $option . $resolvedSeparator . json_encode( $item , JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) ;
+                    $expression[] = $option . $resolvedSeparator . formatOptionValue( $item ) ;
                 }
             }
             elseif ( $value === true )
@@ -450,7 +455,7 @@ abstract class Options implements ClearableArrayable , Cloneable , JsonSerializa
             }
             else
             {
-                $expression[] = $option . $resolvedSeparator . json_encode( $value , JSON_UNESCAPED_SLASHES ) ;
+                $expression[] = $option . $resolvedSeparator . formatOptionValue( $value ) ;
             }
         }
 

@@ -92,7 +92,7 @@ Pour les détails (options, énumérations, gestion des exceptions, contrats), v
 
 ### Options — [`options/`](options/)
 
-- [Vue d'ensemble](options/README.md) — la classe abstraite `Options` (hydratation, sérialisation, format placeholders, génération CLI) et son contrat `Option`.
+- [Vue d'ensemble](options/README.md) — la classe abstraite `Options` (hydratation, sérialisation, format placeholders, génération CLI) et son contrat `Option`, et `formatOptionValue()`, qui écrit la valeur d'une option sur une ligne de commande.
 - [Options concrètes](options/make-file-options.md) — `MakeFileOptions`, `OwnershipInfos` en exemples concrets.
 
 ### Énumérations et exceptions

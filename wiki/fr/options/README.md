@@ -4,6 +4,7 @@ Le namespace **`oihana\options`** expose **deux classes abstraites** qui forment
 
 - [`Options`](#la-classe-options) — classe abstraite à étendre pour définir un objet de config.
 - [`Option`](#la-classe-option) — contrat associé qui mappe les **noms de propriétés** vers les **noms d'options CLI**.
+- [`formatOptionValue()`](#formatoptionvalue-mixed-value---string) — écrit la valeur d'une option sur une ligne de commande.
 
 > 💡 Le namespace **`oihana\options`** est à distinguer du dossier `oihana\files\options/` (qui contient des **implémentations concrètes** comme `MakeFileOptions` et `OwnershipInfos` — voir [Options concrètes](make-file-options.md)).
 
@@ -16,7 +17,7 @@ Le namespace **`oihana\options`** expose **deux classes abstraites** qui forment
 1. **Hydratation** depuis un tableau ou un objet (via le constructeur).
 2. **Sérialisation** en `array` et en JSON.
 3. **Formatage de templates** (`'{{host}}:{{port}}'` → `'localhost:8080'`).
-4. **Génération d'arguments CLI** (`--host "localhost" --port 8080`).
+4. **Génération d'arguments CLI** (`--host 'localhost' --port 8080`).
 5. **Fusion** de plusieurs sources de config (`resolve(...)`).
 
 ```php
@@ -217,7 +218,7 @@ class MyOptions extends Options
 
 $opts = new MyOptions() ;
 echo $opts->getOptions( MyOption::class ) ;
-// → --host "localhost" --port 8080 --verbose
+// → --host 'localhost' --port 8080 --verbose
 ```
 
 #### Paramètres de `getOptions`
@@ -237,8 +238,10 @@ echo $opts->getOptions( MyOption::class ) ;
 |---|---|
 | `null` | propriété **ignorée**. |
 | `true` | option en flag : `--verbose` (sans valeur). |
-| `array` | option **répétée** : `--list "a" --list "b"`. |
-| autre (string, int, bool=false) | `--option "value"` avec `json_encode` sur la valeur. |
+| `array` | option **répétée** : `--list 'a' --list 'b'`. |
+| `string` | entre apostrophes : `--option 'value'`. Le shell la transmet telle quelle : pas d'expansion de `$`, aucune commande lancée par des accents graves, les accents gardés. Voir [`formatOptionValue()`](#formatoptionvalue-mixed-value---string). |
+| `int`, `float`, `false` | telle quelle : `--port 8080`, `--debug false`. |
+| autre (tableau imbriqué, objet) | son JSON, entre apostrophes : `--data '{"a":1}'`. |
 
 #### Exemple avancé : mix de préfixes et séparateurs
 
@@ -255,7 +258,7 @@ $opts->getOptions(
     excludes: [ 'internalFlag' ] ,
     separator: fn( string $name ) => $name === 'list' ? '=' : ' ' ,
 ) ;
-// → --foo "value" -verbose /opt:list="a" /opt:list="b"
+// → --foo 'value' -verbose /opt:list='a' /opt:list='b'
 ```
 
 #### Ordre forcé
@@ -351,6 +354,28 @@ class MyOption extends Option
 
 ---
 
+## Fonction
+
+### `formatOptionValue( mixed $value ) : string`
+
+**Écrit la valeur d'une option**, telle que `getOptions()` la place après le nom de l'option.
+
+| Valeur | Écrite |
+|---|---|
+| `string` | entre apostrophes, par `escapeShellArgument()` d'`oihana/php-core` : `'Café'`. Le shell la transmet telle quelle : pas d'expansion de `$`, rien de lancé entre accents graves, une apostrophe écrite `'\''`, et, contrairement à `escapeshellarg()`, le même résultat quelle que soit la locale. |
+| `int`, `float`, `false`, `null` | telle quelle : `8080`, `1.5`, `false`, `null`. |
+| autre chose | son JSON, entre apostrophes : `'{"a":1}'`. |
+
+```php
+use function oihana\options\formatOptionValue;
+
+echo formatOptionValue( 'a$HOME' ) ;     // 'a$HOME'
+echo formatOptionValue( 8080 ) ;         // 8080
+echo formatOptionValue( [ 'a' => 1 ] ) ; // '{"a":1}'
+```
+
+---
+
 ## Pattern complet : exemple end-to-end
 
 ```php
@@ -386,7 +411,7 @@ $rsync = RsyncOptions::resolve(
 
 // 4. Construire la commande shell
 $cmd = 'rsync ' . $rsync->getOptions( RsyncOption::class ) ;
-// → rsync --archive --verbose --dry-run --exclude "..." --destination "..."
+// → rsync --archive --verbose --dry-run --exclude '...' --destination '...'
 
 // 5. (Optionnel) Sérialiser pour log ou audit
 file_put_contents( '/var/log/rsync.json' , json_encode( $rsync ) ) ;

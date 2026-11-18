@@ -97,6 +97,7 @@
             "src/oihana/files/phar/preservePharFilePermissions.php",
             "src/oihana/files/toml/resolveTomlConfig.php",
             "src/oihana/files/toml/escapeTomlString.php",
+            "src/oihana/options/formatOptionValue.php",
             "src/oihana/files/toml/setTomlValue.php",
             "src/oihana/files/assertDirectory.php",
             "src/oihana/files/assertWritableDirectory.php",
